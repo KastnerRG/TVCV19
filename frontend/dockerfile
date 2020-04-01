@@ -5,9 +5,8 @@ WORKDIR /app
 EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
-RUN curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
-RUN apt update
-RUN apt install nodejs npm -y
+RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
+RUN apt-get install -y nodejs
 WORKDIR /src
 COPY ["TvCv19.Frontend/TvCv19.Frontend.csproj", "TvCv19.Frontend/"]
 RUN dotnet restore "TvCv19.Frontend/TvCv19.Frontend.csproj"
