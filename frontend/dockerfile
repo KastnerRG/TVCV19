@@ -1,0 +1,23 @@
+  #See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
+
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.1-buster-slim AS base
+WORKDIR /app
+EXPOSE 80
+
+FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
+RUN apt-get update
+RUN apt-get install nodejs npm -y
+WORKDIR /src
+COPY ["TvCv19.Frontend/TvCv19.Frontend.csproj", "TvCv19.Frontend/"]
+RUN dotnet restore "TvCv19.Frontend/TvCv19.Frontend.csproj"
+COPY . .
+WORKDIR "/src/TvCv19.Frontend"
+RUN dotnet build "TvCv19.Frontend.csproj" -c Release -o /app/build
+
+FROM build AS publish
+RUN dotnet publish "TvCv19.Frontend.csproj" -c Release -o /app/publish
+
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "TvCv19.Frontend.dll"]
