@@ -1,0 +1,21 @@
+<div fxFill fxLayout="column">
+    <mat-toolbar color="primary">{{patientName}}</mat-toolbar>
+
+    <div fxFill fxFlex fxLayoutAlign="flex-end flex-end">
+        <mat-list>
+            <mat-list-item *ngFor="let chatMessage of chatMessages">
+                {{chatMessage.message}}
+            </mat-list-item>
+        </mat-list>
+    </div>
+
+    <div fxLayout>
+        <mat-form-field fxFill fxFlex>
+            <textarea matInput placeholder="Type a message"></textarea>
+        </mat-form-field>
+
+        <button mat-icon-button>
+            <mat-icon>send</mat-icon>
+        </button>
+    </div>
+</div>
