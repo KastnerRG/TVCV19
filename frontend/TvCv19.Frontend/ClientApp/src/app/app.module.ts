@@ -9,19 +9,23 @@ import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { MatBadgeModule } from '@angular/material/badge';
 import { LineChartModule } from '@swimlane/ngx-charts';
+import { HttpClientModule } from '@angular/common/http';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { VolunteerComponent } from './volunteer/volunteer.component';
 import { VideoReceiverComponent } from './video-receiver/video-receiver.component';
 import { ChatComponent } from './chat/chat.component';
+import { PatientAdminComponent } from './patient-admin/patient-admin.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     VolunteerComponent,
     VideoReceiverComponent,
-    ChatComponent
+    ChatComponent,
+    PatientAdminComponent
   ],
   imports: [
     BrowserModule,
@@ -34,7 +38,11 @@ import { ChatComponent } from './chat/chat.component';
     MatIconModule,
     MatInputModule,
     MatListModule,
-    MatBadgeModule
+    MatBadgeModule,
+    HttpClientModule,
+    FormsModule,
+    ReactiveFormsModule
+
   ],
   providers: [],
   bootstrap: [AppComponent]
