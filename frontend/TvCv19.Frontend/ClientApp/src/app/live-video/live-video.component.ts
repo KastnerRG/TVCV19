@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-live-video',
@@ -6,7 +7,11 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./live-video.component.scss']
 })
 export class LiveVideoComponent implements OnInit {
-  constructor() { }
+  public id: number;
+
+  constructor(route: ActivatedRoute) {
+    this.id = route['id'];
+  }
 
   ngOnInit(): void {
   }

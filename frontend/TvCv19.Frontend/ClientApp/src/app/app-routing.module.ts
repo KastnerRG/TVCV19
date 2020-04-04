@@ -6,7 +6,7 @@ import { ChatComponent } from './chat/chat.component';
 import { PatientAdminComponent } from './patient-admin/patient-admin.component'
 
 const routes: Routes = [
-  { path: 'live-video', component: LiveVideoComponent },
+  { path: 'live-video/:id', component: LiveVideoComponent },
   { path: 'patient', component: PatientAdminComponent },
   { path: 'chat', component: ChatComponent }
 ];

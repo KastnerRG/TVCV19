@@ -1,0 +1,5 @@
+C:\Users\clcru\source\repos\TVCV19\frontend\TvCv19.DailyCo.Client\bin\Debug\netstandard2.0\TvCv19.DailyCo.Client.deps.json
+C:\Users\clcru\source\repos\TVCV19\frontend\TvCv19.DailyCo.Client\bin\Debug\netstandard2.0\TvCv19.DailyCo.Client.dll
+C:\Users\clcru\source\repos\TVCV19\frontend\TvCv19.DailyCo.Client\obj\Debug\netstandard2.0\TvCv19.DailyCo.Client.csprojAssemblyReference.cache
+C:\Users\clcru\source\repos\TVCV19\frontend\TvCv19.DailyCo.Client\obj\Debug\netstandard2.0\TvCv19.DailyCo.Client.AssemblyInfoInputs.cache
+C:\Users\clcru\source\repos\TVCV19\frontend\TvCv19.DailyCo.Client\obj\Debug\netstandard2.0\TvCv19.DailyCo.Client.AssemblyInfo.cs
