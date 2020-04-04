@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { PatientService } from '../patient.service';
 import { PatientModel } from './patient-model';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-patient-admin',
@@ -11,7 +12,7 @@ import { PatientModel } from './patient-model';
 export class PatientAdminComponent implements OnInit {
   patientForm;
   patients: Array<PatientModel> = []
-  constructor(private formBuilder: FormBuilder, private service: PatientService) {
+  constructor(private formBuilder: FormBuilder, private service: PatientService, private router: Router) {
     this.patientForm = this.formBuilder.group({
       name: '',
       location: '',
@@ -26,11 +27,9 @@ export class PatientAdminComponent implements OnInit {
   }
 
   onSubmit(patient: PatientModel) {
-    console.log(patient)
-    this.patients.push(patient)
-    this.service.admitPatient(patient).subscribe(id => {
-      patient.id = id;
-      this.patients.push(patient)
+    this.service.admitPatient(patient).subscribe(p => {
+      patient.id = p.id;
+      this.router.navigateByUrl(`/patient/${p.id}`)
     },
       error => console.error(error))
   }

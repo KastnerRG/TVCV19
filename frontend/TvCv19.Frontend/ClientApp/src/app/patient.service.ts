@@ -8,20 +8,46 @@ import { catchError, retry } from 'rxjs/operators';
 @Injectable({
   providedIn: 'root'
 })
+
+
+
 export class PatientService {
-  private url: string = '/patientapi/admit'
   constructor(private http: HttpClient) { }
 
-  admitPatient(body: PatientModel): Observable<string> {
-    return this.http.post<string>(this.url, body, {
+  getPatients(id: string): Observable<Array<PatientModel>> {
+    return this.http.get<Array<PatientModel>>(`/patientapi/patients/${id}`)
+      .pipe(
+        catchError(this.handleError)
+      )
+  }
+
+  admitPatient(body: PatientModel): Observable<PatientModel> {
+    return this.http.post<PatientModel>('/patientapi/admit', body, {
       headers: new HttpHeaders({
         'Content-Type': 'application/json'
       })
-      
+
     })
-    .pipe(
-      catchError(this.handleError)
-    );
+      .pipe(
+        catchError(this.handleError)
+      );
+  }
+  updatePatient(body: PatientModel): Observable<PatientModel> {
+    return this.http.put<PatientModel>('/patientapi/patient', body, {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+
+    })
+      .pipe(
+        catchError(this.handleError)
+      );
+  }
+  getPatient(id: string): Observable<PatientModel> {
+    return this.http.get<PatientModel>(`/patientapi/patient/${id}`)
+      .pipe(
+        catchError(this.handleError)
+      )
   }
 
   private handleError(error: HttpErrorResponse) {

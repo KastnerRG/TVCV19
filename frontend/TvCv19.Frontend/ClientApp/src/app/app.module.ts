@@ -8,9 +8,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { MatBadgeModule } from '@angular/material/badge';
+import {MatGridListModule} from '@angular/material/grid-list';
 import { LineChartModule } from '@swimlane/ngx-charts';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { QRCodeModule } from 'angularx-qrcode';
+import { ZXingScannerModule } from '@zxing/ngx-scanner'
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -21,6 +24,9 @@ import { PatientAdminComponent } from './patient-admin/patient-admin.component';
 import { NavigationComponent } from './navigation/navigation.component';
 import { LayoutModule } from '@angular/cdk/layout';
 import { MatSidenavModule } from '@angular/material/sidenav';
+import { PatientComponent } from './patient/patient.component';
+import { QrScannerComponent } from './qr/qr-scanner.component';
+import { FirstlineComponent } from './firstline/firstline.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +35,10 @@ import { MatSidenavModule } from '@angular/material/sidenav';
     VideoReceiverComponent,
     ChatComponent,
     PatientAdminComponent,
-    NavigationComponent
+    NavigationComponent,
+    PatientComponent,
+    QrScannerComponent,
+    FirstlineComponent
   ],
   imports: [
     BrowserModule,
@@ -43,11 +52,14 @@ import { MatSidenavModule } from '@angular/material/sidenav';
     MatInputModule,
     MatListModule,
     MatBadgeModule,
+    MatGridListModule,
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
     LayoutModule,
-    MatSidenavModule
+    MatSidenavModule,
+    QRCodeModule,
+    ZXingScannerModule
   ],
   providers: [],
   bootstrap: [AppComponent]

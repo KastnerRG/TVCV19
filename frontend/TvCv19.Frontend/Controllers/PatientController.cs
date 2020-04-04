@@ -21,8 +21,29 @@ namespace TvCv19.Frontend.Controllers
         [HttpPost("admit")]
         public async Task<IActionResult> AdmitPatient(Patient patientModel)
         {
-            var id = _patientRepository.AdmitPatient(patientModel);
-            return Ok(id);
+            patientModel.Id = await _patientRepository.AdmitPatient(patientModel);
+            return Ok(patientModel);
+        }
+
+        [HttpPut("patient")]
+        public async Task<IActionResult> UpdatePatient(Patient patientModel)
+        {
+            patientModel = await _patientRepository.UpdatePatient(patientModel);
+            return Ok(patientModel);
+        }
+
+        [HttpGet("patient/{id}")]
+        public async Task<IActionResult> GetPatient(string id)
+        {
+            var patient = await _patientRepository.GetPatient(id);
+            return Ok(patient);
+        }
+
+        [HttpGet("patients/{id}")]
+        public async Task<IActionResult> GetPatients(string id)
+        {
+            var patient = await _patientRepository.GetPatients(id);
+            return Ok(patient);
         }
 
         [HttpPost("discharge/{id}")]

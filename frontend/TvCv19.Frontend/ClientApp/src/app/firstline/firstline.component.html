@@ -1,0 +1,12 @@
+<mat-grid-list cols="2" rowHeight="2:1">
+  <mat-toolbar color="secondary">
+    <span>You have {{patients.length}} Patient(s)</span>
+  </mat-toolbar>  
+  <mat-grid-tile *ngFor="let patient of patients;">
+      {{patient.name}}
+      <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
+    </mat-grid-tile>
+</mat-grid-list>
+<button color="primary" mat-raised-button (click)="scanQr = !scanQr">Add Patient</button>
+<qr-scanner *ngIf="scanQr" (newPatientId)="addToPatients($event)"></qr-scanner>
+  
