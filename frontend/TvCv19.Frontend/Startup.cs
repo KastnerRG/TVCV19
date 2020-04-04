@@ -65,8 +65,8 @@ namespace TvCv19.Frontend
 
                 if (env.IsDevelopment())
                 {
-                    spa.UseAngularCliServer("http://localhost:4200");
-
+                    //spa.UseAngularCliServer(npmScript: "start");
+                    spa.UseProxyToSpaDevelopmentServer("http://localhost:4200");
                 }
             });
         }

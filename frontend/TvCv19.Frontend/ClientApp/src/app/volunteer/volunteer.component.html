@@ -1,21 +1,3 @@
 <div fxFill fxLayout="column">
-    <mat-toolbar color="primary">{{patientName}}</mat-toolbar>
-    
-    <div fxFill fxFlex fxLayout="column">
-        <app-video-receiver fxFlex="60"></app-video-receiver>
-
-        <div fxFlex="40" fxLayout="column">
-            <!-- <ngx-charts-line-chart fxFlex></ngx-charts-line-chart> -->
-        </div>
-    </div>
-
-    <div fxLayout>
-        <a mat-button routerLink="/chat">
-            <mat-icon matBadge="12">chat</mat-icon>
-        </a>
-
-        <a mat-button>
-            <mat-icon>bar_chart</mat-icon>
-        </a>
-    </div>
+    <app-video-receiver fxFill fxFlex></app-video-receiver>
 </div>
