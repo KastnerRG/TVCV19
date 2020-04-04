@@ -1,0 +1,5 @@
+<mat-toolbar color="secondary">
+    <span>Scan Patient QR Code</span>
+</mat-toolbar>
+<zxing-scanner (scanSuccess)="onScanSuccess($event)" [(device)]="currentDevice" (camerasFound)="onCamerasFound($event)">
+</zxing-scanner>
