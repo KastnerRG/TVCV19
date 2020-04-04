@@ -18,6 +18,9 @@ import { VolunteerComponent } from './volunteer/volunteer.component';
 import { VideoReceiverComponent } from './video-receiver/video-receiver.component';
 import { ChatComponent } from './chat/chat.component';
 import { PatientAdminComponent } from './patient-admin/patient-admin.component';
+import { NavigationComponent } from './navigation/navigation.component';
+import { LayoutModule } from '@angular/cdk/layout';
+import { MatSidenavModule } from '@angular/material/sidenav';
 
 @NgModule({
   declarations: [
@@ -25,7 +28,8 @@ import { PatientAdminComponent } from './patient-admin/patient-admin.component';
     VolunteerComponent,
     VideoReceiverComponent,
     ChatComponent,
-    PatientAdminComponent
+    PatientAdminComponent,
+    NavigationComponent
   ],
   imports: [
     BrowserModule,
@@ -41,8 +45,9 @@ import { PatientAdminComponent } from './patient-admin/patient-admin.component';
     MatBadgeModule,
     HttpClientModule,
     FormsModule,
-    ReactiveFormsModule
-
+    ReactiveFormsModule,
+    LayoutModule,
+    MatSidenavModule
   ],
   providers: [],
   bootstrap: [AppComponent]

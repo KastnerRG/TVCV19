@@ -6,8 +6,6 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./volunteer.component.scss']
 })
 export class VolunteerComponent implements OnInit {
-  patientName = '<Patient Name>';
-
   constructor() { }
 
   ngOnInit(): void {
