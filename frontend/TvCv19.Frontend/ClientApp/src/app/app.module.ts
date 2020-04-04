@@ -14,7 +14,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { VolunteerComponent } from './volunteer/volunteer.component';
+import { LiveVideoComponent } from './live-video/live-video.component';
 import { VideoReceiverComponent } from './video-receiver/video-receiver.component';
 import { ChatComponent } from './chat/chat.component';
 import { PatientAdminComponent } from './patient-admin/patient-admin.component';
@@ -25,7 +25,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 @NgModule({
   declarations: [
     AppComponent,
-    VolunteerComponent,
+    LiveVideoComponent,
     VideoReceiverComponent,
     ChatComponent,
     PatientAdminComponent,
