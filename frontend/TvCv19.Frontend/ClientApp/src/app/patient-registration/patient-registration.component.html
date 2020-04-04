@@ -1,7 +1,12 @@
 <mat-toolbar color="secondary">
-    <span>Admit Patient</span>
+    <mat-toolbar-row>
+        <span>Patient</span>
+    </mat-toolbar-row>
+    <mat-toolbar-row>
+        <span>Information</span>
+    </mat-toolbar-row>
 </mat-toolbar>
-<form [formGroup]="patientForm" (ngSubmit)="onSubmit(patientForm.value)">
+<form [formGroup]="patientRegistrationForm" (ngSubmit)="onSubmit(patientRegistrationForm.value)">
     <mat-form-field appearance="fill">
         <mat-label>Patient Name</mat-label>
         <input id="name" formControlName="name" matInput placeholder="Patient Name">
@@ -10,5 +15,7 @@
         <mat-label>Location</mat-label>
         <input id="location" formControlName="location" matInput placeholder="Patient Location">
     </mat-form-field>
-    <button color="primary" mat-raised-button type="submit">Submit</button>
+    <div mat-dialog-actions align="end">
+        <button color="primary" mat-raised-button type="submit">Next</button>
+    </div>
 </form>

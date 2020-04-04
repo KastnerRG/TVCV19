@@ -3,7 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 // import { PatientComponent } from 'projects/patient/src/public-api';
 import { PhysicianComponent } from 'projects/physician/src/public-api';
 
-import { PatientAdminComponent } from './patient-admin/patient-admin.component'
+import { PatientRegistrationComponent } from './patient-registration/patient-registration.component'
 import { PatientComponent } from './patient/patient.component';
 import { PatientRouteResolverService } from './patient-route-resolver.service';
 import { FirstlineComponent } from './firstline/firstline.component';
@@ -14,7 +14,7 @@ const routes: Routes = [
   { path: 'physician/:physician-id', component: PhysicianComponent, loadChildren: 'projects/physician/src/public-api#PhysicianModule' },
 
   // Patient workflow
-  { path: 'patient', component: PatientAdminComponent },
+  { path: 'patient/registration', component: PatientRegistrationComponent },
   {
     path: 'patient/:id', component: PatientComponent, resolve: {
       patient: PatientRouteResolverService

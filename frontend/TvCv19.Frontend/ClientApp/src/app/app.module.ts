@@ -17,7 +17,7 @@ import { ZXingScannerModule } from '@zxing/ngx-scanner'
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { PatientAdminComponent } from './patient-admin/patient-admin.component';
+import { PatientRegistrationComponent } from './patient-registration/patient-registration.component';
 import { LayoutModule } from '@angular/cdk/layout';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { PatientComponent } from './patient/patient.component';
@@ -27,7 +27,7 @@ import { FirstlineComponent } from './firstline/firstline.component';
 @NgModule({
   declarations: [
     AppComponent,
-    PatientAdminComponent,
+    PatientRegistrationComponent,
     PatientComponent,
     QrScannerComponent,
     FirstlineComponent

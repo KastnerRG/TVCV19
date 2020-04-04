@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { PatientModel } from '../patient-admin/patient-model';
+import { PatientModel } from '../patient-registration/patient-model';
 
 @Component({
   selector: 'app-patient',

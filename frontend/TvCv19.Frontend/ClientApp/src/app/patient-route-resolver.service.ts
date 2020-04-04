@@ -7,7 +7,7 @@ import {
 import { Observable, of, EMPTY }  from 'rxjs';
 import { mergeMap }         from 'rxjs/operators';
 import { PatientService }         from './patient.service'
-import { PatientModel } from './patient-admin/patient-model';
+import { PatientModel } from './patient-registration/patient-model';
 
 @Injectable({
   providedIn: 'root'
