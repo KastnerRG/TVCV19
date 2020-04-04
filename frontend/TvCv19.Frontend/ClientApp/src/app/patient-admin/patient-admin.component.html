@@ -1,0 +1,20 @@
+<mat-toolbar color="primary">
+    <span>Admit Patient</span>
+    <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
+</mat-toolbar>
+<form [formGroup]="patientForm" (ngSubmit)="onSubmit(patientForm.value)">
+    <mat-form-field appearance="fill">
+        <mat-label>Patient Name</mat-label>
+        <input id="name" formControlName="name" matInput placeholder="Patient Name">
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+        <mat-label>Location</mat-label>
+        <input id="location" formControlName="location" matInput placeholder="Patient Location">
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+        <mat-label>Caregiver Id</mat-label>
+        <input id="caregiverId" formControlName="caregiverId" matInput placeholder="Caregiver Id">
+    </mat-form-field>
+    <button color="primary" mat-raised-button type="submit">Submit</button>
+</form>
+<!-- <button color="warn" mat-raised-button (click)="logPatients()">Log Patients</button> -->
