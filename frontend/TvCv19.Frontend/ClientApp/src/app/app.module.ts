@@ -23,20 +23,20 @@ import { PatientRegistrationComponent } from './patient-registration/patient-reg
 import { LayoutModule } from '@angular/cdk/layout';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { QrScannerComponent } from './qr/qr-scanner.component';
-import { FirstlineComponent } from './firstline/firstline.component';
 import { AssignCareGiverComponent } from './patient-registration/assign-caregiver.component';
 import { CameraSetupComponent } from './patient-registration/camera-setup.component';
-import { PhyiscianAdminComponent } from './phyiscian-admin/phyiscian-admin.component';
+import { physicianAdminComponent } from './physician-admin/physician-admin.component';
+import { PhysicianHeirachyComponent } from '../../projects/physician/src/lib/physician-heirachy/physician-heirachy.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     PatientRegistrationComponent,
     QrScannerComponent,
-    FirstlineComponent,
     AssignCareGiverComponent,
     CameraSetupComponent,
-    PhyiscianAdminComponent
+    physicianAdminComponent,
+    PhysicianHeirachyComponent
   ],
   imports: [
     BrowserModule,

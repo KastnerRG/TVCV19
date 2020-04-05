@@ -10,7 +10,7 @@ namespace TvCv19.Frontend.Domain
         Task<string> AdmitPatient(Patient patient);
         Task<Patient> GetPatient(string id);
         string DischargePatient(string id);
-        Task<IEnumerable<Patient>> GetPatients(string id);
+        Task<IEnumerable<Patient>> GetPatientsByPhysician(string id);
         Task<Patient> UpdatePatient(Patient patientModel);
         //  string RegisterCareGiver(RegisterCareGiverModel registerCareGiverModel);
         // SetPatientChartModel SetPatientChart(string id, List<VentilatorData> ventilatorData);
@@ -41,7 +41,7 @@ namespace TvCv19.Frontend.Domain
             return Task.FromResult(_admittedPatients.FirstOrDefault(x => x.Id == id));
         }
 
-        public Task<IEnumerable<Patient>> GetPatients(string id)
+        public Task<IEnumerable<Patient>> GetPatientsByPhysician(string id)
         {
             return Task.FromResult(_admittedPatients.Where(x => x.CaregiverId == id));
         }
