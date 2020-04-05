@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using TvCv19.Frontend.Domain;
+using TvCv19.Frontend.Hubs;
 
 namespace TvCv19.Frontend
 {
@@ -22,6 +23,9 @@ namespace TvCv19.Frontend
         {
             services.AddScoped<IPatientRepository, PocPatientRepository>();
             services.AddControllersWithViews();
+
+            services.AddSignalR();
+
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
@@ -54,6 +58,8 @@ namespace TvCv19.Frontend
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller}/{action=Index}/{id?}");
+
+                endpoints.MapHub<ChatHub>("/hubs/chat");
             });
 
             app.UseSpa(spa =>
