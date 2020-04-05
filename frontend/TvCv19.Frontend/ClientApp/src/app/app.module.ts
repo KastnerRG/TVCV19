@@ -9,6 +9,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
 import { MatBadgeModule } from '@angular/material/badge';
 import {MatGridListModule} from '@angular/material/grid-list';
+import {MatAutocompleteModule} from '@angular/material/autocomplete';
+import {MatCardModule} from '@angular/material/card';
 import { LineChartModule } from '@swimlane/ngx-charts';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -17,28 +19,22 @@ import { ZXingScannerModule } from '@zxing/ngx-scanner'
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { LiveVideoComponent } from './live-video/live-video.component';
-import { VideoReceiverComponent } from './video-receiver/video-receiver.component';
-import { ChatComponent } from './chat/chat.component';
-import { PatientAdminComponent } from './patient-admin/patient-admin.component';
-import { NavigationComponent } from './navigation/navigation.component';
+import { PatientRegistrationComponent } from './patient-registration/patient-registration.component';
 import { LayoutModule } from '@angular/cdk/layout';
 import { MatSidenavModule } from '@angular/material/sidenav';
-import { PatientComponent } from './patient/patient.component';
 import { QrScannerComponent } from './qr/qr-scanner.component';
 import { FirstlineComponent } from './firstline/firstline.component';
+import { AssignCareGiverComponent } from './patient-registration/assign-caregiver.component';
+import { CameraSetupComponent } from './patient-registration/camera-setup.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    LiveVideoComponent,
-    VideoReceiverComponent,
-    ChatComponent,
-    PatientAdminComponent,
-    NavigationComponent,
-    PatientComponent,
+    PatientRegistrationComponent,
     QrScannerComponent,
-    FirstlineComponent
+    FirstlineComponent,
+    AssignCareGiverComponent,
+    CameraSetupComponent
   ],
   imports: [
     BrowserModule,
@@ -59,7 +55,9 @@ import { FirstlineComponent } from './firstline/firstline.component';
     LayoutModule,
     MatSidenavModule,
     QRCodeModule,
-    ZXingScannerModule
+    ZXingScannerModule,
+    MatAutocompleteModule,
+    MatCardModule
   ],
   providers: [],
   bootstrap: [AppComponent]

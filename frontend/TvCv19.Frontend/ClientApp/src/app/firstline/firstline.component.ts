@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { PatientModel } from '../patient-admin/patient-model';
+import { PatientModel } from '../patient-registration/patient-model';
 import { ActivatedRoute } from '@angular/router';
 import { PatientService } from '../patient.service';
 import { FirstLinePatientRouteDataModel } from './firstlinePatientRouteData.model';
