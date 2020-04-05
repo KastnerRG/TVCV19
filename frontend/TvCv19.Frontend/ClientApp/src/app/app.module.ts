@@ -17,11 +17,7 @@ import { ZXingScannerModule } from '@zxing/ngx-scanner'
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { LiveVideoComponent } from './live-video/live-video.component';
-import { VideoReceiverComponent } from './video-receiver/video-receiver.component';
-import { ChatComponent } from './chat/chat.component';
 import { PatientAdminComponent } from './patient-admin/patient-admin.component';
-import { NavigationComponent } from './navigation/navigation.component';
 import { LayoutModule } from '@angular/cdk/layout';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { PatientComponent } from './patient/patient.component';
@@ -31,11 +27,7 @@ import { FirstlineComponent } from './firstline/firstline.component';
 @NgModule({
   declarations: [
     AppComponent,
-    LiveVideoComponent,
-    VideoReceiverComponent,
-    ChatComponent,
     PatientAdminComponent,
-    NavigationComponent,
     PatientComponent,
     QrScannerComponent,
     FirstlineComponent

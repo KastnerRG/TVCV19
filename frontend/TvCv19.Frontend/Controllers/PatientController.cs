@@ -1,6 +1,8 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using TvCv19.DailyCo.Client;
+using TvCv19.DailyCo.Client.Models;
 using TvCv19.Frontend.Domain;
 
 namespace TvCv19.Frontend.Controllers
@@ -9,6 +11,9 @@ namespace TvCv19.Frontend.Controllers
     [Route("patientapi")]
     public class PatientController : Controller
     {
+        private const string DAILY_URL = "https://tvcv19.daily.co";
+        private const string DAILY_TOKEN = "Ee910bcf0c64a3fac675bf9b04e89780a9972ba61078f188a0314b6805532ae5";
+
         private ILogger<PatientController> _logger;
         private IPatientRepository _patientRepository;
          
@@ -22,6 +27,15 @@ namespace TvCv19.Frontend.Controllers
         public async Task<IActionResult> AdmitPatient(Patient patientModel)
         {
             patientModel.Id = await _patientRepository.AdmitPatient(patientModel);
+
+            using (var roomClient = new RoomClient(DAILY_URL, DAILY_TOKEN))
+            {
+                await roomClient.CreateAsync(new Room
+                {
+                    Name = patientModel.Id
+                });
+            }
+
             return Ok(patientModel);
         }
 
@@ -47,10 +61,16 @@ namespace TvCv19.Frontend.Controllers
         }
 
         [HttpPost("discharge/{id}")]
-        public async Task<IActionResult> DischargePatient(string Id)
+        public async Task<IActionResult> DischargePatient(string id)
         {
-            var id = _patientRepository.DischargePatient(Id);
-            return Ok(id);
+            var _id = _patientRepository.DischargePatient(id);
+
+            using (var roomClient = new RoomClient(DAILY_URL, DAILY_TOKEN))
+            {
+                await roomClient.DeleteAsync(_id);
+            }
+
+            return Ok(_id);
         }
 
     }

@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29926.136
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TvCv19.Frontend", "TvCv19.Frontend\TvCv19.Frontend.csproj", "{509AAB4B-7D9E-4A34-B768-EE36EEE4660F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TvCv19.Frontend", "TvCv19.Frontend\TvCv19.Frontend.csproj", "{509AAB4B-7D9E-4A34-B768-EE36EEE4660F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TvCv19.DailyCo.Client", "TvCv19.DailyCo.Client\TvCv19.DailyCo.Client.csproj", "{F290A0BE-159A-44F3-BD95-B2F24AB503F2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{509AAB4B-7D9E-4A34-B768-EE36EEE4660F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{509AAB4B-7D9E-4A34-B768-EE36EEE4660F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{509AAB4B-7D9E-4A34-B768-EE36EEE4660F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F290A0BE-159A-44F3-BD95-B2F24AB503F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F290A0BE-159A-44F3-BD95-B2F24AB503F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F290A0BE-159A-44F3-BD95-B2F24AB503F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F290A0BE-159A-44F3-BD95-B2F24AB503F2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
