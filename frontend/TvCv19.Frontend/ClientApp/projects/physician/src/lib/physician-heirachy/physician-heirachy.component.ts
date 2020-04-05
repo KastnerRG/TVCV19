@@ -2,17 +2,18 @@ import { Component, OnInit } from '@angular/core';
 import { PatientModel, AdmissionStatus } from '../../../../../src/app/patient-registration/patient-model';
 import { ActivatedRoute } from '@angular/router';
 import { PatientService } from '../../../../../src/app/patient.service';
-import { FirstLinePatientRouteDataModel } from './firstlinePatientRouteData.model';
+import { PhysicianModel, HierarchyLevel } from 'src/app/physician-admin/physician-model';
 
 @Component({
   selector: 'app-physician-heirachy',
   templateUrl: './physician-heirachy.component.html',
   styleUrls: ['./physician-heirachy.component.scss']
 })
+
 export class PhysicianHeirachyComponent implements OnInit {
   patients: Array<PatientModel> = [{addmissionStatus: AdmissionStatus.Admitted, name: 'Stephen', id: 'patient1', caregiverId: '5', location: 'West wing'}]
-  physicians: Array<Physician> = [{heirachy: HierarchyLevel.SecondLine, id: '2', name: 'Dr. Seuss', messages: [], reportId: '1'},
-                                   {heirachy: HierarchyLevel.FirstLine, id: '3', name: 'Dr. Barrow', messages: [], reportId: '2'}]
+  physicians: Array<PhysicianModel> = [{hierarchyLevel: HierarchyLevel.SecondLine, id: '2', name: 'Dr. Seuss', messages: [], reportId: '1', location: 'East Wing'},
+                                   {hierarchyLevel: HierarchyLevel.FirstLine, id: '3', name: 'Dr. Barrow', messages: [], reportId: '2',location: 'East Wing'}]
   scanPatientQr: boolean
   scanPhysicianQr: boolean
   private id: string
@@ -43,16 +44,4 @@ export class PhysicianHeirachyComponent implements OnInit {
     console.log('scanned id')
   }
 
-}
-
-export interface Physician {
-  id: string
-  reportId: string
-  name: string
-  heirachy: HierarchyLevel
-  messages: Array<string>
-}
-
-export enum HierarchyLevel {
-  FirstLine, SecondLine, Commander
 }

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { HttpHeaders } from '@angular/common/http';
-import { PhysicianModel } from './phyiscian-admin/phyiscian-model';
+import { PhysicianModel } from './physician-admin/physician-model';
 import { Observable, throwError } from 'rxjs';
 import { catchError, retry } from 'rxjs/operators';
 
@@ -9,11 +9,8 @@ import { catchError, retry } from 'rxjs/operators';
   providedIn: 'root'
 })
 
-
-
 export class PhysicianService {
   constructor(private http: HttpClient) { }
-
 
   addPhysician(body: PhysicianModel): Observable<PhysicianModel> {
     return this.http.post<PhysicianModel>('/physicianapi/add', body, {
@@ -26,7 +23,6 @@ export class PhysicianService {
         catchError(this.handleError)
       );
   }
-
 
   private handleError(error: HttpErrorResponse) {
     if (error.error instanceof ErrorEvent) {

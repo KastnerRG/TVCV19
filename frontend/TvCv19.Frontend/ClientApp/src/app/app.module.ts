@@ -25,7 +25,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { QrScannerComponent } from './qr/qr-scanner.component';
 import { AssignCareGiverComponent } from './patient-registration/assign-caregiver.component';
 import { CameraSetupComponent } from './patient-registration/camera-setup.component';
-import { PhyiscianAdminComponent } from './phyiscian-admin/phyiscian-admin.component';
+import { physicianAdminComponent } from './physician-admin/physician-admin.component';
 import { PhysicianHeirachyComponent } from '../../projects/physician/src/lib/physician-heirachy/physician-heirachy.component';
 
 @NgModule({
@@ -35,7 +35,7 @@ import { PhysicianHeirachyComponent } from '../../projects/physician/src/lib/phy
     QrScannerComponent,
     AssignCareGiverComponent,
     CameraSetupComponent,
-    PhyiscianAdminComponent,
+    physicianAdminComponent,
     PhysicianHeirachyComponent
   ],
   imports: [

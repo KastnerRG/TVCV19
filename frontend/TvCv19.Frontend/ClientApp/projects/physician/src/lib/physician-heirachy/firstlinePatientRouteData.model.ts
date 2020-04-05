@@ -1,8 +1,9 @@
 import { PatientModel } from '../../../../../src/app/patient-registration/patient-model';
-import { Physician } from './physician-heirachy.component';
+import { PhysicianModel } from 'src/app/physician-admin/physician-model';
+
 
 export class FirstLinePatientRouteDataModel {
     patients: Array<PatientModel>;
     physicianId: string
-    physicians: Array<Physician>
+    physicians: Array<PhysicianModel>
 }
