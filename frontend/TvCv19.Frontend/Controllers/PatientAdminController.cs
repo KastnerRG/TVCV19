@@ -8,7 +8,7 @@ using TvCv19.Frontend.Domain;
 namespace TvCv19.Frontend.Controllers
 {
     [ApiController]
-    [Route("patientadminapi")]
+    [Route("physicianapi")]
     public class PatientAdminController : Controller
     {
         private const string DAILY_URL = "https://tvcv19.daily.co";
@@ -23,7 +23,7 @@ namespace TvCv19.Frontend.Controllers
             this.physicianRepository = physicianRepository;
         }
 
-        [HttpPost("admit")]
+        [HttpPost("add")]
         public async Task<IActionResult> AdmitPatient(Physician physicianModel)
         {
             physicianModel.Id = await physicianRepository.AddPhysician(physicianModel);

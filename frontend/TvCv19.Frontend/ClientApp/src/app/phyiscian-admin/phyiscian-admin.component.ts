@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
-import { PatientService } from '../patient.service';
+import { PhysicianService } from '../physician.service';
+import { PhysicianModel } from './phyiscian-model';
 
 @Component({
   selector: 'app-phyiscian-admin',
@@ -8,9 +9,10 @@ import { PatientService } from '../patient.service';
   styleUrls: ['./phyiscian-admin.component.scss']
 })
 export class PhyiscianAdminComponent implements OnInit {
-
-  constructor(private formBuilder: FormBuilder, private service: PatientService) { 
-    this.patientRegistrationForm = this.formBuilder.group({
+  physicianRegistrationForm;
+  patients: Array<PhysicianModel> = []
+  constructor(private formBuilder: FormBuilder, private service: PhysicianService, private router: Router) {
+    this.physicianRegistrationForm = this.formBuilder.group({
       name: '',
       location: '',
       caregiverId: ''
@@ -19,5 +21,15 @@ export class PhyiscianAdminComponent implements OnInit {
 
   ngOnInit(): void {
   }
+  logPs() {
+    console.log(this.patients)
+  }
 
+  onSubmit(physician: PhysicianModel) {
+    this.service.addPhysician(physician).subscribe(p => {
+      physician.id = p.id;
+      this.router.navigateByUrl(`/patient/registration/assign-caregiver/${p.id}`)
+    },
+      error => console.error(error))
+  }
 }

@@ -15,7 +15,7 @@ export class PhysicianService {
   constructor(private http: HttpClient) { }
 
 
-  admitPhysician(body: PhysicianModel): Observable<PhysicianModel> {
+  addPhysician(body: PhysicianModel): Observable<PhysicianModel> {
     return this.http.post<PhysicianModel>('/physicianapi/add', body, {
       headers: new HttpHeaders({
         'Content-Type': 'application/json'
