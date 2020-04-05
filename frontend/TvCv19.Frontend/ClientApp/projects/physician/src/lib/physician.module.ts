@@ -15,11 +15,12 @@ import { PhysicianComponent } from './physician.component';
 import { RootComponent } from './root/root.component';
 import { LiveVideoComponent } from './live-video/live-video.component';
 import { VideoReceiverComponent } from './video-receiver/video-receiver.component';
-import { NavigationComponent } from './navigation/navigation.component';
+import { PatientNavigationComponent } from './patient-navigation/patient-navigation.component';
 import { ChatComponent } from './chat/chat.component';
 
 import { routes } from './physician.routes';
 import { FormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -27,12 +28,13 @@ import { FormsModule } from '@angular/forms';
     RootComponent,
     LiveVideoComponent,
     VideoReceiverComponent,
-    NavigationComponent,
+    PatientNavigationComponent,
     ChatComponent
   ],
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
+    HttpClientModule,
     FormsModule,
     MatToolbarModule,
     MatMenuModule,
