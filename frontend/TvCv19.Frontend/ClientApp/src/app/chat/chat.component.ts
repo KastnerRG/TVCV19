@@ -6,7 +6,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./chat.component.scss']
 })
 export class ChatComponent implements OnInit {
-  patientName = '<Patient Name>';
+
   chatMessages = [{ message: 'message1' }, { message: 'message2' }];
 
   constructor() { }
