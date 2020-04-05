@@ -5,15 +5,15 @@ import { PatientModel } from './patient-model';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-patient-admin',
-  templateUrl: './patient-admin.component.html',
-  styleUrls: ['./patient-admin.component.scss']
+  selector: 'patient-registration',
+  templateUrl: './patient-registration.component.html',
+  styleUrls: ['./patient-registration.component.scss']
 })
-export class PatientAdminComponent implements OnInit {
-  patientForm;
+export class PatientRegistrationComponent implements OnInit {
+  patientRegistrationForm;
   patients: Array<PatientModel> = []
   constructor(private formBuilder: FormBuilder, private service: PatientService, private router: Router) {
-    this.patientForm = this.formBuilder.group({
+    this.patientRegistrationForm = this.formBuilder.group({
       name: '',
       location: '',
       caregiverId: ''
@@ -29,7 +29,7 @@ export class PatientAdminComponent implements OnInit {
   onSubmit(patient: PatientModel) {
     this.service.admitPatient(patient).subscribe(p => {
       patient.id = p.id;
-      this.router.navigateByUrl(`/patient/${p.id}`)
+      this.router.navigateByUrl(`/patient/registration/assign-caregiver/${p.id}`)
     },
       error => console.error(error))
   }
