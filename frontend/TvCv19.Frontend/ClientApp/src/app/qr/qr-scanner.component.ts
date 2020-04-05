@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'qr-scanner',
@@ -8,7 +8,8 @@ import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 export class QrScannerComponent implements OnInit {
   availableDevices: MediaDeviceInfo[];
   currentDevice: MediaDeviceInfo = null;
-  @Output() newPatientId = new EventEmitter<string>();
+  
+  @Output() scannedId = new EventEmitter<string>();
   constructor() { }
 
   ngOnInit(): void {
@@ -26,7 +27,7 @@ export class QrScannerComponent implements OnInit {
     //disbale camera
     this.currentDevice = null;
     console.log(scan)
-    this.newPatientId.emit(scan);
+    this.scannedId.emit(scan);
     //naviage to home
   }
 
