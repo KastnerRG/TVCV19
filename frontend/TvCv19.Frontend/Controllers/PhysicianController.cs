@@ -1,11 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+
 using System.Threading.Tasks;
 using TvCv19.Frontend.Domain;
-using TvCv19.Frontend.Domain.Models;
 using TvCv19.Frontend.Domain.Repositories;
 
 namespace TvCv19.Frontend.Controllers

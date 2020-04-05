@@ -17,9 +17,9 @@ namespace TvCv19.Frontend.Domain
         public string Location { get; set; }
         public HierarchyLevel HierarchyLevel { get; set; }
 
+        public List<Physician> Supervisees { get; set; }
     }
     public enum HierarchyLevel { FirstLine, Coordinator }
 
-        public List<Physician> Supervisees { get; set; }
 
 }
