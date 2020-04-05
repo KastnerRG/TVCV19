@@ -9,13 +9,11 @@ import { catchError, retry } from 'rxjs/operators';
   providedIn: 'root'
 })
 
-
-
 export class PatientService {
   constructor(private http: HttpClient) { }
 
-  getPatients(id: string): Observable<Array<PatientModel>> {
-    return this.http.get<Array<PatientModel>>(`/patientapi/patients/${id}`)
+  getPatientsByPhysicianId(id: string): Observable<Array<PatientModel>> {
+    return this.http.get<Array<PatientModel>>(`/patientapi/physician/${id}/patients`)
       .pipe(
         catchError(this.handleError)
       )

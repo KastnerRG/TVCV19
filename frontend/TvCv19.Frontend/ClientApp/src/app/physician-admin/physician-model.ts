@@ -2,10 +2,11 @@ export class PhysicianModel {
     id: string;
     name: string;
     location: string;
-    caregiverId: string;
+    reportId: string;
     hierarchyLevel: HierarchyLevel;
+    messages: Array<string>
 }
 
 export enum HierarchyLevel {
-    FirstLine,Commander
+    FirstLine, SecondLine, Commander
 }
