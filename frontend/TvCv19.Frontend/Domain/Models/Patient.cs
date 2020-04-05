@@ -13,5 +13,9 @@ namespace TvCv19.Frontend.Domain
 
     }
 
+ 
     public enum AdmissionStatus{ Admitted, Discharged }
+
+
+ 
 }
