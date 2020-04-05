@@ -20,18 +20,16 @@ namespace TvCv19.DailyCo.Client
             httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
         }
 
-        public async Task<Room> CreateAsync(Room room)
+        public async Task CreateAsync(Room room)
         {
             using (var content = new StringContent(JsonConvert.SerializeObject(room)))
             {
                 using (var response = await httpClient.PostAsync($"{url}/rooms", content))
                 {
-                    if (response.IsSuccessStatusCode)
+                    if (!response.IsSuccessStatusCode)
                     {
-                        return JsonConvert.DeserializeObject<Room>(await response.Content.ReadAsStringAsync());
+                        throw new Exception("Cannot create room");
                     }
-
-                    throw new Exception("Cannot create room");
                 }
             }
         }

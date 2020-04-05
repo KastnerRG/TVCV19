@@ -13,6 +13,7 @@ const routes: Routes = [
   // { path: 'patient', component: PatientComponent },
   { path: 'physician/:physician-id', component: PhysicianComponent, loadChildren: 'projects/physician/src/public-api#PhysicianModule' },
 
+  // Patient workflow
   { path: 'patient', component: PatientAdminComponent },
   {
     path: 'patient/:id', component: PatientComponent, resolve: {

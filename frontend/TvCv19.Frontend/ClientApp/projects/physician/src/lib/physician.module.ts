@@ -7,8 +7,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { MatButtonModule } from '@angular/material/button';
-import { MatBadgeModule } from '@angular/material/badge';     
-import { FlexLayoutModule } from '@angular/flex-layout';                                                                                                                                                  
+import { MatBadgeModule } from '@angular/material/badge';    
+import { MatInputModule } from '@angular/material/input';  
+import { FlexLayoutModule } from '@angular/flex-layout';
 
 import { PhysicianComponent } from './physician.component';
 import { RootComponent } from './root/root.component';
@@ -18,6 +19,7 @@ import { NavigationComponent } from './navigation/navigation.component';
 import { ChatComponent } from './chat/chat.component';
 
 import { routes } from './physician.routes';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -31,6 +33,7 @@ import { routes } from './physician.routes';
   imports: [
     CommonModule,
     RouterModule.forChild(routes),
+    FormsModule,
     MatToolbarModule,
     MatMenuModule,
     MatIconModule,
@@ -38,6 +41,7 @@ import { routes } from './physician.routes';
     MatListModule,
     MatButtonModule,
     MatBadgeModule,
+    MatInputModule,
     FlexLayoutModule
   ],
   exports: [PhysicianComponent, RouterModule]
