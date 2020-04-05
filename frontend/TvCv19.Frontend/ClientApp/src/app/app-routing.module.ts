@@ -10,7 +10,7 @@ import { FirstlineComponent } from './firstline/firstline.component';
 import { FirstlinePatientRouteResolverService } from './firstline-patient-route-resolver.service';
 
 const routes: Routes = [
-  { path: 'live-video', component: LiveVideoComponent },
+  { path: 'live-video/:id', component: LiveVideoComponent },
   { path: 'patient', component: PatientAdminComponent },
   { path: 'chat', component: ChatComponent },
   {
