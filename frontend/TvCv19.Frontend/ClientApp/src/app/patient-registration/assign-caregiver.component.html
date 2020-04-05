@@ -1,0 +1,24 @@
+<mat-toolbar color="secondary">
+  <mat-toolbar-row>
+    <span>Assign a </span>
+  </mat-toolbar-row>
+  <mat-toolbar-row>
+    <span>Caregiver</span>
+  </mat-toolbar-row>
+</mat-toolbar>
+ <qrcode [qrdata]="patient.id" [width]="256" [errorCorrectionLevel]="'M'"></qrcode>
+<form class="example-form" (ngSubmit)="onSubmit(caregiverControl.value)">
+    <mat-form-field class="example-full-width">
+      <mat-icon matPreffix>search</mat-icon>
+      <input type="text" matInput [formControl]="caregiverControl" [matAutocomplete]="auto">
+      <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+        <mat-option *ngFor="let option of filteredOptions | async" [value]="option">
+          {{option.name}}
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+    <div mat-dialog-actions align="end">
+        <button color="primary" mat-raised-button  type="submit">Next</button>
+    </div>
+  </form>
+

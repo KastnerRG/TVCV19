@@ -6,32 +6,44 @@ using TvCv19.DailyCo.Client.Models;
 
 namespace TvCv19.DailyCo.Client
 {
-    public class RoomClient
+    public class RoomClient : IDisposable
     {
-        private string url;
+        private readonly HttpClient httpClient;
+        private readonly string url;
 
-        public RoomClient(string url)
+        public RoomClient(string url, string token)
         {
             this.url = url;
+
+            httpClient = new HttpClient();
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
         }
 
-        public async Task<Room> CreateAsync(Room room)
+        public async Task CreateAsync(Room room)
         {
-            using (var client = new HttpClient())
+            using (var content = new StringContent(JsonConvert.SerializeObject(room)))
             {
-                using (var content = new StringContent(JsonConvert.SerializeObject(room)))
+                using (var response = await httpClient.PostAsync($"{url}/rooms", content))
                 {
-                    using (var response = await client.PostAsync($"{url}/rooms", content))
+                    if (!response.IsSuccessStatusCode)
                     {
-                        if (response.IsSuccessStatusCode)
-                        {
-                            return JsonConvert.DeserializeObject<Room>(await response.Content.ReadAsStringAsync());
-                        }
-
                         throw new Exception("Cannot create room");
                     }
                 }
             }
+        }
+
+        public async Task DeleteAsync(string name)
+        {
+            var response = await httpClient.DeleteAsync($"{url}/rooms/{name}");
+            response.Dispose();
+        }
+
+        public Task DeleteAsync(Room room) => DeleteAsync(room.Name);
+
+        public void Dispose()
+        {
+            httpClient.Dispose();
         }
     }
 }

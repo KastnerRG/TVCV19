@@ -14,7 +14,17 @@
     "lib": [
       "es2018",
       "dom"
-    ]
+    ],
+    "paths": {
+      "patient": [
+        "dist/patient/patient",
+        "dist/patient"
+      ],
+      "physician": [
+        "dist/physician/physician",
+        "dist/physician"
+      ]
+    }
   },
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,
