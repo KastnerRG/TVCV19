@@ -29,7 +29,7 @@ export class PatientRegistrationComponent implements OnInit {
   onSubmit(patient: PatientModel) {
     this.service.admitPatient(patient).subscribe(p => {
       patient.id = p.id;
-      this.router.navigateByUrl(`/patient/${p.id}`)
+      this.router.navigateByUrl(`/patient/registration/assign-caregiver/${p.id}`)
     },
       error => console.error(error))
   }

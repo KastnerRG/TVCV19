@@ -9,13 +9,15 @@
 <form [formGroup]="patientRegistrationForm" (ngSubmit)="onSubmit(patientRegistrationForm.value)">
     <mat-form-field appearance="fill">
         <mat-label>Patient Name</mat-label>
-        <input id="name" formControlName="name" matInput placeholder="Patient Name">
+        <input id="name" formControlName="name" required matInput placeholder="Patient Name" >
+        <mat-icon matSuffix>mode_edit</mat-icon>
     </mat-form-field>
     <mat-form-field appearance="fill">
         <mat-label>Location</mat-label>
-        <input id="location" formControlName="location" matInput placeholder="Patient Location">
+        <input id="location" formControlName="location" matInput placeholder="Patient Location" required>
+        <mat-icon matSuffix>mode_edit</mat-icon>
     </mat-form-field>
     <div mat-dialog-actions align="end">
-        <button color="primary" mat-raised-button type="submit">Next</button>
+        <button color="primary" mat-raised-button [disabled]="!patientRegistrationForm.valid" type="submit">Next</button>
     </div>
 </form>

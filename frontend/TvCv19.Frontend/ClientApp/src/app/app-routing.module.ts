@@ -1,23 +1,23 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-// import { PatientComponent } from 'projects/patient/src/public-api';
 import { PhysicianComponent } from 'projects/physician/src/public-api';
 
 import { PatientRegistrationComponent } from './patient-registration/patient-registration.component'
-import { PatientComponent } from './patient/patient.component';
-import { PatientRouteResolverService } from './patient-route-resolver.service';
+import { AssignCareGiverRouteResolverService } from './patient-registration/assign-caregiver-route-resolver.service';
 import { FirstlineComponent } from './firstline/firstline.component';
 import { FirstlinePatientRouteResolverService } from './firstline-patient-route-resolver.service';
+import { AssignCareGiverComponent } from './patient-registration/assign-caregiver.component';
+import { CameraSetupComponent } from './patient-registration/camera-setup.component';
 
 const routes: Routes = [
-  // { path: 'patient', component: PatientComponent },
   { path: 'physician/:physician-id', component: PhysicianComponent, loadChildren: 'projects/physician/src/public-api#PhysicianModule' },
 
   // Patient workflow
   { path: 'patient/registration', component: PatientRegistrationComponent },
+  { path: 'patient/registration/camera-setup', component: CameraSetupComponent },
   {
-    path: 'patient/:id', component: PatientComponent, resolve: {
-      patient: PatientRouteResolverService
+    path: 'patient/registration/assign-caregiver/:id', component: AssignCareGiverComponent, resolve: {
+      model: AssignCareGiverRouteResolverService
     }
   },
   {

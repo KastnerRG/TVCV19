@@ -1,0 +1,27 @@
+qrcode {
+  display: flex;
+  justify-content: center;
+}
+
+mat-toolbar {
+  margin-top: 40px;
+  mat-toolbar-row {
+    height: 33px;
+    font-size: 30px;
+  }
+}
+
+form {
+    margin-top: 50px;
+  
+    mat-form-field {
+      width: 100%;
+      background-color: white;
+      margin: 0 10px;
+    }
+  
+    button {
+      margin: 30px 10px 0 0;
+      width: 90px;
+    }
+  }
