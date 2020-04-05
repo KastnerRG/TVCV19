@@ -26,6 +26,7 @@ import { QrScannerComponent } from './qr/qr-scanner.component';
 import { FirstlineComponent } from './firstline/firstline.component';
 import { AssignCareGiverComponent } from './patient-registration/assign-caregiver.component';
 import { CameraSetupComponent } from './patient-registration/camera-setup.component';
+import { PhyiscianAdminComponent } from './phyiscian-admin/phyiscian-admin.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,8 @@ import { CameraSetupComponent } from './patient-registration/camera-setup.compon
     QrScannerComponent,
     FirstlineComponent,
     AssignCareGiverComponent,
-    CameraSetupComponent
+    CameraSetupComponent,
+    PhyiscianAdminComponent
   ],
   imports: [
     BrowserModule,

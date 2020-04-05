@@ -22,6 +22,7 @@ namespace TvCv19.Frontend
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddScoped<PhysicianRepository>();
             services.AddScoped<IPatientRepository, PocPatientRepository>();
             services.AddScoped<IPhysicianRepository, PocPhyscianRepository>();
             services.AddControllersWithViews();
