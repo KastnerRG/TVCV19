@@ -1,4 +1,4 @@
-import { PatientModel } from '../patient-admin/patient-model';
+import { PatientModel } from '../patient-registration/patient-model';
 
 export class FirstLinePatientRouteDataModel {
     patients: Array<PatientModel>;

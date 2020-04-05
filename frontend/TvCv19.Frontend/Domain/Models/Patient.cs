@@ -9,6 +9,9 @@ namespace TvCv19.Frontend.Domain
         public string Name { get; set; }
         public string CaregiverId { get; set; }
         public string Location { get; set; }
+        public AdmissionStatus AdmissionStatus { get; set; }
 
     }
+
+    public enum AdmissionStatus{ Admitted, Discharged }
 }
