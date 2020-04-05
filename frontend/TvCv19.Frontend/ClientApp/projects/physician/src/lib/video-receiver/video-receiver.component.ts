@@ -3,7 +3,7 @@ import { Component, AfterViewInit, ElementRef, ViewChild, Input } from '@angular
 import DailyIframe from '@daily-co/daily-js';
 
 @Component({
-  selector: 'app-video-receiver',
+  selector: 'lib-video-receiver',
   templateUrl: './video-receiver.component.html',
   styleUrls: ['./video-receiver.component.scss']
 })

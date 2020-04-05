@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
-  selector: 'app-live-video',
+  selector: 'lib-live-video',
   templateUrl: './live-video.component.html',
   styleUrls: ['./live-video.component.scss']
 })

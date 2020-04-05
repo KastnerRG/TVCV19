@@ -5,7 +5,7 @@ import { map, shareReplay } from 'rxjs/operators';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
-  selector: 'app-navigation',
+  selector: 'lib-navigation',
   templateUrl: './navigation.component.html',
   styleUrls: ['./navigation.component.scss']
 })

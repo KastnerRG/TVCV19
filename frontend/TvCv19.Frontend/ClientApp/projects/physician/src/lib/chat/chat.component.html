@@ -9,10 +9,10 @@
 
     <div fxLayout>
         <mat-form-field fxFill fxFlex>
-            <textarea matInput placeholder="Type a message"></textarea>
+            <textarea matInput placeholder="Type a message" [(ngModel)]="messageToSend"></textarea>
         </mat-form-field>
 
-        <button mat-icon-button>
+        <button mat-icon-button (click)="clickAsync()">
             <mat-icon>send</mat-icon>
         </button>
     </div>
