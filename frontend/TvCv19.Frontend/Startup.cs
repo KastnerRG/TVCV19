@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using TvCv19.Frontend.Domain;
+using TvCv19.Frontend.Domain.Repositories;
 using TvCv19.Frontend.Hubs;
 
 namespace TvCv19.Frontend
@@ -22,6 +23,7 @@ namespace TvCv19.Frontend
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddScoped<IPatientRepository, PocPatientRepository>();
+            services.AddScoped<IPhysicianRepository, PocPhyscianRepository>();
             services.AddControllersWithViews();
 
             services.AddSignalR();
