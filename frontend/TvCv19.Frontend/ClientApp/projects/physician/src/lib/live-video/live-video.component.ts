@@ -7,10 +7,10 @@ import { ActivatedRoute } from '@angular/router';
   styleUrls: ['./live-video.component.scss']
 })
 export class LiveVideoComponent implements OnInit {
-  public id: number;
+  patientID: number;
 
   constructor(route: ActivatedRoute) {
-    this.id = route['id'];
+    this.patientID = route['patient-id'];
   }
 
   ngOnInit(): void {

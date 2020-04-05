@@ -125,6 +125,86 @@
           }
         }
       }
+    },
+    "patient": {
+      "projectType": "library",
+      "root": "projects/patient",
+      "sourceRoot": "projects/patient/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/patient/tsconfig.lib.json",
+            "project": "projects/patient/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/patient/tsconfig.lib.prod.json"
+            }
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/patient/src/test.ts",
+            "tsConfig": "projects/patient/tsconfig.spec.json",
+            "karmaConfig": "projects/patient/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/patient/tsconfig.lib.json",
+              "projects/patient/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    },
+    "physician": {
+      "projectType": "library",
+      "root": "projects/physician",
+      "sourceRoot": "projects/physician/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/physician/tsconfig.lib.json",
+            "project": "projects/physician/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/physician/tsconfig.lib.prod.json"
+            }
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/physician/src/test.ts",
+            "tsConfig": "projects/physician/tsconfig.spec.json",
+            "karmaConfig": "projects/physician/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/physician/tsconfig.lib.json",
+              "projects/physician/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
     }
   },
   "defaultProject": "tv-cv19"
