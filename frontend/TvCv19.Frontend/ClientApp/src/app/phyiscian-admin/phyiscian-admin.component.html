@@ -1,0 +1,32 @@
+<mat-toolbar color="secondary">
+    <mat-toolbar-row>
+        <span>Physician</span>
+    </mat-toolbar-row>
+    <mat-toolbar-row>
+        <span>Information</span>
+    </mat-toolbar-row>
+</mat-toolbar>
+<form [formGroup]="physicianRegistrationForm" (ngSubmit)="onSubmit(physicianRegistrationForm.value)">
+    <mat-form-field appearance="fill">
+        <mat-label>Physician Name</mat-label>
+        <input id="name" formControlName="name" required matInput placeholder="Patient Name" >
+        <mat-icon matSuffix>mode_edit</mat-icon>
+    </mat-form-field>
+    <mat-form-field appearance="fill">
+        <mat-label>Location</mat-label>
+        <input id="location" formControlName="location" matInput placeholder="Patient Location" required>
+        <mat-icon matSuffix>mode_edit</mat-icon>
+    </mat-form-field>
+    <mat-form-field>
+        <mat-label>Heirachy</mat-label>
+        <select matNativeControl required formControlName="location">
+          <option value="first-line">First Line</option>
+          <option value="saab">Saab</option>
+          <option value="mercedes">Mercedes</option>
+          <option value="audi">Audi</option>
+        </select>
+      </mat-form-field>
+    <div mat-dialog-actions align="end">
+        <button color="primary" mat-raised-button [disabled]="!patientRegistrationForm.valid" type="submit">Next</button>
+    </div>
+</form>
