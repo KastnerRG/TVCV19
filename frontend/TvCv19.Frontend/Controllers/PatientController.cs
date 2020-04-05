@@ -53,10 +53,10 @@ namespace TvCv19.Frontend.Controllers
             return Ok(patient);
         }
 
-        [HttpGet("patients/{id}")]
+        [HttpGet("physician/{id}/patients")]
         public async Task<IActionResult> GetPatients(string id)
         {
-            var patient = await _patientRepository.GetPatients(id);
+            var patient = await _patientRepository.GetPatientsByPhysician(id);
             return Ok(patient);
         }
 
