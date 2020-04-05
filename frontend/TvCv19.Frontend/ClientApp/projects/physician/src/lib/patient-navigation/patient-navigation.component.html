@@ -6,9 +6,10 @@
     <mat-toolbar>{{patientName}}</mat-toolbar>
     <mat-nav-list>
       <a mat-list-item routerLink="/physician/{{physicianID}}/patient/{{patientID}}/live-video">Live Feed</a>
-      <a mat-list-item href="#">Data</a>
-      <a mat-list-item routerLink="/physician/{{physicianID}}/patient/{{patientID}}/chat"><span matBadge="12" matBadgeColor="warn">Chat</span></a>
-      <a mat-list-item href="#"><span matBadge="12" matBadgeColor="warn">Care Instruction</span></a>
+      <!-- <a mat-list-item href="#">Data</a> -->
+      <!-- <a mat-list-item routerLink="/physician/{{physicianId}}/patient/{{patientID}}/chat"><span matBadge="12" matBadgeColor="warn">Chat</span></a> -->
+      <a mat-list-item routerLink="/physician/{{physicianID}}/patient/{{patientID}}/chat">Chat</a>
+      <!-- <a mat-list-item href="#"><span matBadge="12" matBadgeColor="warn">Care Instruction</span></a> -->
     </mat-nav-list>
   </mat-sidenav>
   <mat-sidenav-content>
@@ -19,9 +20,10 @@
         mat-icon-button
         (click)="drawer.toggle()"
         *ngIf="isHandset$ | async"
-        matBadge="12"
+        >
+        <!-- matBadge="12"
         matBadgePosition="above before"
-        matBadgeColor="warn">
+        matBadgeColor="warn" -->
         <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
       </button>
       <span>{{patientName}}</span>

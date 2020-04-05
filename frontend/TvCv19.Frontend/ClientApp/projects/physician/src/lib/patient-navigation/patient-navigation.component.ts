@@ -5,11 +5,11 @@ import { map, shareReplay } from 'rxjs/operators';
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
-  selector: 'lib-navigation',
-  templateUrl: './navigation.component.html',
-  styleUrls: ['./navigation.component.scss']
+  selector: 'lib-patient-navigation',
+  templateUrl: './patient-navigation.component.html',
+  styleUrls: ['./patient-navigation.component.scss']
 })
-export class NavigationComponent {
+export class PatientNavigationComponent {
   patientName: string = "<test patient>";
   patientID: number;
   physicianID: number;
@@ -28,7 +28,7 @@ export class NavigationComponent {
 
     route.parent.params.subscribe(p => {
       this.physicianID = p['physician-id'];
-    })
+    });
   }
 
 }
