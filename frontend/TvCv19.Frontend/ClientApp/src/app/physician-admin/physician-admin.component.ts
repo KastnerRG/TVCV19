@@ -10,26 +10,21 @@ import { Router } from '@angular/router';
   styleUrls: ['./physician-admin.component.scss']
 })
 export class physicianAdminComponent implements OnInit {
-  physicianRegistrationForm;
+  caregiverRegistrationForm;
   patients: Array<PhysicianModel> = []
   constructor(private formBuilder: FormBuilder, private service: PhysicianService, private router: Router) {
-    this.physicianRegistrationForm = this.formBuilder.group({
+    this.caregiverRegistrationForm = this.formBuilder.group({
       name: '',
       location: '',
-      caregiverId: ''
+      heirachy: ''
     })
   }
 
-  ngOnInit(): void {
-  }
-  logPs() {
-    console.log(this.patients)
-  }
+  ngOnInit(): void { }
 
   onSubmit(physician: PhysicianModel) {
     this.service.addPhysician(physician).subscribe(p => {
-      physician.id = p.id;
-      this.router.navigateByUrl(`/physician/${p.id}/heirachy`)
+      this.router.navigateByUrl(`/physician/${p.id}/patients`)
     },
       error => console.error(error))
   }

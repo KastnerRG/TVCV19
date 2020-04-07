@@ -27,6 +27,7 @@ import { AssignCareGiverComponent } from './patient-registration/assign-caregive
 import { CameraSetupComponent } from './patient-registration/camera-setup.component';
 import { physicianAdminComponent } from './physician-admin/physician-admin.component';
 import { PhysicianHeirachyComponent } from '../../projects/physician/src/lib/physician-heirachy/physician-heirachy.component';
+import { PatientListComponent } from 'projects/physician/src/lib/patient-list/patient-list.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +37,8 @@ import { PhysicianHeirachyComponent } from '../../projects/physician/src/lib/phy
     AssignCareGiverComponent,
     CameraSetupComponent,
     physicianAdminComponent,
-    PhysicianHeirachyComponent
+    PhysicianHeirachyComponent,
+    PatientListComponent
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,12 @@
+mat-card {
+  margin: 10px;
+  background-color: lightblue;
+  &:hover {
+    cursor: pointer;
+  }
+
+  qrcode {
+    display: flex;
+    justify-content: center;
+  }
+}

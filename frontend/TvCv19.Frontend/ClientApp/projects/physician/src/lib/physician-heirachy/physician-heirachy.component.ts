@@ -3,6 +3,7 @@ import { PatientModel, AdmissionStatus } from '../../../../../src/app/patient-re
 import { ActivatedRoute } from '@angular/router';
 import { PatientService } from '../../../../../src/app/patient.service';
 import { PhysicianModel, HierarchyLevel } from 'src/app/physician-admin/physician-model';
+import { FirstLinePatientRouteDataModel } from '../physician-heirachy/firstlinePatientRouteData.model';
 
 @Component({
   selector: 'app-physician-heirachy',
@@ -20,13 +21,13 @@ export class PhysicianHeirachyComponent implements OnInit {
   constructor(private route: ActivatedRoute, private patientService: PatientService) { }
 
   ngOnInit(): void {
-    // this.route.data
-    //   .subscribe((data: { model: FirstLinePatientRouteDataModel }) => {
-    //     this.patients = data.model.patients || [];
-    //     this.id = data.model.physicianId || "123"
-    //     this.physicians = data.model.physicians
-    //     console.log(this.id)
-    //   });
+    this.route.data
+      .subscribe((data: { model: FirstLinePatientRouteDataModel }) => {
+        this.patients = data.model.patients || [];
+        this.id = data.model.physicianId || "123"
+        this.physicians = data.model.physicians
+        console.log(this.id)
+      });
   }
 
   addPatient(id: string): void {
