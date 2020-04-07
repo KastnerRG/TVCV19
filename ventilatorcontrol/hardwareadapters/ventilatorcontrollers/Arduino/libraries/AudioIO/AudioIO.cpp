@@ -18,11 +18,12 @@ AudioIO::AudioIO(){}	//Don't do anything. follow the pattern of SoftModem();
 
 void AudioIO::begin()
 {
+
   // initialize this instance's variables
 
   // do whatever is required to initialize the library
-  SoftModem modem = SoftModem();	//Will be used to communicate with bus master.
-  
+  modem = SoftModem();	//Will be used to communicate with bus master.
+
   Serial.println("AudioIO startup");
   delay(100);
   modem.begin();
@@ -30,6 +31,8 @@ void AudioIO::begin()
 
 // Public Methods //////////////////////////////////////////////////////////////
 // Functions available in Wiring sketches, this library, and other libraries
+
+
 
 void AudioIO::doSomething(void)
 {
@@ -39,7 +42,7 @@ void AudioIO::doSomething(void)
   Serial.print("value is ");
   Serial.println(value);
   */
-  
+
   // it can also call private functions of this library
   //doSomethingSecret();
 }
