@@ -11,7 +11,7 @@
 #include <SoftModem.h>
 
 /*===========================================================================*\
-|	CONTROL STRINGS FOR COMPLIANCE WITH VENTILATOR API SPECIFICATION Ver 1	  |		
+|	CONTROL STRINGS FOR COMPLIANCE WITH VENTILATOR API SPECIFICATION Ver 1	  |
 \*===========================================================================*/
 
 //Constant control strings. Meet specification but do not require complex logic.
@@ -30,7 +30,7 @@
 #define PeakInspiratoryPressure         "PkIP"
 #define PCO2                            "PCO2"
 
-//TODO: Define global variables with appropriate mmio address locations 
+//TODO: Define global variables with appropriate mmio address locations
 
 
 //Command String Constants
@@ -40,7 +40,7 @@ const char* const FullRead   =                  //Read All Sensors at once.
 "{\"rd\":[\
 	{\"" MinuteVentilation "\":%i}\
     {\"" PeakInspiratoryPressure "\":%i}\
-    {\"" PCO2 "\":%i}\	        
+    {\"" PCO2 "\":%i}\
 ]}";
 
 
@@ -53,10 +53,10 @@ typedef struct POLICY
 	int comMode;
 	bool watchDogOn;
 	int watchDogCtr;
-	
+
 	//Initial control policy state
 	POLICY(){comMode=PCM;watchDogOn=false;watchDogCtr=0;}
-	
+
 }policy;
 
 //See also "CONTROL REGISTERS" for verbose names of contol registers.
@@ -72,7 +72,7 @@ typedef struct _CONTROL
     _CONTROL(){rrrt=0; tlvm=0; mmip=0; pkep=0; itet=0; fio2=0;}
 }control;
 
-//See also "STATUS REGISTERS" 
+//See also "STATUS REGISTERS"
 typedef struct _STATUS
 {
     short mtvn; // MinuteVentilation               "MtVn"
@@ -83,7 +83,7 @@ typedef struct _STATUS
 }status;
 
 /*===========================================================================*\
-|				VENTILATOR CONTROL API FUNCTION SIGNATURES	  				  |		
+|				VENTILATOR CONTROL API FUNCTION SIGNATURES	  				  |
 \*===========================================================================*/
 
 
@@ -99,13 +99,13 @@ class AudioIO
 
   // library-accessible "private" interface
   private:
-    
-    policy _mPolicyState;   //bus policy state
+
+		SoftModem modem;
+		policy _mPolicyState;   //bus policy state
     control _mControlRegs;  //appropriately mapped control registers
 	status _mStatusRegs;    //appropriately mapped status registers. Read to get ventilator info
-    
+
     //void doSomethingSecret(void);
 };
 
 #endif
-
