@@ -283,6 +283,7 @@ public class MainActivity extends AppCompatActivity {
         setControl = (Button)findViewById(R.id.setControl);
         pcmButton = (Button)findViewById(R.id.pcm);
         fskButton = (Button)findViewById((R.id.fsk));
+        view1 = (TextView)findViewById(R.id.decoded);
         // Request Mic permission
         while (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
@@ -308,11 +309,13 @@ public class MainActivity extends AppCompatActivity {
             public void decoded(byte[] newData) {
 
                 final String text = new String(newData);
-                DECODER_DATA_BUF = "\0";
                 runOnUiThread(new Runnable() {
                     public void run() {
                         DECODER_DATA_BUF = text;
-                        //view1.setText(view1.getText()+text);
+                        if (view1.getText().length() > 100) {
+                            view1.setText("");
+                        }
+                        view1.setText(view1.getText()+text);
 
                     }
                 });
