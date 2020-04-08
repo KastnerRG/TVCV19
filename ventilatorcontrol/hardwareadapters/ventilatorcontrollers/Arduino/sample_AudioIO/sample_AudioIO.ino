@@ -13,6 +13,14 @@ void setup() {
   //modem.begin();
 }
 
+//Control for 
+void loop_ProcessCMD(2000)
+{
+  //io.parseCommand();  //TODO This actually works with the buffer from master
+  io.sendVentilatorData();  //DEBUG CHECK IF THIS FUNCTION CAN PRINT A STRING
+  //OK to send string (with no data) io.setVentilatorControl();
+}
+
 void loop() 
 { 
   //TODO: A demo of the Audio IO functions
