@@ -1,25 +1,25 @@
 #include <AudioIO.h>
+#include <Thread.h>
 
+//if you don't want Thread.h you can also do:
 
 //#include <SoftModem.h>
-char const s[] PROGMEM  = "{\"wr\":[{\"RrRt\":1},{\"TlVm\":12},{\"MmIP\":123},{\"PkEP\":1234},{\"ITET\":12345},{\"FiO2\":0}]}"; //write knobs
+char const wj[] PROGMEM  = "{\"wr\":[{\"RrRt\":1986},{\"TlVm\":12},{\"MmIP\":1623},{\"PkEP\":14},{\"ITET\":12345},{\"FiO2\":0}]}"; //write knobs
+char const rj[] PROGMEM  = "{\"wk\":[{\"RrRt\":1},{\"TlVm\":12},{\"MmIP\":123},{\"PkEP\":1234},{\"ITET\":12345},{\"FiO2\":0}]}"; //read knobs.
 control c;
 readout r;
 AudioIO io = AudioIO();
 
-void setup() {
-  Serial.begin(115200);
-  Serial.println("Booting");
-  //delay(100);
-  
-  io.begin();
-  
-  strcpy_P(io._mMasterData.buffer_cmd,s);
-}
+//My simple Thread
+Thread myThread = Thread();
 
 //Control for 
-void loop_ProcessCMD(2000)
+//void loop_ProcessCMD(2000)
+void niceCallback()
 {
+  io._mMasterData.available =true;
+  io.pollBusStatus();
+  /*
   //DEBUG to check the command parser
 
   //OK io.sendVentilatorData();
@@ -41,9 +41,29 @@ void loop_ProcessCMD(2000)
   r.pco2 +=3;
   io.setVentilatorReadings(&r);
   io.reportVentilatorData();
+  */
 }
+
+void setup() {
+  Serial.begin(115200);
+  Serial.println("Booting");
+  //delay(100);
+  
+  io.begin();
+  
+  strcpy_P(io._mMasterData.buffer_cmd,rj);
+  //Debug write the strings to control knobs
+  io.setVentilatorKnobs();
+
+  myThread.onRun(niceCallback);
+  myThread.setInterval(2000);
+}
+
+
 
 void loop() 
 { 
   //TODO: Main Program?
+    if(myThread.shouldRun())
+      myThread.run();
 }
