@@ -11,10 +11,13 @@
 // include types & constants of Wiring core API
 #include <Arduino.h>
 #include <SoftModem.h>
+#include <Thread.h>//TODO replace this? It is also possible to use "secret"  https://forum.arduino.cc/index.php?topic=530280.0
 
 /*===========================================================================*\
 |	CONTROL STRINGS FOR COMPLIANCE WITH VENTILATOR API SPECIFICATION Ver 1	  |
 \*===========================================================================*/
+
+#define WATCHDOGPERIOD 2000
 
 //Constant control strings. Meet specification but do not require complex logic.
 
@@ -70,8 +73,9 @@
 
 //TODO: These do not seem to really go to PROGMEM...
 //Command String Constants
-const char 		  Ack 		 = 6;			 	//Ack character to send (should really replace with 'ACK')
-const char* const OpenChlAck PROGMEM = "{\"1\":{}}";	//Send bus capabilities during handshake (version 1, no vendor extensions).
+#define ENQ 5   /*Ping character of master enquiring if we are listening*/
+#define ACK 6	/*Ack character to send (should really replace with 'ACK')*/
+const char* const busProtVer PROGMEM = "{\"1\":{}}";	//Send bus capabilities during handshake (version 1, no vendor extensions).
 const char* const FullRead PROGMEM =                  //Read All Sensors at once.
 "{\"rd\":[\
 {\"" MinuteVentilation "\":%i},\
@@ -90,7 +94,7 @@ const char* const ReportKnobs PROGMEM =                 //Report back all contro
 ]}";                                            //94 chars (including null)
 
 
-enum{PCM,IO}busMode;
+enum{PCM,Handshake,IO}busMode;
 
 //Use to keep track of policy FSM
 typedef struct POLICY
@@ -154,6 +158,9 @@ class AudioIO
     void setVentilatorReading(const long readingKey, short reading);    //set one read out value from ventilator
     void setVentilatorReadings(readout* readings);   //set all ventilator readout values
 
+    //ARDUINO LOOP METHOD.
+    static void maintainAudioBus();        //Because we have no OS, this has to be scheduled in the main loop somewhere.
+    
     //INTERNAL LIBRARY METHODS
     //TODO: Make private and have ARTe loop start up in the     
     void parseCommand();        //check _mMasterData and call the appropriate private control function
@@ -162,11 +169,17 @@ class AudioIO
     void reportVentilatorData();    //Send ventilator data to the bus master
     void reportVentilatorKnobs();   //Set control register values using data from bus master
     void setVentilatorKnobs();      //
-    incomingdata    _mMasterData;   //Data from the bus master
     
+    incomingdata    _mMasterData;   //Data from the bus master
+
+    void pollBusStatus();          //If handshaking needs doing, do it. If its done, get data.    
   // library-accessible "private" interface
   private:
 
+    void handshake();
+    
+    Thread _mThread;                //Use for scheduling bus maintainence
+    
     //void nonNullShortitoa(short s, char* a);   //very basic itoa that does not null terminate, instead has leading 0's
     
     SoftModem       modem;         //Used for IO
@@ -178,6 +191,8 @@ class AudioIO
 //	void reportVentilatorData();      //Send ventilator data to the bus master
 //	void reportVentilatorKnobs();    //Set control register values using data from bus master
 //    void setVentilatorKnobs();      //
+	//void func1( void (AudioIO::*func)() );  //wrapper to allow function pointer?
+	void AudioIO::busMaintainance();
 };
 
 #endif
