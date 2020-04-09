@@ -2,14 +2,13 @@
   AudioIO.h - AudioIO library for Wiring - implementation
 */
 
-// include core Wiring API
-//#include "WProgram.h"
 
 // include this library's description file
 #include "AudioIO.h"
 
 // include description files for other libraries used (if any)
 #include "HardwareSerial.h"
+
 
 // Constructor /////////////////////////////////////////////////////////////////
 // Function that handles the creation and setup of instances
@@ -18,7 +17,7 @@ AudioIO::AudioIO(){}	//Don't do anything. follow the pattern of SoftModem();
 
 void AudioIO::begin()
 {
-    //
+  _mThread = Thread();  //initialize thread for callbacks.
   // initialize this instance's variables
 
   // do whatever is required to initialize the library
@@ -27,6 +26,9 @@ void AudioIO::begin()
   Serial.println("AudioIO startup");
   delay(100);
   modem.begin();
+  
+  //_mThread.onRun(maintainAudioBus);  //Maintain the Bus status. 
+  //_mThread.setInterval(WATCHDOGPERIOD);//Task should be called as watchdog is about to time out.
 }
 
 // Public Methods //////////////////////////////////////////////////////////////
@@ -103,9 +105,9 @@ void AudioIO::setVentilatorReadings(readout* readouts)
 //TODO make this private and make it only exist in a library instantiated loop.
 void AudioIO::parseCommand()
 {
-    Serial.println("Booting");
-    
-    /*//check we have data
+    char cmd = *(_mMasterData.buffer_cmd+3);
+    Serial.println("Parsing");
+
     if(_mMasterData.available)
     {
         //Clear command regardless.
@@ -131,8 +133,7 @@ void AudioIO::parseCommand()
                 break;
         }
     }
-    else
-        return;*/
+
 }
 
 // Private Methods /////////////////////////////////////////////////////////////
@@ -268,7 +269,7 @@ void AudioIO::setVentilatorKnobs()
     }
     
     //Send back an ACK (this just ack's the command, its not enough for verification).
-    modem.write(Ack);
+    modem.write(ACK);
     
     /*
     //DEBUG show new control knob values (seem to all work perfectly
@@ -296,22 +297,26 @@ void AudioIO::reportVentilatorKnobs()
     while(i<REPORTKNOBSLEN-(6*2)//DEBUG!!!!!
             )
     {
+        modem.write(*(ReportKnobs+i));
+#ifdef SERIALDEBUG        
         Serial.print(*(ReportKnobs+i));
+#endif
         i++;
         //Send out the struct data
         if(i==RRRT)
         {
-            itoa(56,val,10);    //convert ventilator readout to ascii
+            itoa(_mControlRegs.rrrt,val,10);    //convert ventilator readout to ascii
             j=0;
             while(val[j])   //print out the ascii string for the register
             {
+                
                 Serial.print(val[j++]);
             }
             i+=2;
         }
         if(i==TLVM)
         {
-            itoa(56,val,10);    //convert ventilator readout to ascii
+            itoa(_mControlRegs.tlvm,val,10);    //convert ventilator readout to ascii
             j=0;
             while(val[j])   //print out the ascii string for the register
             {
@@ -321,7 +326,7 @@ void AudioIO::reportVentilatorKnobs()
         }
         if(i==MMIP)
         {
-            itoa(56,val,10);    //convert ventilator readout to ascii
+            itoa(_mControlRegs.mmip,val,10);    //convert ventilator readout to ascii
             j=0;
             while(val[j])   //print out the ascii string for the register
             {
@@ -331,7 +336,7 @@ void AudioIO::reportVentilatorKnobs()
         }
         if(i==PKEP)
         {
-            itoa(56,val,10);    //convert ventilator readout to ascii
+            itoa(_mControlRegs.pkep,val,10);    //convert ventilator readout to ascii
             j=0;
             while(val[j])   //print out the ascii string for the register
             {
@@ -341,7 +346,7 @@ void AudioIO::reportVentilatorKnobs()
         }
         if(i==ITET)
         {
-            itoa(56,val,10);    //convert ventilator readout to ascii
+            itoa(_mControlRegs.itet,val,10);    //convert ventilator readout to ascii
             j=0;
             while(val[j])   //print out the ascii string for the register
             {
@@ -351,7 +356,7 @@ void AudioIO::reportVentilatorKnobs()
         }
         if(i==FIO2)
         {
-            itoa(56,val,10);    //convert ventilator readout to ascii
+            itoa(_mControlRegs.fio2,val,10);    //convert ventilator readout to ascii
             j=0;
             while(val[j])   //print out the ascii string for the register
             {
@@ -363,3 +368,83 @@ void AudioIO::reportVentilatorKnobs()
     }
     Serial.print('\n');
 }
+
+//HANDSHAKING AND WATCHDOG
+//TODO: needs validation.
+//Function should 
+//  0: sniff for ENQ and respond with ACK
+//  1: perform handshake
+//  2: Maintain a buffer of commands (_mMasterData.buffer_cmd[BUFFERSIZE])
+//  3: timeout watchdog if nothing comes through from the master by WATCHDOGPERIOD
+//It should also be responsive.
+void AudioIO::busMaintainance()
+{
+    int i = 0;
+     char c;
+     bool read_terminator = 0;
+     if(modem.available()) //  there is data on the channel
+     {
+       if(_mPolicyState.comMode == IO)//if(handshake_done) // handshake done, reading commands
+       {
+         while(modem.available() && i < BUFFERSIZE && !read_terminator)
+         {
+           c = modem.read();
+           if(c != ENQ) // flushing the ack character
+           {
+             _mMasterData.buffer_cmd[i]=c;//data.buffer_cmd[i] = c;
+             _mMasterData.available=true;//data.valid = true;
+             if(c == '\0')
+               read_terminator = 1;
+             i++;
+           }
+           else // send the ack to the master
+           {
+             modem.write(ACK);
+           }
+         }
+       }
+       else  // this is the handshake branch
+       {
+         if(_mPolicyState.comMode < IO)//if(!handshake_status) // waiting for the ENQ
+         {
+           if(modem.read() == ENQ)
+           {
+             modem.write(ACK);
+             _mPolicyState.comMode=Handshake;//handshake_status = 1;
+           }
+         }
+         else //read the version string
+         {
+           while(modem.available())
+           {
+             _mMasterData.buffer_cmd[i] = modem.read();//vent_version[i] = modem.read();
+             i++;
+           }
+           //for (i=0; i != '\0'; i++)  // write the version string
+           //  modem.write(ard_version[i]);
+           modem.write(busProtVer);     // write the version string
+           _mPolicyState.comMode=IO;//handshake_status = 0;     // reset the handshake status
+         }
+       }
+     }
+     else  // this means the channel has dropped
+     {
+         _mPolicyState.comMode = PCM;//handshake_done = 0;
+     }
+}
+
+//BUS MAINTAINENCE UTILITY FUNCTIONS
+void AudioIO::pollBusStatus()
+{
+    //TODO: Handshaking and buffer maintainance.
+    busMaintainance();
+    //If the bus is running, try to process commands.
+    if(_mPolicyState.comMode = IO)
+    {   
+        Serial.println("Poll Bus\n");
+        
+        //If we are in Bus mode, call the command parser
+        parseCommand(); //Check the command buffer to see if any action needs taking.
+    }
+}
+
