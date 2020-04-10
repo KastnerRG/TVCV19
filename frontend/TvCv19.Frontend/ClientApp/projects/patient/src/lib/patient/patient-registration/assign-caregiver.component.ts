@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { PatientModel } from './patient-model';
+import { PatientModel } from '../../../../../../src/app/shared/models/patient-model';
 import { FormControl, FormBuilder } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { AssignCareGiverModel } from './assign-caregiver-route-model';
-import { PatientService } from '../patient.service';
+import { PatientService } from '../../../../../../src/app/shared/services/patient.service';
 
 export interface Caregiver {
   name: string;

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
-import { PhysicianService } from '../physician.service';
-import { PhysicianModel } from './physician-model';
+import { PhysicianService } from '../shared/services/physician.service';
+import { PhysicianModel } from '../shared/models/physician-model';
 import { Router } from '@angular/router';
 
 @Component({

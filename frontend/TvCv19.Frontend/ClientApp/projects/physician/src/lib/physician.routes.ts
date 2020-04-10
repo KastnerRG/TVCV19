@@ -16,8 +16,8 @@ export const routes: Routes = [
     { path: 'patients', component: PatientListComponent, resolve: {
         model: PhysicianRouteResolverService
     }},
-    { path: 'patient/:patient-id', component: PatientNavigationComponent, children: [
-        { path: 'live-video', component: LiveVideoComponent },
-        { path: 'chat', component: ChatComponent }
-    ]}
+    // { path: 'patient/:patient-id', component: PatientNavigationComponent, children: [
+    //     { path: 'live-video', component: LiveVideoComponent },
+    //     { path: 'chat', component: ChatComponent }
+    // ]}
 ];
