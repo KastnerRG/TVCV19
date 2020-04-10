@@ -2,7 +2,7 @@ export class PhysicianModel {
     id: string;
     name: string;
     location: string;
-    reportId: string;
+    supervisorId: string;
     hierarchyLevel: HierarchyLevel;
     messages: Array<string>
 }

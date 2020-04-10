@@ -13,14 +13,14 @@ export class PatientService {
   constructor(private http: HttpClient) { }
 
   getPatientsByPhysicianId(id: string): Observable<Array<PatientModel>> {
-    return this.http.get<Array<PatientModel>>(`/patientapi/physician/${id}/patients`)
+    return this.http.get<Array<PatientModel>>(`/api/patient/physician/${id}`)
       .pipe(
         catchError(this.handleError)
       )
   }
 
   admitPatient(body: PatientModel): Observable<PatientModel> {
-    return this.http.post<PatientModel>('/patientapi/admit', body, {
+    return this.http.post<PatientModel>('/api/patient', body, {
       headers: new HttpHeaders({
         'Content-Type': 'application/json'
       })
@@ -31,7 +31,7 @@ export class PatientService {
       );
   }
   updatePatient(body: PatientModel): Observable<PatientModel> {
-    return this.http.put<PatientModel>('/patientapi/patient', body, {
+    return this.http.put<PatientModel>('/api/patient', body, {
       headers: new HttpHeaders({
         'Content-Type': 'application/json'
       })
@@ -42,7 +42,7 @@ export class PatientService {
       );
   }
   getPatient(id: string): Observable<PatientModel> {
-    return this.http.get<PatientModel>(`/patientapi/patient/${id}`)
+    return this.http.get<PatientModel>(`/api/patient/${id}`)
       .pipe(
         catchError(this.handleError)
       )

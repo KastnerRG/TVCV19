@@ -2,11 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
-
-export interface PhysicianModel {
-  id: string;
-  Name: string;
-}
+import { PhysicianModel } from 'src/app/shared/models/physician-model';
 
 @Injectable({
   providedIn: 'root'

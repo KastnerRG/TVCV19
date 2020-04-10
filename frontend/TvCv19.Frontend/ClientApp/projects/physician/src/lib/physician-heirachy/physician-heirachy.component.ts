@@ -13,8 +13,8 @@ import { FirstLinePatientRouteDataModel } from '../physician-heirachy/firstlineP
 
 export class PhysicianHeirachyComponent implements OnInit {
   patients: Array<PatientModel> = [{addmissionStatus: AdmissionStatus.Admitted, name: 'Stephen', id: 'patient1', caregiverId: '5', location: 'West wing'}]
-  physicians: Array<PhysicianModel> = [{hierarchyLevel: HierarchyLevel.SecondLine, id: '2', name: 'Dr. Seuss', messages: [], reportId: '1', location: 'East Wing'},
-                                   {hierarchyLevel: HierarchyLevel.FirstLine, id: '3', name: 'Dr. Barrow', messages: [], reportId: '2',location: 'East Wing'}]
+  physicians: Array<PhysicianModel> = [{hierarchyLevel: HierarchyLevel.SecondLine, id: '2', name: 'Dr. Seuss', messages: [], supervisorId: '1', location: 'East Wing'},
+                                   {hierarchyLevel: HierarchyLevel.FirstLine, id: '3', name: 'Dr. Barrow', messages: [], supervisorId: '2',location: 'East Wing'}]
   scanPatientQr: boolean
   scanPhysicianQr: boolean
   private id: string
