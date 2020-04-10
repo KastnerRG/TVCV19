@@ -1,5 +1,5 @@
 import { Caregiver } from './assign-caregiver.component';
-import { PatientModel } from './patient-model';
+import { PatientModel } from '../../../../../../src/app/shared/models/patient-model';
 
 export interface AssignCareGiverModel {
    patient: PatientModel

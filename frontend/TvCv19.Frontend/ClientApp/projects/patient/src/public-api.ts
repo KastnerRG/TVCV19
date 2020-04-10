@@ -3,5 +3,5 @@
  */
 
 export * from './lib/patient.service';
-export * from './lib/patient.component';
+export * from './lib/patient/patient.component';
 export * from './lib/patient.module';

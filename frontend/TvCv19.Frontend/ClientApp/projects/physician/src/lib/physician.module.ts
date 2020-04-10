@@ -1,50 +1,28 @@
 import { NgModule, } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { CommonModule } from '@angular/common';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatIconModule } from '@angular/material/icon';
-import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatListModule } from '@angular/material/list';
-import { MatButtonModule } from '@angular/material/button';
-import { MatBadgeModule } from '@angular/material/badge';    
-import { MatInputModule } from '@angular/material/input';  
-import { FlexLayoutModule } from '@angular/flex-layout';
-
 import { PhysicianComponent } from './physician.component';
 import { RootComponent } from './root/root.component';
 import { LiveVideoComponent } from './live-video/live-video.component';
-import { VideoReceiverComponent } from './video-receiver/video-receiver.component';
 import { PatientNavigationComponent } from './patient-navigation/patient-navigation.component';
 import { ChatComponent } from './chat/chat.component';
-
 import { routes } from './physician.routes';
-import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { SharedModule } from 'src/app/shared/shared.module';
+import { PatientListComponent } from './patient-list/patient-list.component';
+import { PhysicianHeirachyComponent } from './physician-heirachy/physician-heirachy.component';
 
 @NgModule({
   declarations: [
     PhysicianComponent,
     RootComponent,
     LiveVideoComponent,
-    VideoReceiverComponent,
     PatientNavigationComponent,
-    ChatComponent
+    ChatComponent,
+    PhysicianHeirachyComponent,
+    PatientListComponent
   ],
   imports: [
-    CommonModule,
     RouterModule.forChild(routes),
-    HttpClientModule,
-    FormsModule,
-    MatToolbarModule,
-    MatMenuModule,
-    MatIconModule,
-    MatSidenavModule,
-    MatListModule,
-    MatButtonModule,
-    MatBadgeModule,
-    MatInputModule,
-    FlexLayoutModule
+    SharedModule
   ],
   exports: [PhysicianComponent, RouterModule]
 })

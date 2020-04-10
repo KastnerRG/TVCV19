@@ -6,7 +6,7 @@ import {
 }                                 from '@angular/router';
 import { Observable, of, EMPTY }  from 'rxjs';
 import { mergeMap }         from 'rxjs/operators';
-import { PatientService }         from '../patient.service'
+import { PatientService }         from '../../../../../../src/app/shared/services/patient.service'
 import { AssignCareGiverModel } from './assign-caregiver-route-model';
 
 @Injectable({

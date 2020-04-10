@@ -1,0 +1,10 @@
+<mat-card (click)="onClick(patient.id)" *ngFor="let patient of patients">
+  <mat-card-title>{{ patient.name }}</mat-card-title>
+  <mat-card-content>
+    <qrcode
+      [qrdata]="patient.id"
+      [width]="256"
+      [errorCorrectionLevel]="'M'"
+    ></qrcode>
+  </mat-card-content>
+</mat-card>
