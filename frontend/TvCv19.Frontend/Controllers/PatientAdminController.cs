@@ -11,7 +11,6 @@ namespace TvCv19.Frontend.Controllers
     [Route("physicianapi")]
     public class PatientAdminController : Controller
     {
-        private const string DAILY_URL = "https://tvcv19.daily.co";
         private const string DAILY_TOKEN = "Ee910bcf0c64a3fac675bf9b04e89780a9972ba61078f188a0314b6805532ae5";
 
         private ILogger<PatientController> _logger;
@@ -28,9 +27,9 @@ namespace TvCv19.Frontend.Controllers
         {
             physicianModel.Id = await physicianRepository.AddPhysician(physicianModel);
 
-            using (var roomClient = new RoomClient(DAILY_URL, DAILY_TOKEN))
+            using (var roomClient = new RoomClient(DAILY_TOKEN))
             {
-                await roomClient.CreateAsync(new Room
+                await roomClient.CreateRoomAsync(new Room
                 {
                     Name = physicianModel.Id
                 });
