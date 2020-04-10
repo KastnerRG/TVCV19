@@ -1,5 +1,5 @@
-import { PatientModel } from '../../../../../src/app/patient-registration/patient-model';
-import { PhysicianModel } from 'src/app/physician-admin/physician-model';
+import { PatientModel } from '../../../../../src/app/shared/models/patient-model';
+import { PhysicianModel } from 'src/app/shared/models/physician-model';
 
 
 export class FirstLinePatientRouteDataModel {
