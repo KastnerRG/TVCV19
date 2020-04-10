@@ -8,7 +8,7 @@ using TvCv19.Frontend.Domain;
 namespace TvCv19.Frontend.Controllers
 {
     [ApiController]
-    [Route("patientapi")]
+    [Route("api/patient")]
     public class PatientController : Controller
     {
         private const string DAILY_TOKEN = "Ee910bcf0c64a3fac675bf9b04e89780a9972ba61078f188a0314b6805532ae5";
@@ -22,37 +22,44 @@ namespace TvCv19.Frontend.Controllers
             _patientRepository = patientRepository;
         }
 
-        [HttpPost("admit")]
+        [HttpPost()]
         public async Task<IActionResult> AdmitPatient(Patient patientModel)
         {
             patientModel.Id = await _patientRepository.AdmitPatient(patientModel);
 
-            using (var roomClient = new RoomClient(DAILY_TOKEN))
+            try
             {
-                await roomClient.CreateRoomAsync(new Room
+                using (var roomClient = new RoomClient(DAILY_TOKEN))
                 {
+                  await roomClient.CreateRoomAsync(new Room
+                  {
                     Name = patientModel.Id
-                });
+                  });
+                }
+            }
+            catch (System.Exception)
+            {
+                
             }
 
             return Ok(patientModel);
         }
 
-        [HttpPut("patient")]
+        [HttpPut]
         public async Task<IActionResult> UpdatePatient(Patient patientModel)
         {
             patientModel = await _patientRepository.UpdatePatient(patientModel);
             return Ok(patientModel);
         }
 
-        [HttpGet("patient/{id}")]
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetPatient(string id)
         {
             var patient = await _patientRepository.GetPatient(id);
             return Ok(patient);
         }
 
-        [HttpGet("physician/{id}/patients")]
+        [HttpGet("physician/{id}")]
         public async Task<IActionResult> GetPatients(string id)
         {
             var patient = await _patientRepository.GetPatientsByPhysician(id);

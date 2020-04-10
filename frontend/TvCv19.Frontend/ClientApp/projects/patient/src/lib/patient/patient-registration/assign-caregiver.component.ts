@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PatientModel } from '../../../../../../src/app/shared/models/patient-model';
-import { FormControl, FormBuilder } from '@angular/forms';
+import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { AssignCareGiverModel } from './assign-caregiver-route-model';

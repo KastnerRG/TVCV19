@@ -8,7 +8,7 @@ namespace TvCv19.Frontend.Domain.Repositories
 {
     public interface IPhysicianRepository
     {
-        Task<string> AddPhysicianAsync(Physician physician);
+        Task<Physician> AddPhysicianAsync(Physician physician);
         Task DeletePhysicianAsync(string id);
         Task<IEnumerable<Physician>> GetPhysiciansAsync();
         Task<Physician> GetPhysicianAsync(string id);
@@ -19,11 +19,11 @@ namespace TvCv19.Frontend.Domain.Repositories
     {
         private static HashSet<Physician> _physicians = new HashSet<Physician>();
 
-        public Task<string> AddPhysicianAsync(Physician physician)
+        public Task<Physician> AddPhysicianAsync(Physician physician)
         {
             _physicians.Add(physician);
 
-            return Task.FromResult(physician.Id);
+            return Task.FromResult(physician);
         }
 
         public async Task DeletePhysicianAsync(string id)
