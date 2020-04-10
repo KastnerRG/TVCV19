@@ -3,25 +3,31 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { HttpHeaders } from '@angular/common/http';
 import { PhysicianModel } from '../models/physician-model';
 import { Observable, throwError } from 'rxjs';
-import { catchError, retry } from 'rxjs/operators';
+import { catchError } from 'rxjs/operators';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
-
 export class PhysicianService {
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   addPhysician(body: PhysicianModel): Observable<PhysicianModel> {
-    return this.http.post<PhysicianModel>('/physicianapi/add', body, {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json'
+    return this.http
+      .post<PhysicianModel>('/api/physician', body, {
+        headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+        }),
       })
+      .pipe(catchError(this.handleError));
+  }
 
+  getPhysicians(): Observable<Array<PhysicianModel>> {
+    return this.http.get<Array<PhysicianModel>>('/api/physician', {
+      headers: new HttpHeaders({
+        Accept: 'application/json',
+      }),
     })
-      .pipe(
-        catchError(this.handleError)
-      );
+    .pipe(catchError(this.handleError));
   }
 
   private handleError(error: HttpErrorResponse) {
@@ -32,11 +38,10 @@ export class PhysicianService {
       // The backend returned an unsuccessful response code.
       // The response body may contain clues as to what went wrong,
       console.error(
-        `Backend returned code ${error.status}, ` +
-        `body was: ${error.error}`);
+        `Backend returned code ${error.status}, ` + `body was: ${error.error}`
+      );
     }
     // return an observable with a user-facing error message
-    return throwError(
-      'Something bad happened; please try again later.');
-  };
+    return throwError('Something bad happened; please try again later.');
+  }
 }
