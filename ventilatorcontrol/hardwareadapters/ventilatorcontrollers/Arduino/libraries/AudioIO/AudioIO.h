@@ -134,6 +134,7 @@ typedef struct _STATUS
 //Global data buffer.
 typedef struct _INCOMINGDATA
 {
+    char bufptr;                  //Track position writing to in buffer.
     char buffer_cmd[BUFFERSIZE];
     bool available;               //Set when new data is found.
 }incomingdata;

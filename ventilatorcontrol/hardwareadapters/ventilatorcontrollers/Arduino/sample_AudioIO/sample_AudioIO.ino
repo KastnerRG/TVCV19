@@ -56,7 +56,7 @@ void setup() {
   io.setVentilatorKnobs();
 
   myThread.onRun(niceCallback);
-  myThread.setInterval(2000);
+  myThread.setInterval(10);     //call more frequently to poll the serial data
 }
 
 
