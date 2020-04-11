@@ -10,16 +10,25 @@ import { PatientListComponent } from './patient-list/patient-list.component';
 import { PatientDetailComponent } from './patient-detail/patient-detail.component';
 
 export const routes: Routes = [
-    { path: '', component: RootComponent },
-    { path: 'heirachy', component: PhysicianHeirachyComponent, resolve: {
-        model: PhysicianRouteResolverService
-    }},
-    { path: 'patients', component: PatientListComponent, resolve: {
-        model: PhysicianRouteResolverService
-    }},
-    // { path: 'patient/:patient-id', component: PatientNavigationComponent, children: [
-    //     { path: 'live-video', component: LiveVideoComponent },
-    //     { path: 'chat', component: ChatComponent }
-    // ]}
-     {path: 'patient/:patient-id', component: PatientDetailComponent}
+  { path: '', component: RootComponent },
+  {
+    path: 'heirachy',
+    component: PhysicianHeirachyComponent,
+    resolve: {
+      model: PhysicianRouteResolverService,
+    },
+  },
+  {
+    path: 'patients',
+    component: PatientListComponent,
+    resolve: {
+      model: PhysicianRouteResolverService,
+    },
+  },
+  // { path: 'patient/:patient-id', component: PatientNavigationComponent, children: [
+  //     { path: 'live-video', component: LiveVideoComponent },
+  //     { path: 'chat', component: ChatComponent }
+  // ]}
+  { path: 'patient/:patient-id', component: PatientDetailComponent },
+  { path: 'patient/:patient-id/chat', component: ChatComponent },
 ];
