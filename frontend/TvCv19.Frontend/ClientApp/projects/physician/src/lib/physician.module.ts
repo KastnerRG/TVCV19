@@ -9,6 +9,7 @@ import { routes } from './physician.routes';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { PatientListComponent } from './patient-list/patient-list.component';
 import { PhysicianHeirachyComponent } from './physician-heirachy/physician-heirachy.component';
+import { PatientDetailComponent } from './patient-detail/patient-detail.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import { PhysicianHeirachyComponent } from './physician-heirachy/physician-heira
     PatientNavigationComponent,
     ChatComponent,
     PhysicianHeirachyComponent,
-    PatientListComponent
+    PatientListComponent,
+    PatientDetailComponent
   ],
   imports: [
     RouterModule.forChild(routes),

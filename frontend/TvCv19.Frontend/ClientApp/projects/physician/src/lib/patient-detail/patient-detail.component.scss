@@ -1,0 +1,31 @@
+.care-options {
+    color: rgba(0, 0, 0, 0.54);
+    &__row {
+        margin-top: 22px;
+        margin-bottom: 45px;
+    }
+    &__chat {
+        img {
+            width: 52px;
+            height: 52px;
+        }
+    }
+    &__instructions {
+        img {
+            width: 34px;
+            height: 44px;
+        }
+    }
+    &__heirachy {
+        img {
+            width: 53px;
+            height: 44px;
+        }
+    }
+    &__shifts {
+        img {
+            width: 50px;
+            height: 50px;
+        }
+    }
+}

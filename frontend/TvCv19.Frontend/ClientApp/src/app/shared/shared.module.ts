@@ -21,8 +21,6 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatCardModule } from '@angular/material/card';
 import { MatMenuModule } from '@angular/material/menu';
 
-
-
 @NgModule({
   declarations: [
     QrScannerComponent,
@@ -57,7 +55,6 @@ import { MatMenuModule } from '@angular/material/menu';
     MatMenuModule,
     HttpClientModule,
     CommonModule
-   
   ]
 })
 export class SharedModule { }

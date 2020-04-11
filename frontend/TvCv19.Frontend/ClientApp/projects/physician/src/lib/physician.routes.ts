@@ -7,6 +7,7 @@ import { ChatComponent } from './chat/chat.component';
 import { PhysicianHeirachyComponent } from './physician-heirachy/physician-heirachy.component';
 import { PhysicianRouteResolverService } from './physician-heirachy/physician-heirachy-route-resolver.service';
 import { PatientListComponent } from './patient-list/patient-list.component';
+import { PatientDetailComponent } from './patient-detail/patient-detail.component';
 
 export const routes: Routes = [
     { path: '', component: RootComponent },
@@ -20,4 +21,5 @@ export const routes: Routes = [
     //     { path: 'live-video', component: LiveVideoComponent },
     //     { path: 'chat', component: ChatComponent }
     // ]}
+     {path: 'patient/:patient-id', component: PatientDetailComponent}
 ];
