@@ -6,7 +6,8 @@ import { Subject, Observable } from 'rxjs';
 export interface MessageModel {
   name: string;
   message: string;
-  date: Date
+  date: Date;
+  id: string;
   isCareInstruction: boolean;
 }
 
@@ -27,11 +28,12 @@ export class ChatService {
       .configureLogging(LogLevel.Information)
       .build();
 
-    this.connection.on('ReceiveMessage', (message: string, name: string, date: Date, isCareInstruction: boolean) => {
+    this.connection.on('ReceiveMessage', (message: string, name: string, date: Date, id: string, isCareInstruction: boolean) => {
       this.messagesSubject.next({
         name,
         message,
         date,
+        id,
         isCareInstruction
       });
     });

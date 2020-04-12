@@ -26,6 +26,7 @@ namespace TvCv19.Frontend
             services.AddScoped<PhysicianRepository>();
             services.AddScoped<IPatientRepository, PocPatientRepository>();
             services.AddScoped<IPhysicianRepository, PocPhyscianRepository>();
+            services.AddScoped<IMessageRepository, PocMessageRepository>();
             services.AddControllersWithViews();
             services.AddSignalR();
 
