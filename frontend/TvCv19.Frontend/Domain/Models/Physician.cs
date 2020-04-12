@@ -12,7 +12,6 @@ namespace TvCv19.Frontend.Domain
         public string Name { get; set; }
         public string Location { get; set; }
         public HierarchyLevel HierarchyLevel { get; set; }
-        public IEnumerable<string> Messages { get; set; }
         public string SupervisorId { get; set; }
     }
     public enum HierarchyLevel { FirstLine, SecondLine, Commander }
