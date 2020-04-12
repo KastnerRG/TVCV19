@@ -10,9 +10,8 @@ import { PatientListComponent } from './patient-list/patient-list.component';
 import { PatientDetailComponent } from './patient-detail/patient-detail.component';
 
 export const routes: Routes = [
-  { path: '', component: RootComponent },
   {
-    path: 'heirachy',
+    path: '',
     component: PhysicianHeirachyComponent,
     resolve: {
       model: PhysicianRouteResolverService,

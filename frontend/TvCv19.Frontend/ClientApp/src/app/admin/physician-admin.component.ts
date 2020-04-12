@@ -24,7 +24,7 @@ export class physicianAdminComponent implements OnInit {
 
   onSubmit(physician: PhysicianModel) {
     this.service.addPhysician(physician).subscribe(p => {
-      this.router.navigateByUrl(`/physician/${p.id}/patients`)
+      this.router.navigateByUrl(`/physician/${p.id}`)
     },
       error => console.error(error))
   }

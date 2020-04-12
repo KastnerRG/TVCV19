@@ -6,10 +6,11 @@ import { LiveVideoComponent } from './live-video/live-video.component';
 import { PatientNavigationComponent } from './patient-navigation/patient-navigation.component';
 import { ChatComponent } from './chat/chat.component';
 import { routes } from './physician.routes';
-import { SharedModule } from 'src/app/shared/shared.module';
+import { SharedModule as temp } from 'src/app/shared/shared.module';
 import { PatientListComponent } from './patient-list/patient-list.component';
 import { PhysicianHeirachyComponent } from './physician-heirachy/physician-heirachy.component';
 import { PatientDetailComponent } from './patient-detail/patient-detail.component';
+import { SharedModule } from 'projects/shared/src/public-api';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { PatientDetailComponent } from './patient-detail/patient-detail.componen
   ],
   imports: [
     RouterModule.forChild(routes),
-    SharedModule
+    SharedModule,
+    temp
   ],
   exports: [PhysicianComponent, RouterModule]
 })

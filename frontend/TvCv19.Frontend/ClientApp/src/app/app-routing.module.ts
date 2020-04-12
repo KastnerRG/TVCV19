@@ -8,19 +8,27 @@ import { AssignCareGiverComponent } from '../../projects/patient/src/lib/patient
 import { CameraSetupComponent } from '../../projects/patient/src/lib/patient/patient-registration/camera-setup.component';
 import { physicianAdminComponent } from './admin/physician-admin.component';
 import { PatientComponent } from 'projects/patient/src/public-api';
+import { RootComponent } from './root/root.component';
+import { AdminComponent } from 'projects/admin/src/public-api';
+import { CaregiverComponent } from 'projects/caregiver/src/public-api';
 
 const routes: Routes = [
+  { path: '', component: RootComponent },
+  { path: 'admin', component: AdminComponent },
+  { path: 'caregiver', component: CaregiverComponent },
+  { path: 'patient', component: PatientComponent },
   { path: 'physician/:physician-id', component: PhysicianComponent, loadChildren: 'projects/physician/src/public-api#PhysicianModule' },
-  { path: 'admin/registration', component: physicianAdminComponent },
-  // Patient workflow
-  {path: 'patient-detail/:id', component: PatientComponent},
-  { path: 'patient/registration', component: PatientRegistrationComponent },
-  { path: 'patient/registration/camera-setup', component: CameraSetupComponent },
-  {
-    path: 'patient/registration/assign-caregiver/:id', component: AssignCareGiverComponent, resolve: {
-      model: AssignCareGiverRouteResolverService
-    }
-  }
+
+  // { path: 'admin/registration', component: physicianAdminComponent },
+  // // Patient workflow
+  // {path: 'patient-detail/:id', component: PatientComponent},
+  // { path: 'patient/registration', component: PatientRegistrationComponent },
+  // { path: 'patient/registration/camera-setup', component: CameraSetupComponent },
+  // {
+  //   path: 'patient/registration/assign-caregiver/:id', component: AssignCareGiverComponent, resolve: {
+  //     model: AssignCareGiverRouteResolverService
+  //   }
+  // }
 ];
 
 @NgModule({
