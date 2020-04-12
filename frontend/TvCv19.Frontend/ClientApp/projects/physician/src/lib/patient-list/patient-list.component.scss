@@ -1,12 +1,15 @@
-mat-card {
-  margin: 10px;
-  background-color: lightblue;
-  &:hover {
-    cursor: pointer;
-  }
+.patient-list {
+  font-weight: bold;
+  font-size: 24px;
 
-  qrcode {
-    display: flex;
-    justify-content: center;
+  &__patient {
+    padding-top: 20px;
   }
+  .patient-name {
+    margin-right: 12px;
+  }
+}
+qrcode {
+  display: flex;
+  justify-content: center;
 }
