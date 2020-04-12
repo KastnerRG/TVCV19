@@ -1,5 +1,4 @@
-import { PatientModel } from '../../../../../../src/app/shared/models/patient-model';
-import { PhysicianModel } from 'src/app/shared/models/physician-model';
+import { PatientModel, PhysicianModel } from 'projects/shared/src/public-api';
 
 export interface AssignCareGiverModel {
    patient: PatientModel

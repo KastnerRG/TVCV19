@@ -6,7 +6,7 @@ import { PatientRegistrationComponent } from '../../projects/patient/src/lib/pat
 import { AssignCareGiverRouteResolverService } from '../../projects/patient/src/lib/patient/patient-registration/assign-caregiver-route-resolver.service';
 import { AssignCareGiverComponent } from '../../projects/patient/src/lib/patient/patient-registration/assign-caregiver.component';
 import { CameraSetupComponent } from '../../projects/patient/src/lib/patient/patient-registration/camera-setup.component';
-import { physicianAdminComponent } from './admin/physician-admin.component';
+// import { physicianAdminComponent } from './admin/physician-admin.component';
 import { PatientComponent } from 'projects/patient/src/public-api';
 import { RootComponent } from './root/root.component';
 import { AdminComponent } from 'projects/admin/src/public-api';

@@ -17,7 +17,7 @@ export class VideoReceiverComponent implements AfterViewInit {
   async ngAfterViewInit(): Promise<void> {
     const callFrame = DailyIframe.wrap(this.iframeView.nativeElement, {
       url: `https://tvcv19.daily.co/hello`,
-      customLayout: true,
+      // customLayout: true,
     });
     // await callFrame.join({ url: `https://tvcv19.daily.co/${this.patientID}` });
     await callFrame.join();

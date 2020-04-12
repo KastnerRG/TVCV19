@@ -6,11 +6,21 @@ import { LiveVideoComponent } from './live-video/live-video.component';
 import { PatientNavigationComponent } from './patient-navigation/patient-navigation.component';
 import { ChatComponent } from './chat/chat.component';
 import { routes } from './physician.routes';
-import { SharedModule as temp } from 'src/app/shared/shared.module';
 import { PatientListComponent } from './patient-list/patient-list.component';
 import { PhysicianHeirachyComponent } from './physician-heirachy/physician-heirachy.component';
 import { PatientDetailComponent } from './patient-detail/patient-detail.component';
 import { SharedModule } from 'projects/shared/src/public-api';
+import { CommonModule } from '@angular/common';
+import { VideoReceiverComponent } from './video-receiver/video-receiver.component';
+import { QRCodeModule } from 'angularx-qrcode';
+import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { FormsModule } from '@angular/forms';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatListModule } from '@angular/material/list';
 
 @NgModule({
   declarations: [
@@ -21,12 +31,22 @@ import { SharedModule } from 'projects/shared/src/public-api';
     ChatComponent,
     PhysicianHeirachyComponent,
     PatientListComponent,
-    PatientDetailComponent
+    PatientDetailComponent,
+    VideoReceiverComponent
   ],
   imports: [
     RouterModule.forChild(routes),
-    SharedModule,
-    temp
+    CommonModule,
+    QRCodeModule,
+    FormsModule,
+    MatCardModule,
+    MatIconModule,
+    MatGridListModule,
+    MatToolbarModule,
+    MatFormFieldModule,
+    MatSidenavModule,
+    MatListModule,
+    SharedModule
   ],
   exports: [PhysicianComponent, RouterModule]
 })

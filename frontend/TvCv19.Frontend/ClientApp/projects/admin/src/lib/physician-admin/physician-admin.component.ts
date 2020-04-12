@@ -1,15 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
-import { PhysicianService } from '../shared/services/physician.service';
-import { PhysicianModel } from '../shared/models/physician-model';
 import { Router } from '@angular/router';
+import { PhysicianModel, PhysicianService } from 'projects/shared/src/public-api';
 
 @Component({
-  selector: 'app-phyiscian-admin',
+  selector: 'lib-phyiscian-admin',
   templateUrl: './physician-admin.component.html',
   styleUrls: ['./physician-admin.component.scss']
 })
-export class physicianAdminComponent implements OnInit {
+export class PhysicianAdminComponent implements OnInit {
   caregiverRegistrationForm;
   patients: Array<PhysicianModel> = []
   constructor(private formBuilder: FormBuilder, private service: PhysicianService, private router: Router) {
