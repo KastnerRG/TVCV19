@@ -15,9 +15,12 @@ export class VideoReceiverComponent implements AfterViewInit {
   constructor() { }
 
   async ngAfterViewInit(): Promise<void> {
-    const callFrame = DailyIframe.wrap(this.iframeView.nativeElement);
+    const callFrame = DailyIframe.wrap(this.iframeView.nativeElement, {
+      url: `https://tvcv19.daily.co/hello`,
+      customLayout: true,
+    });
     // await callFrame.join({ url: `https://tvcv19.daily.co/${this.patientID}` });
-    await callFrame.join({ url: `https://tvcv19.daily.co/hello` });
+    await callFrame.join();
 
     // Since we are the viewer, automatically disable the video.
     // We will hide the controls so that the volunteer cannot enable video.
