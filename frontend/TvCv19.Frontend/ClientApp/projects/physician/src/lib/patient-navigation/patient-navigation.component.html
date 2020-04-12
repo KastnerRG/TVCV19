@@ -12,8 +12,8 @@
       <!-- <a mat-list-item href="#"><span matBadge="12" matBadgeColor="warn">Care Instruction</span></a> -->
     </mat-nav-list>
   </mat-sidenav>
-  <mat-sidenav-content>
-    <mat-toolbar color="primary">
+  <mat-sidenav-content fxLayout="column">
+    <mat-toolbar fxFlex="56px" color="primary">
       <button
         type="button"
         aria-label="Toggle sidenav"
@@ -29,7 +29,9 @@
       <span>{{patientName}}</span>
     </mat-toolbar>
     
-    <router-outlet></router-outlet>
+    <div fxFlex fxFill>
+      <router-outlet></router-outlet>
+    </div>
 
   </mat-sidenav-content>
 </mat-sidenav-container>
