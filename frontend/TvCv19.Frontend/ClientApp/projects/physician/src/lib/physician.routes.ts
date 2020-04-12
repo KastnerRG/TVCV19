@@ -9,6 +9,7 @@ import { PhysicianRouteResolverService } from './physician-heirachy/physician-he
 import { PatientListComponent } from './patient-list/patient-list.component';
 import { PatientDetailComponent } from './patient-detail/patient-detail.component';
 import { ChangeShiftComponent } from './change-shift/change-shift.component';
+import { ChatRouteResolverService } from './chat/chat-route-resolver.service';
 
 export const routes: Routes = [
   { path: '', component: RootComponent },
@@ -26,10 +27,10 @@ export const routes: Routes = [
       model: PhysicianRouteResolverService,
     },
   },
-  // { path: 'patient/:patient-id', component: PatientNavigationComponent, children: [
-  //     { path: 'live-video', component: LiveVideoComponent },
-  //     { path: 'chat', component: ChatComponent }
-  // ]}
   { path: 'patient/:patient-id', component: PatientDetailComponent },
-  { path: 'patient/:patient-id/chat', component: ChatComponent },
+  { path: 'patient/:patient-id/chat', component: ChatComponent,
+    resolve: {
+      messages: ChatRouteResolverService 
+    }
+  },
 ];
