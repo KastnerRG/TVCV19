@@ -10,6 +10,7 @@ import { SharedModule } from 'src/app/shared/shared.module';
 import { PatientListComponent } from './patient-list/patient-list.component';
 import { PhysicianHeirachyComponent } from './physician-heirachy/physician-heirachy.component';
 import { PatientDetailComponent } from './patient-detail/patient-detail.component';
+import { ChangeShiftComponent } from './change-shift/change-shift.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { PatientDetailComponent } from './patient-detail/patient-detail.componen
     ChatComponent,
     PhysicianHeirachyComponent,
     PatientListComponent,
-    PatientDetailComponent
+    PatientDetailComponent,
+    ChangeShiftComponent
   ],
   imports: [
     RouterModule.forChild(routes),

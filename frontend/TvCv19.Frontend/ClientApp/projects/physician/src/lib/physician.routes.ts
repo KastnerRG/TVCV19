@@ -8,6 +8,7 @@ import { PhysicianHeirachyComponent } from './physician-heirachy/physician-heira
 import { PhysicianRouteResolverService } from './physician-heirachy/physician-heirachy-route-resolver.service';
 import { PatientListComponent } from './patient-list/patient-list.component';
 import { PatientDetailComponent } from './patient-detail/patient-detail.component';
+import { ChangeShiftComponent } from './change-shift/change-shift.component';
 
 export const routes: Routes = [
     { path: '', component: RootComponent },
