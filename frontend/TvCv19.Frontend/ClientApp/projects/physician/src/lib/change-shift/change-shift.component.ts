@@ -5,7 +5,7 @@ import { PatientModel } from 'src/app/shared/models/patient-model';
 import { map, startWith } from 'rxjs/operators';
 import { ChangeShiftModel } from './change-shift.model';
 import { PatientService } from '../../../../../src/app/shared/services/patient.service';
-
+import { ActivatedRoute, Router } from '@angular/router';
 
 export interface Caregiver {
   name: string;
@@ -42,7 +42,7 @@ export class ChangeShiftComponent implements OnInit {
   }
 
   onSubmit(caregiver: Caregiver) {
-    for (var patient of this.patients) { // def is of the array item type no casting necessary 
+    for (var patient of this.patients) { 
          patient.caregiverId = caregiver.id
       this.patientService.updatePatient(patient);
     } 
