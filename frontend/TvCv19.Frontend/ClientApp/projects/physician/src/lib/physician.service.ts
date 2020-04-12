@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
-import { PhysicianModel } from 'src/app/shared/models/physician-model';
+import { PhysicianModel } from 'projects/shared/src/public-api';
 
 @Injectable({
   providedIn: 'root'

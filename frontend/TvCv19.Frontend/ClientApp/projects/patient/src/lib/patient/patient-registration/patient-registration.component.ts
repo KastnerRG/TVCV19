@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
-import { PatientService } from '../../../../../../src/app/shared/services/patient.service';
-import { PatientModel } from '../../../../../../src/app/shared/models/patient-model';
 import { Router } from '@angular/router';
+import { PatientModel, PatientService } from 'projects/shared/src/public-api';
 
 @Component({
   selector: 'patient-registration',

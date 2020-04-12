@@ -8,7 +8,7 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class PatientComponent implements OnInit {
 
-  patientId: number;
+  patientI: number;
 
   constructor(route: ActivatedRoute) {
   }
