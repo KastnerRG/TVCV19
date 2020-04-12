@@ -20,13 +20,13 @@ export class ChatComponent implements OnInit {
       this.chatMessages.push(m)
     });
 
-    route.parent.params.subscribe(p => {
+    route.params.subscribe(p => {
       this.patientId = p['patient-id'];
 
       this.chatService.subscribeAsync(this.patientId);
     });
 
-    route.parent.parent.params.subscribe(p => {
+    route.parent.params.subscribe(p => {
       this.physicianId = p['physician-id'];
     })
   }

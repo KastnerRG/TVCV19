@@ -12,9 +12,9 @@ declare module '@daily-co/daily-js' {
     }
 
     class DailyIFrame {
-        static wrap(iframe: HTMLIFrameElement): DailyIFrame;
+        static wrap(iframe: HTMLIFrameElement, properties?: CallProperties): DailyIFrame;
 
-        join(properties: CallProperties): Promise<void>;
+        join(properties?: CallProperties): Promise<void>;
         setLocalAudio(bool: boolean): DailyIFrame;
         setLocalVideo(bool: boolean): DailyIFrame;
     }

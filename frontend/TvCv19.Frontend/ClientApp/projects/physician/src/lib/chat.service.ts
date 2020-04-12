@@ -4,8 +4,9 @@ import { HubConnectionBuilder, HubConnection, LogLevel, HubConnectionState } fro
 import { Subject, Observable } from 'rxjs';
 
 export interface MessageModel {
-  physicianId: string;
+  name: string;
   message: string;
+  date: Date
   isCareInstruction: boolean;
 }
 
@@ -26,11 +27,12 @@ export class ChatService {
       .configureLogging(LogLevel.Information)
       .build();
 
-    this.connection.on('ReceiveMessage', (message: string, physicianId: string, isCareInstruction: boolean) => {
+    this.connection.on('ReceiveMessage', (message: string, name: string, date: Date, isCareInstruction: boolean) => {
       this.messagesSubject.next({
-        physicianId: physicianId,
-        message: message,
-        isCareInstruction: isCareInstruction
+        name,
+        message,
+        date,
+        isCareInstruction
       });
     });
   }
