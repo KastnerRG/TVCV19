@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { QrScannerComponent } from './qr/qr-scanner.component';
 import { VideoReceiverComponent } from 'projects/physician/src/lib/video-receiver/video-receiver.component';
 import { ZXingScannerModule } from '@zxing/ngx-scanner';
 import { FlexLayoutModule } from '@angular/flex-layout';
@@ -23,7 +22,6 @@ import { MatMenuModule } from '@angular/material/menu';
 
 @NgModule({
   declarations: [
-    QrScannerComponent,
     VideoReceiverComponent   
   ],
   
@@ -50,7 +48,6 @@ import { MatMenuModule } from '@angular/material/menu';
     QRCodeModule,
     MatAutocompleteModule,
     MatCardModule,
-    QrScannerComponent,
     VideoReceiverComponent,
     MatMenuModule,
     HttpClientModule,
