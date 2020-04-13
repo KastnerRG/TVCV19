@@ -4,21 +4,35 @@ import { PhysicianAdminComponent } from './physician-admin/physician-admin.compo
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { RouterModule } from '@angular/router';
+import { RootComponent } from './root/root.component';
+import { MatButtonModule } from '@angular/material/button';
+import { HttpClientModule } from '@angular/common/http';
+import { SharedModule } from 'projects/shared/src/public-api';
+import { MatOptionModule } from '@angular/material/core';
 
 
 @NgModule({
   declarations: [
     AdminComponent,
-    PhysicianAdminComponent
+    PhysicianAdminComponent,
+    RootComponent
   ],
   imports: [
+    RouterModule.forChild([
+      { path: '', component: RootComponent },
+      { path: 'physician', component: PhysicianAdminComponent }
+    ]),
     ReactiveFormsModule,
     MatFormFieldModule,
-    MatToolbarModule
+    MatToolbarModule,
+    MatButtonModule,
+    MatOptionModule,
+    SharedModule
   ],
   exports: [
     AdminComponent,
-    PhysicianAdminComponent
+    RouterModule
   ]
 })
 export class AdminModule { }

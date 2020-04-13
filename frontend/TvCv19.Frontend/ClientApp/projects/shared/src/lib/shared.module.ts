@@ -4,6 +4,7 @@ import { QRCodeModule } from 'angularx-qrcode';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { ZXingScannerModule } from '@zxing/ngx-scanner';
 import { QrScannerComponent } from './qr/qr-scanner.component';
+import { HttpClientModule } from '@angular/common/http';
 
 
 
@@ -15,11 +16,13 @@ import { QrScannerComponent } from './qr/qr-scanner.component';
   imports: [
     QRCodeModule,
     ZXingScannerModule,
+    HttpClientModule,
     MatToolbarModule
   ],
   exports: [
     SharedComponent,
-    QrScannerComponent
+    QrScannerComponent,
+    HttpClientModule
   ]
 })
 export class SharedModule { }
