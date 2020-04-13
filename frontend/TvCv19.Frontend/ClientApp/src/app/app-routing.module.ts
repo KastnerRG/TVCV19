@@ -14,7 +14,7 @@ import { CaregiverComponent } from 'projects/caregiver/src/public-api';
 
 const routes: Routes = [
   { path: '', component: RootComponent },
-  { path: 'admin', component: AdminComponent },
+  { path: 'admin', component: AdminComponent, loadChildren: 'projects/admin/src/public-api#AdminModule' },
   { path: 'caregiver', component: CaregiverComponent },
   { path: 'patient', component: PatientComponent },
   { path: 'physician/:physician-id', component: PhysicianComponent, loadChildren: 'projects/physician/src/public-api#PhysicianModule' },

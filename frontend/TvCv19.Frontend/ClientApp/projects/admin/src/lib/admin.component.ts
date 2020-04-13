@@ -3,9 +3,7 @@ import { Component, OnInit } from '@angular/core';
 @Component({
   selector: 'lib-admin',
   template: `
-    <p>
-      admin works!
-    </p>
+    <router-outlet></router-outlet>
   `,
   styles: [
   ],
