@@ -8,7 +8,7 @@ import { Observable, of, EMPTY }  from 'rxjs';
 import { mergeMap }         from 'rxjs/operators';
 import { FirstLinePatientRouteDataModel } from './firstlinePatientRouteData.model';
 import { PatientService } from 'src/app/shared/services/patient.service';
-import { PhysicianService } from '../physician.service';
+import { PhysicianService } from 'src/app/shared/services/physician.service';
 
 @Injectable({
   providedIn: 'root'
