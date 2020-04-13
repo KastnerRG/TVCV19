@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
     public String DECODER_DATA_BUF = "\0";
     public Boolean setFSKChar = false;
     public Boolean FSKinProg = false;
-    public String MODE = "0";
+    public String MODE = "PCM";
 
     protected FSKConfig mConfig;
     protected FSKEncoder mEncoder;
@@ -56,6 +56,11 @@ public class MainActivity extends AppCompatActivity {
     protected AudioTrack mAudioTrack;
     protected AudioRecord mRecorder;
     protected int mBufferSize = 0;
+
+    //Watchdog stuff
+    protected final int modemPollPeriod = 10;
+    protected final int watchdogPeriod = 4000;
+    protected int watchdogTimer = 0;
 
     final int REQUEST_MICROPHONE = 1;
 
@@ -92,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
                             mEncoder.appendData(buffer);
 
                             try {
-                                Thread.sleep(100); //wait for encoder to do its job, to avoid buffer overflow and data rejection
+                                Thread.sleep(10);//100); //wait for encoder to do its job, to avoid buffer overflow and data rejection
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
@@ -242,8 +247,8 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                         progress_value = progress;
-                        //ENCODER_DATA_BUF = "O2 Concentration : " + progress + " / " + o2Con.getMax();
-                        //o2Text.setText("O2 Concentration : " + progress + " / " + o2Con.getMax());
+                        ENCODER_DATA_BUF = "O2 Concentration : " + progress + " / " + o2Con.getMax();
+                        o2Text.setText("O2 Concentration : " + progress + " / " + o2Con.getMax());
                         //Toast.makeText(MainActivity.this,"SeekBar in progress", Toast.LENGTH_LONG).show();
 
                     }
@@ -311,11 +316,11 @@ public class MainActivity extends AppCompatActivity {
                 final String text = new String(newData);
                 runOnUiThread(new Runnable() {
                     public void run() {
+                        //Reset the watchdog timer (otherwise bus will go back to PCM mode)
+                        watchdogTimer = watchdogPeriod;
+
                         DECODER_DATA_BUF = text;
-                        if (view1.getText().length() > 100) {
-                            view1.setText("");
-                        }
-                        view1.setText(view1.getText()+text);
+                        view1.setText(text);//view1.getText()+text);
 
                     }
                 });
@@ -382,72 +387,116 @@ public class MainActivity extends AppCompatActivity {
         new Thread(mDataFeeder).start();
 
 
-        final Object lock = new Object();
+        //final Object lock = new Object();
 
         // Handshake Thread
         final Thread handshake = new Thread() {
             public void run() {
                 Looper.prepare();
                 //synchronized (lock) {
-                    while (true) {
-                        FSKinProg = false;
-                        try {
-                            if (!MODE.equals("FSK")) {
-                                tidVol.setEnabled(false);
-                                maxPres.setEnabled(false);
-                                o2Con.setEnabled(false);
-                            } else {
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                    tidVol.setEnabled(true);
-                                    maxPres.setEnabled(true);
-                                    o2Con.setEnabled(true);
+                while (true) {
 
+                    FSKinProg = false;
+                    try {
+                        runOnUiThread(new Runnable() {
+                                          @Override
+                                          public void run() {
+
+                                              if (!MODE.equals("FSK")) {
+
+                                                  tidVol.setEnabled(false);
+                                                  maxPres.setEnabled(false);
+                                                  o2Con.setEnabled(false);
+                                              } else {
+                                                  tidVol.setEnabled(true);
+                                                  maxPres.setEnabled(true);
+                                                  o2Con.setEnabled(true);
+
+                                              }
+                                          }
+                                      });
+
+                        //Log.d("Delay", "1");
+                        //Does nothing char enq = 05;
+                        //Does nothing char ack = 06;
+                        //Not used String ackStr = Character.toString(ack);
+                        /* do this if the watchdog is 0 if (setFSKChar) {
+                            ENCODER_DATA_BUF = "$aaaaaaaaa";
+                        } else {
+                            ENCODER_DATA_BUF = "pppppppppp";
+                        } */
+                        if(watchdogTimer <=1000 && MODE.equals("FSK"))   //try to keep bus up
+                        {
+                            ENCODER_DATA_BUF = "##########";    //use a different ping in IO mode.
+                        }
+
+                        if (watchdogTimer <= 0){
+                            MODE = "PCM";   //possible to time out!
+                            ENCODER_DATA_BUF = "$$aaaaaaaa"; //TODO can add this to the PCM buffer.
+                            //TODO: else do PCM Mode. Really modulate this.
+
+                            //Log.i("Handshake Thread", "Bus time out.");
+
+                            Thread.sleep(10);//modemPollPeriod);
+
+
+                            //Send out the version string.
+                            if (DECODER_DATA_BUF.contains("$")) {
+                                ENCODER_DATA_BUF = "{\"1\":{}}{\"1\":{}}   \n";
+                            }
+
+                            Thread.sleep(10);//modemPollPeriod);
+
+
+                            if (DECODER_DATA_BUF.contains("{\"1\":{}}")) {
+
+                                //RESET Watchdog
+                                watchdogTimer = watchdogPeriod;
+
+                                MODE = "FSK";
+                                Log.i("Handshake Thread", "FSK Mode on.");
+
+                                /*Causes a crash. IDK why runOnUiThread(new Runnable() {
+                                    public void run() {
+
+                                        //Below is debug
+                                        Toast.makeText(MainActivity.this, "FSK Mode!", Toast.LENGTH_SHORT).show();
+                                    }
+                                });*/
+                            }
+
+                        } else  //watchdog timer is not 0
+                        {
+                            //we should maintain the bus. Right now this is a dummy, it simply decrements the timer down.
+                            watchdogTimer -= modemPollPeriod;
+                        }
+                        /*
+                        if (!FSKinProg) {
+
+                            if (DECODER_DATA_BUF.contains("$") && !MODE.equals("FSK")) {
+                                MODE = "FSK";
+                                runOnUiThread(new Runnable() {
+                                    public void run() {
+                                        Toast.makeText(MainActivity.this, "FSK Mode!", Toast.LENGTH_LONG).show();
+                                    }
+                                });
+                            } else if (!DECODER_DATA_BUF.contains("$") && !MODE.equals("PCM")) {
+                                MODE = "PCM";
+                                runOnUiThread(new Runnable() {
+                                    public void run() {
+                                        Toast.makeText(MainActivity.this, "PCM Mode! Only Respiratory Rate Control Enabled!", Toast.LENGTH_LONG).show();
                                     }
                                 });
                             }
-
-                            Log.d("Delay", "1");
-                            char enq = 05;
-                            char ack = 06;
-                            String ackStr = Character.toString(ack);
-                            if (setFSKChar) {
-                                /*ENCODER_DATA_BUF = Character.toString(enq)+Character.toString(enq)+Character.toString(enq)+Character.toString(enq)
-                                        +Character.toString(enq)+Character.toString(enq)+Character.toString(enq)
-                                        +Character.toString(enq)+Character.toString(enq)+Character.toString(enq);*/
-                                ENCODER_DATA_BUF = "$$$$$$$$$$";
-                            } else {
-                                ENCODER_DATA_BUF = "pppppppppp";
-                            }
-                            Thread.sleep(1000);
-                            Log.d("Delay", "2");
-                            if (!FSKinProg) {
-
-                                if (DECODER_DATA_BUF.contains("$") && !MODE.equals("FSK")) {
-                                    MODE = "FSK";
-                                    runOnUiThread(new Runnable() {
-                                        public void run() {
-                                            Toast.makeText(MainActivity.this, "FSK Mode!", Toast.LENGTH_LONG).show();
-                                        }
-                                    });
-                                } else if (!DECODER_DATA_BUF.contains("$") && !MODE.equals("PCM")) {
-                                    MODE = "PCM";
-                                    runOnUiThread(new Runnable() {
-                                        public void run() {
-                                            Toast.makeText(MainActivity.this, "PCM Mode! Only Respiratory Rate Control Enabled!", Toast.LENGTH_LONG).show();
-                                        }
-                                    });
-                                }
-                            }
-                            Thread.sleep(1000);
-
-
-                        } catch (InterruptedException e) {
-                            Log.i("Handshake Thread", "local Thread error", e);
                         }
+                        */
+                        Thread.sleep(10);//modemPollPeriod);
+
+                    } catch (InterruptedException e) {
+                        Log.i("Handshake Thread", "local Thread error", e);
                     }
                 }
+            }
             //}
         };
 
@@ -471,18 +520,18 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (MODE.equals("FSK")) {
                     //synchronized (lock) {
-                        FSKinProg = true;
-                        ENCODER_DATA_BUF = "{\n\t\"ventilator control\": [\n\t\t\"Respiration Rate\": \"" + respRate.getProgress()
-                                + "\"\n\t\t\"Tidal Volume\": \"" + tidVol.getProgress()
-                                + "\"\n\t\t\"Peak Pressure\": \"" + maxPres.getProgress()
-                                + "\"\n\t\t\"O2 Concentration\": \"" + o2Con.getProgress()
-                                + "\"\n\t]\n}\0";
-                        respText.setText("Respiratory Rate : " + respRate.getProgress() + " / " + respRate.getMax());
-                        tidText.setText("Tidal Volume : " + tidVol.getProgress() + " / " + tidVol.getMax());
-                        presText.setText("Peak Pressure : " + maxPres.getProgress() + " / " + maxPres.getMax());
-                        o2Text.setText("O2 Concentration : " + o2Con.getProgress() + " / " + o2Con.getMax());
-                        //FSKinProg = false;
-                        //lock.notifyAll();
+                    FSKinProg = true;
+                    ENCODER_DATA_BUF = "{\n\t\"ventilator control\": [\n\t\t\"Respiration Rate\": \"" + respRate.getProgress()
+                            + "\"\n\t\t\"Tidal Volume\": \"" + tidVol.getProgress()
+                            + "\"\n\t\t\"Peak Pressure\": \"" + maxPres.getProgress()
+                            + "\"\n\t\t\"O2 Concentration\": \"" + o2Con.getProgress()
+                            + "\"\n\t]\n}\0";
+                    respText.setText("Respiratory Rate : " + respRate.getProgress() + " / " + respRate.getMax());
+                    tidText.setText("Tidal Volume : " + tidVol.getProgress() + " / " + tidVol.getMax());
+                    presText.setText("Peak Pressure : " + maxPres.getProgress() + " / " + maxPres.getMax());
+                    o2Text.setText("O2 Concentration : " + o2Con.getProgress() + " / " + o2Con.getMax());
+                    //FSKinProg = false;
+                    //lock.notifyAll();
                     //}
                 }
                 else {
@@ -524,4 +573,3 @@ public class MainActivity extends AppCompatActivity {
     }
 
 }
-
