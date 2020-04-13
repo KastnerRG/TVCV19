@@ -3,8 +3,7 @@ export class PhysicianModel {
     name: string;
     location: string;
     supervisorId: string;
-    hierarchyLevel: HierarchyLevel;
-    messages: Array<string>
+    hierarchy: HierarchyLevel;
 }
 
 export enum HierarchyLevel {
