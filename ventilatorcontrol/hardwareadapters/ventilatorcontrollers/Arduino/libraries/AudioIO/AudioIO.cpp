@@ -377,60 +377,98 @@ void AudioIO::reportVentilatorKnobs()
 //  2: Maintain a buffer of commands (_mMasterData.buffer_cmd[BUFFERSIZE])
 //  3: timeout watchdog if nothing comes through from the master by WATCHDOGPERIOD
 //It should also be responsive.
+//Please DEBUG THIS FIRST!
 void AudioIO::busMaintainance()
 {
-    int i = 0;
-     char c;
-     bool read_terminator = 0;
-     if(modem.available()) //  there is data on the channel
-     {
-       if(_mPolicyState.comMode == IO)//if(handshake_done) // handshake done, reading commands
-       {
-         while(modem.available() && i < BUFFERSIZE && !read_terminator)
-         {
-           c = modem.read();
-           if(c != ENQ) // flushing the ack character
-           {
-             _mMasterData.buffer_cmd[i]=c;//data.buffer_cmd[i] = c;
-             _mMasterData.available=true;//data.valid = true;
-             if(c == '\0')
-               read_terminator = 1;
-             i++;
-           }
-           else // send the ack to the master
-           {
-             modem.write(ACK);
-           }
-         }
-       }
-       else  // this is the handshake branch
-       {
-         if(_mPolicyState.comMode < IO)//if(!handshake_status) // waiting for the ENQ
-         {
-           if(modem.read() == ENQ)
-           {
-             modem.write(ACK);
-             _mPolicyState.comMode=Handshake;//handshake_status = 1;
-           }
-         }
-         else //read the version string
-         {
-           while(modem.available())
-           {
-             _mMasterData.buffer_cmd[i] = modem.read();//vent_version[i] = modem.read();
-             i++;
-           }
-           //for (i=0; i != '\0'; i++)  // write the version string
-           //  modem.write(ard_version[i]);
-           modem.write(busProtVer);     // write the version string
-           _mPolicyState.comMode=IO;//handshake_status = 0;     // reset the handshake status
-         }
-       }
-     }
-     else  // this means the channel has dropped
-     {
-         _mPolicyState.comMode = PCM;//handshake_done = 0;
-     }
+    char c; //Data character.
+    char hsctr = 0; //used to check handshake string
+    
+    while(modem.available()) 
+    {  
+      c = modem.read();
+      switch(_mPolicyState.comMode)
+      {
+        //S0 bus mode = PCM, check for ping. transition, send ack.
+        case PCM :
+          if(c== ENQ)
+          { 
+            
+            Serial.write("to handshake...\n");
+            modem.write(ACK);
+            hsctr = 0;  //reset the handshake character counter.
+            _mPolicyState.comMode = Handshake;
+          }
+            
+        break;
+    
+        //S1 bus mode = FSK, check for ver (ping stay in S1, ver go to S2, else goto S0) transition, send ver. stay send ack.
+        case Handshake :
+          //if(c == ENQ)
+          //  {/*modem.write(ACK);TODO: technically this should be sent, but breaks android app*/break;}  //cycle here... TODO: should actually send back more ACK.
+          //Serial.write(c);
+            Serial.write(c);
+            if(c = *(busProtVer+hsctr))
+            {
+              Serial.write(c);
+              hsctr++;            
+              if(hsctr>4)
+              {
+                Serial.write(c);
+                Serial.write('\n');
+                //Don't transition until you see a newline...
+                
+                //will not work well  if(c == '\0')
+                //{
+                  //Respond with the same string
+                  modem.write('{');
+                  modem.write('\"');
+                  modem.write('1');
+                  modem.write('\"');
+                  modem.write(':');
+                  modem.write('{');
+                  modem.write('}');
+                  modem.write('}');
+                  modem.write('\0');
+                  
+                  Serial.write("to IO...\n");
+                  _mPolicyState.comMode = IO; //we are in IO mode. cool!
+                //}
+              }
+            }
+            else
+              _mPolicyState.comMode = PCM;  //fail. fall back to looking for a ping.*/
+        break;
+        //S2 bus mode = IO. transition watchdog timeout. stay, modem available.
+        case IO :
+          //Serial.write("IO\n");
+          //reset watchdog.
+          _mPolicyState.watchDogCtr = 100;//= 100; //should enter loop every 10mS
+    
+    
+          //If this was just a ping, send back ACK
+          if(c == ENQ)
+            {modem.write(ACK); break;}  
+    
+          //bufer the data for message decoding.
+          _mMasterData.buffer_cmd[_mMasterData.bufptr]=c;
+          _mMasterData.bufptr++;
+          //check if message is complete.
+          if(c == '\0' || _mMasterData.bufptr==BUFFERSIZE);  //TODO not sure this is sent...
+            {
+              _mMasterData.bufptr = 0;      //Will overwrite next time
+              _mMasterData.available = true;//Give someone a chance to process this data.
+            }
+        break;
+    
+        //default :
+        //  Serial.write("Bus mode error!\n");
+      }
+    }
+    
+    //Do a watchdog timeout always called on the timer period even if we have no characters.
+    if(_mPolicyState.watchDogCtr > 0)
+      if(--_mPolicyState.watchDogCtr == 0)
+          _mPolicyState.comMode = PCM;  //If you don't get anything, then go back to PCM
 }
 
 //BUS MAINTAINENCE UTILITY FUNCTIONS
