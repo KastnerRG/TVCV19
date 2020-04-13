@@ -21,7 +21,7 @@ namespace TvCv19.Frontend.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddPhysicianAsync([FromBody] Physician physician) => Ok(await _physicianRepository.AddPhysicianAsync(physician));
+        public async Task<IActionResult> AddPhysicianAsync(Physician physician) => Ok(await _physicianRepository.AddPhysicianAsync(physician));
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePhysicianAsync(string id)

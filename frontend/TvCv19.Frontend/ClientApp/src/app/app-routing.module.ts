@@ -6,12 +6,12 @@ import { PatientRegistrationComponent } from '../../projects/patient/src/lib/pat
 import { AssignCareGiverRouteResolverService } from '../../projects/patient/src/lib/patient/patient-registration/assign-caregiver-route-resolver.service';
 import { AssignCareGiverComponent } from '../../projects/patient/src/lib/patient/patient-registration/assign-caregiver.component';
 import { CameraSetupComponent } from '../../projects/patient/src/lib/patient/patient-registration/camera-setup.component';
-import { physicianAdminComponent } from './admin/physician-admin.component';
+import { PhysicianAdminComponent } from './admin/physician-admin.component';
 import { PatientComponent } from 'projects/patient/src/public-api';
 
 const routes: Routes = [
   { path: 'physician/:physician-id', component: PhysicianComponent, loadChildren: 'projects/physician/src/public-api#PhysicianModule' },
-  { path: 'admin/registration', component: physicianAdminComponent },
+  { path: 'admin/registration', component: PhysicianAdminComponent },
   // Patient workflow
   {path: 'patient-detail/:id', component: PatientComponent},
   { path: 'patient/registration', component: PatientRegistrationComponent },

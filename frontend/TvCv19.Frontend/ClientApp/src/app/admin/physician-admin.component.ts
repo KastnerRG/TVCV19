@@ -9,14 +9,18 @@ import { Router } from '@angular/router';
   templateUrl: './physician-admin.component.html',
   styleUrls: ['./physician-admin.component.scss']
 })
-export class physicianAdminComponent implements OnInit {
+export class PhysicianAdminComponent implements OnInit {
   caregiverRegistrationForm;
-  patients: Array<PhysicianModel> = []
+  physicians: Array<PhysicianModel> = []
   constructor(private formBuilder: FormBuilder, private service: PhysicianService, private router: Router) {
+    
+    service.getPhysicians().subscribe(physicians => this.physicians = physicians);
+    
     this.caregiverRegistrationForm = this.formBuilder.group({
       name: '',
       location: '',
-      heirachy: ''
+      hierarchy: '',
+      supervisorId: ''
     })
   }
 

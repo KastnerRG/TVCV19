@@ -27,9 +27,8 @@ namespace TvCv19.Frontend
             services.AddScoped<IPatientRepository, PocPatientRepository>();
             services.AddScoped<IPhysicianRepository, PocPhyscianRepository>();
             services.AddScoped<IMessageRepository, PocMessageRepository>();
-            services.AddControllersWithViews();
+            services.AddControllersWithViews().AddNewtonsoftJson();
             services.AddSignalR();
-
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
