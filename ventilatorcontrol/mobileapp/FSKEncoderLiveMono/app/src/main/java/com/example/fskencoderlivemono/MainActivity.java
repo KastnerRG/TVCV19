@@ -26,7 +26,6 @@ import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioTrack;
 import android.os.Bundle;
-import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -35,13 +34,15 @@ public class MainActivity extends AppCompatActivity {
     private static SeekBar tidVol;
     private static SeekBar maxPres;
     private static SeekBar o2Con;
+    private static SeekBar MmIPs;
     private static TextView respText;
     private static TextView tidText;
     private static TextView presText;
     private static TextView o2Text;
-    private static Button setControl;
-    private static Button pcmButton;
-    private static Button fskButton;
+    private static TextView MmIPsText;
+    private static Button getReadouts;
+    //private static Button pcmButton;
+    //private static Button fskButton;
     private static TextView view1;
 
     public String ENCODER_DATA_BUF = "\0";
@@ -246,9 +247,9 @@ public class MainActivity extends AppCompatActivity {
                     int progress_value;
                     @Override
                     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                        progress_value = progress;
-                        ENCODER_DATA_BUF = "O2 Concentration : " + progress + " / " + o2Con.getMax();
-                        o2Text.setText("O2 Concentration : " + progress + " / " + o2Con.getMax());
+                        //progress_value = progress;
+                        //ENCODER_DATA_BUF = "O2 Concentration : " + progress + " / " + o2Con.getMax() + "\n\r\0";
+                        //o2Text.setText("O2 Concentration : " + progress + " / " + o2Con.getMax());
                         //Toast.makeText(MainActivity.this,"SeekBar in progress", Toast.LENGTH_LONG).show();
 
                     }
@@ -262,14 +263,47 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void onStopTrackingTouch(SeekBar seekBar) {
-                        //ENCODER_DATA_BUF = "O2 Concentration : " + progress_value + " / " + maxPres.getMax();
-                        //o2Text.setText("O2 Concentration : " + progress_value + " / " + maxPres.getMax());
-                        //Toast.makeText(MainActivity.this,"SeekBar in StopTracking", Toast.LENGTH_LONG).show();
+                        short RrRt = (short)respRate.getProgress();
+                        short TlVm = (short)tidVol.getProgress();
+                        short MmIP = (short)MmIPs.getProgress();
+                        short PkEP = (short)maxPres.getProgress();
+                        short FiO2 = (short)o2Con.getProgress();//*This* slider.
+
+                        //Write out all sensors at once. This is just expected in our first basic implementation of a ventilator controller.
+                        ENCODER_DATA_BUF = "{\"wr\":[{\"RrRt\":" + RrRt + "},{\"TlVm\":"+ TlVm +"},{\"MmIP\":" + MmIP + "},{\"PkEP\":" + PkEP + "},{\"ITET\":" + MmIP + "},{\"FiO2\":"+ FiO2 +"}]}\r\n";
+                        o2Text.setText("O2 Concentration : " + FiO2 + " / " + o2Con.getMax());
                     }
                 }
         );
     }
 
+    //Class overrides for MmIPs
+    public void MmIPs(){
+        MmIPsText.setText("Max Insp Pressure : " + MmIPs.getProgress() + " / " + MmIPs.getMax());
+        MmIPs.setOnSeekBarChangeListener(
+            new SeekBar.OnSeekBarChangeListener() {
+                int progress_value;
+                @Override
+                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {}
+
+                @Override
+                public void onStartTrackingTouch(SeekBar seekBar) {}
+
+                @Override
+                public void onStopTrackingTouch(SeekBar seekBar) {
+                    short RrRt = (short)respRate.getProgress();
+                    short TlVm = (short)tidVol.getProgress();
+                    short MmIP = (short)MmIPs.getProgress();
+                    short PkEP = (short)maxPres.getProgress();
+                    short FiO2 = (short)o2Con.getProgress();
+
+                    //Write out all sensors at once. This is just expected in our first basic basic implementation of a ventilator controller.
+                    ENCODER_DATA_BUF = "{\"wr\":[{\"RrRt\":" + RrRt + "},{\"TlVm\":"+ TlVm +"},{\"MmIP\":" + MmIP + "},{\"PkEP\":" + PkEP + "},{\"ITET\":" + MmIP + "},{\"FiO2\":"+ FiO2 +"}]}\r\n";
+                    MmIPsText.setText("Max Insp Pressure : " + MmIP + " / " + MmIPs.getMax());
+                }
+            }
+        );
+    }
 
 
     @Override
@@ -277,17 +311,20 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //Wire up some generic controls
         respRate = (SeekBar)findViewById(R.id.respRate);
         tidVol = (SeekBar)findViewById(R.id.tidVol);
         maxPres = (SeekBar)findViewById(R.id.maxPres);
         o2Con = (SeekBar)findViewById(R.id.o2Con);
+        MmIPs = (SeekBar)findViewById(R.id.MmIPs);
         respText = (TextView)findViewById(R.id.respText);
         tidText = (TextView)findViewById(R.id.tidText);
         presText = (TextView)findViewById(R.id.presText);
         o2Text = (TextView)findViewById(R.id.o2Text);
-        setControl = (Button)findViewById(R.id.setControl);
-        pcmButton = (Button)findViewById(R.id.pcm);
-        fskButton = (Button)findViewById((R.id.fsk));
+        MmIPsText = (TextView)findViewById(R.id.MmIpsText);
+        getReadouts = (Button)findViewById(R.id.getReadouts);
+        //Removed pcmButton = (Button)findViewById(R.id.pcm);
+        //Removed fskButton = (Button)findViewById((R.id.fsk));
         view1 = (TextView)findViewById(R.id.decoded);
         // Request Mic permission
         while (ContextCompat.checkSelfPermission(this,
@@ -407,11 +444,14 @@ public class MainActivity extends AppCompatActivity {
                                                   tidVol.setEnabled(false);
                                                   maxPres.setEnabled(false);
                                                   o2Con.setEnabled(false);
+                                                  MmIPs.setEnabled(false);
+                                                  getReadouts.setEnabled(false);    //can't query ventilator
                                               } else {
                                                   tidVol.setEnabled(true);
                                                   maxPres.setEnabled(true);
                                                   o2Con.setEnabled(true);
-
+                                                  MmIPs.setEnabled(true);
+                                                  getReadouts.setEnabled(true);     //can query ventilator
                                               }
                                           }
                                       });
@@ -420,11 +460,6 @@ public class MainActivity extends AppCompatActivity {
                         //Does nothing char enq = 05;
                         //Does nothing char ack = 06;
                         //Not used String ackStr = Character.toString(ack);
-                        /* do this if the watchdog is 0 if (setFSKChar) {
-                            ENCODER_DATA_BUF = "$aaaaaaaaa";
-                        } else {
-                            ENCODER_DATA_BUF = "pppppppppp";
-                        } */
                         if(watchdogTimer <=1000 && MODE.equals("FSK"))   //try to keep bus up
                         {
                             ENCODER_DATA_BUF = "##########";    //use a different ping in IO mode.
@@ -470,26 +505,7 @@ public class MainActivity extends AppCompatActivity {
                             //we should maintain the bus. Right now this is a dummy, it simply decrements the timer down.
                             watchdogTimer -= modemPollPeriod;
                         }
-                        /*
-                        if (!FSKinProg) {
 
-                            if (DECODER_DATA_BUF.contains("$") && !MODE.equals("FSK")) {
-                                MODE = "FSK";
-                                runOnUiThread(new Runnable() {
-                                    public void run() {
-                                        Toast.makeText(MainActivity.this, "FSK Mode!", Toast.LENGTH_LONG).show();
-                                    }
-                                });
-                            } else if (!DECODER_DATA_BUF.contains("$") && !MODE.equals("PCM")) {
-                                MODE = "PCM";
-                                runOnUiThread(new Runnable() {
-                                    public void run() {
-                                        Toast.makeText(MainActivity.this, "PCM Mode! Only Respiratory Rate Control Enabled!", Toast.LENGTH_LONG).show();
-                                    }
-                                });
-                            }
-                        }
-                        */
                         Thread.sleep(10);//modemPollPeriod);
 
                     } catch (InterruptedException e) {
@@ -516,9 +532,12 @@ public class MainActivity extends AppCompatActivity {
         Thread soundThread = new Thread(pcmRun);
         soundThread.start();
 
-        setControl.setOnClickListener(new View.OnClickListener() {
+        //Button press to get readouts. Should nuke the output buffer and send its own command.
+        getReadouts.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if (MODE.equals("FSK")) {
+                //TODO: should pause the watchdog thread?
+                ENCODER_DATA_BUF = "{\"rk\":[{\"RrRt\",\"TlVm\",\"MmIP\",\"PkEP\",\"ITET\",\"FiO2\"]}\r\n"; //read knobs.
+                /*Not sure what this is for... if (MODE.equals("FSK")) {
                     //synchronized (lock) {
                     FSKinProg = true;
                     ENCODER_DATA_BUF = "{\n\t\"ventilator control\": [\n\t\t\"Respiration Rate\": \"" + respRate.getProgress()
@@ -534,13 +553,14 @@ public class MainActivity extends AppCompatActivity {
                     //lock.notifyAll();
                     //}
                 }
-                else {
+                else*{
                     Log.d("PCM", "PCM MODE");
                     pcmRun.setFreq_level(respRate.getProgress());
-                }
+                }*/
             }
         });
 
+        /*Removed.
         pcmButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 setFSKChar = false;
@@ -557,6 +577,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+        */
     }
 
 

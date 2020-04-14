@@ -17,8 +17,8 @@
 |	CONTROL STRINGS FOR COMPLIANCE WITH VENTILATOR API SPECIFICATION Ver 1	  |
 \*===========================================================================*/
 
-#define WATCHDOGPERIOD 4000
-#define POLLBUSMS 100
+#define WATCHDOGPERIOD 4000 /*watchdog timeout period of bus*/
+#define POLLBUSMS 100 /*how often to poll serial data*/
 
 //Constant control strings. Meet specification but do not require complex logic.
 
