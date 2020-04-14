@@ -4,25 +4,57 @@
   </mat-toolbar-row>
 </mat-toolbar>
 
-<form [formGroup]="checkList" (ngSubmit)="onSubmit()">
-  <mat-form-field>
-    <mat-checkbox formControlName="item1"></mat-checkbox>
-    <mat-label>Checkbox 1</mat-label>
+<form [formGroup]="checkListForm" (ngSubmit)="onSubmit()">
+  <!-- <mat-checkbox [formControlName]="item1">Checklist 1</mat-checkbox>
+  <mat-icon>close</mat-icon>
+  <mat-checkbox [formControlName]="item2">Checklist item 1</mat-checkbox>
+  <mat-icon>close</mat-icon>
+  <mat-checkbox [formControlName]="item3">Checklist item 1</mat-checkbox>
+  <mat-icon>close</mat-icon> -->
+
+  <mat-form-field appearance="fill">
+    <mat-checkbox id="item1" formControlName="item1"
+      >Checklist item 1
+    </mat-checkbox>
     <button mat-icon-button>
       <mat-icon>close</mat-icon>
     </button>
   </mat-form-field>
-  <mat-form-field appearance="fill">
-    <mat-checkbox>Checkbox 2</mat-checkbox>
-    <mat-icon>close</mat-icon>
-  </mat-form-field>
+
+  <mat-divider></mat-divider>
 
   <mat-form-field appearance="fill">
-    <mat-checkbox>Checkbox 3</mat-checkbox>
-    <mat-icon>close</mat-icon>
+    <mat-checkbox id="item2" formControlName="item2"
+      >Checklist item 2
+    </mat-checkbox>
+    <button mat-icon-button>
+      <mat-icon>close</mat-icon>
+    </button>
   </mat-form-field>
-  <mat-checkbox>Checkbox 4</mat-checkbox>
+
+  <mat-divider></mat-divider>
+
+  <mat-form-field appearance="fill">
+    <mat-checkbox id="item3" formControlName="item3"
+      >Checklist item 3
+    </mat-checkbox>
+    <button mat-icon-button>
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-form-field>
+
+  <mat-divider></mat-divider>
+
+  <mat-form-field appearance="fill">
+    <mat-checkbox id="item4" formControlName="item4"
+      >Checklist item 4
+    </mat-checkbox>
+    <button mat-icon-button>
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-form-field>
 </form>
+
 <!-- 
 <mat-checkbox>Disabled</mat-checkbox>
 <mat-checkbox checked="true">Checkbox Checked</mat-checkbox> -->

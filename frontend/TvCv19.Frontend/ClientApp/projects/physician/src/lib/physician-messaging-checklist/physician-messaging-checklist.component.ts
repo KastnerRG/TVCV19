@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, FormBuilder, FormArray } from '@angular/forms';
+import { FormBuilder, FormControl } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatListModule } from '@angular/material/list';
 
@@ -13,7 +13,12 @@ import { MatListModule } from '@angular/material/list';
 export class PhysicianMessagingChecklistComponent implements OnInit {
   physicianName: string = '<test physician>';
   patientName: string = '<test patient>';
-  checkList;
+  checkListForm;
+  // checkList = new FormGroup({
+  //   item1: new FormControl(' '),
+  //   item2: new FormControl(' '),
+  //   item3: new FormControl(' '),
+  // });
 
   /*
   user = {
@@ -42,16 +47,17 @@ export class PhysicianMessagingChecklistComponent implements OnInit {
   }*/
 
   constructor(private formBuilder: FormBuilder) {
-    this.checkList = this.formBuilder.group({
-      item1: false,
-      item2: false,
-      item3: false,
-      item4: false,
+    this.checkListForm = this.formBuilder.group({
+      item1: new FormControl(''),
+      item2: new FormControl(''),
+      item3: new FormControl(''),
+      item4: new FormControl(''),
     });
+    console.log(this.checkListForm);
   }
 
   onSubmit() {
-    console.warn('formSubmitted');
+    console.warn(this.checkListForm.value);
   }
 
   ngOnInit(): void {}
