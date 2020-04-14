@@ -1,0 +1,28 @@
+<mat-toolbar color="secondary">
+  <mat-toolbar-row>
+    <span>{{ physicianName }} ({{ patientName }})</span>
+  </mat-toolbar-row>
+</mat-toolbar>
+
+<form [formGroup]="checkList" (ngSubmit)="onSubmit()">
+  <mat-form-field>
+    <mat-checkbox formControlName="item1"></mat-checkbox>
+    <mat-label>Checkbox 1</mat-label>
+    <button mat-icon-button>
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-form-field>
+  <mat-form-field appearance="fill">
+    <mat-checkbox>Checkbox 2</mat-checkbox>
+    <mat-icon>close</mat-icon>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-checkbox>Checkbox 3</mat-checkbox>
+    <mat-icon>close</mat-icon>
+  </mat-form-field>
+  <mat-checkbox>Checkbox 4</mat-checkbox>
+</form>
+<!-- 
+<mat-checkbox>Disabled</mat-checkbox>
+<mat-checkbox checked="true">Checkbox Checked</mat-checkbox> -->

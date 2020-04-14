@@ -1,4 +1,8 @@
-import { NgModule, } from '@angular/core';
+import { NgModule } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatListModule } from '@angular/material/list';
+
 import { RouterModule } from '@angular/router';
 import { PhysicianComponent } from './physician.component';
 import { RootComponent } from './root/root.component';
@@ -22,12 +26,15 @@ import { ChangeShiftComponent } from './change-shift/change-shift.component';
     PhysicianHeirachyComponent,
     PatientListComponent,
     PatientDetailComponent,
-    ChangeShiftComponent
+    ChangeShiftComponent,
   ],
   imports: [
     RouterModule.forChild(routes),
-    SharedModule
+    SharedModule,
+    ReactiveFormsModule,
+    MatCheckboxModule,
+    MatListModule,
   ],
-  exports: [PhysicianComponent, RouterModule]
+  exports: [PhysicianComponent, RouterModule],
 })
-export class PhysicianModule { }
+export class PhysicianModule {}

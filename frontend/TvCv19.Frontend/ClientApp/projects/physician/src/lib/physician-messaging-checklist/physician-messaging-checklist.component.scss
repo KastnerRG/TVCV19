@@ -1,0 +1,23 @@
+mat-toolbar {
+  mat-toolbar-row {
+    font-size: 30px;
+  }
+}
+
+form {
+  margin-top: 40px;
+  background-color: white;
+  // margin-left: 50px;
+  mat-form-field {
+    width: 100%;
+
+    display: flex;
+    align-content: center;
+    align-items: center;
+    height: 50px;
+    margin: 10px;
+  }
+  mat-icon {
+    text-align: right;
+  }
+}

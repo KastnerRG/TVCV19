@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { PhysicianComponent } from 'projects/physician/src/public-api';
-import { PhysicianMessagingChecklistComponent } from './physician-messaging-checklist/physician-messaging-checklist.component';
 
 import { PatientRegistrationComponent } from '../../projects/patient/src/lib/patient/patient-registration/patient-registration.component';
 import { AssignCareGiverRouteResolverService } from '../../projects/patient/src/lib/patient/patient-registration/assign-caregiver-route-resolver.service';
@@ -9,6 +8,7 @@ import { AssignCareGiverComponent } from '../../projects/patient/src/lib/patient
 import { CameraSetupComponent } from '../../projects/patient/src/lib/patient/patient-registration/camera-setup.component';
 import { PhysicianAdminComponent } from './admin/physician-admin.component';
 import { PatientComponent } from 'projects/patient/src/public-api';
+import { PhysicianMessagingChecklistComponent } from '../../projects/physician/src/lib/physician-messaging-checklist/physician-messaging-checklist.component';
 
 const routes: Routes = [
   {
