@@ -3,7 +3,6 @@
 
 //if you don't want Thread.h you can also do:
 
-//#include <SoftModem.h>
 char const wj[] PROGMEM  = "{\"wr\":[{\"RrRt\":1986},{\"TlVm\":12},{\"MmIP\":1623},{\"PkEP\":14},{\"ITET\":12345},{\"FiO2\":0}]}"; //write knobs
 char const rj[] PROGMEM  = "{\"wk\":[{\"RrRt\":1},{\"TlVm\":12},{\"MmIP\":123},{\"PkEP\":1234},{\"ITET\":12345},{\"FiO2\":0}]}"; //read knobs.
 control c;
@@ -13,13 +12,14 @@ AudioIO io = AudioIO();
 //My simple Thread
 Thread myThread = Thread();
 
-//Control for 
-//void loop_ProcessCMD(2000)
+//Bus management
 void niceCallback()
 {
-  io._mMasterData.available =true;
+  io.pollBusStatus();//Does bus maintainance and command parsing if needed
+  //Below is stuff before handshake was added
+  /*io._mMasterData.available =true;
   io.pollBusStatus();
-  /*
+  
   //DEBUG to check the command parser
 
   //OK io.sendVentilatorData();
@@ -46,17 +46,18 @@ void niceCallback()
 
 void setup() {
   Serial.begin(115200);
-  Serial.println("Booting");
+  Serial.println("Booting with 1ms loop");
   //delay(100);
   
   io.begin();
-  
+  /*Commented stuff was there before handshake.
   strcpy_P(io._mMasterData.buffer_cmd,rj);
   //Debug write the strings to control knobs
   io.setVentilatorKnobs();
+  */
 
   myThread.onRun(niceCallback);
-  myThread.setInterval(10);     //call more frequently to poll the serial data
+  myThread.setInterval(POLLBUSMS);//works every 100ms POLLBUSMS);     //call more frequently to poll the serial data
 }
 
 

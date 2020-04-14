@@ -23,9 +23,15 @@ void AudioIO::begin()
   // do whatever is required to initialize the library
   modem = SoftModem();	//Will be used to communicate with bus master.
   
-  Serial.println("AudioIO startup");
   delay(100);
+  Serial.println("AudioIO startup");
   modem.begin();
+  delay(100);
+  modem.write('M');modem.write('B');modem.write(' ');modem.write('v');modem.write('1');modem.write('.');modem.write('0');modem.write('\n');
+
+  //init bus state
+  _mPolicyState.comMode = PCM;
+  _mPolicyState.watchDogCtr = 0;
   
   //_mThread.onRun(maintainAudioBus);  //Maintain the Bus status. 
   //_mThread.setInterval(WATCHDOGPERIOD);//Task should be called as watchdog is about to time out.
@@ -106,7 +112,7 @@ void AudioIO::setVentilatorReadings(readout* readouts)
 void AudioIO::parseCommand()
 {
     char cmd = *(_mMasterData.buffer_cmd+3);
-    Serial.println("Parsing");
+    //Serial.println("Parsing");
 
     if(_mMasterData.available)
     {
@@ -118,18 +124,21 @@ void AudioIO::parseCommand()
         {
             case 'd':   //Assume master wants to read ventilator data (rd) string
                 reportVentilatorData();
+                //Serial.write("reportVentilatorData()\n");
                 break;
                 
             case 'r':   //Assume master wants to write control knobs
-                setVentilatorKnobs();              
+                setVentilatorKnobs();  
+                //Serial.write("setVentilatorKnobs()\n");
                 break;
             case 'k':   //Assume master wants to read control knobs
                 reportVentilatorKnobs();
+                //Serial.write("reportVentilatorKnobs()\n");
                 break;
                 
             default: 
-                Serial.println("Warning! Unrecognized Master command:");//We don't handle this command (maybe we should)
-                //Serial.println(_mMasterData.buffer_cmd);
+                Serial.println("Bad CMD!:");//We don't handle this command (maybe we should)
+                Serial.println(_mMasterData.buffer_cmd);
                 break;
         }
     }
@@ -381,57 +390,63 @@ void AudioIO::reportVentilatorKnobs()
 void AudioIO::busMaintainance()
 {
     char c; //Data character.
+    
     char hsctr = 0; //used to check handshake string
     
-    while(modem.available()) 
+    while(modem.available())  //TODO: handle buffer overflow.
     {  
       c = modem.read();
+      //Serial.write(c);
       switch(_mPolicyState.comMode)
       {
+      //Serial.write(c);
+      
         //S0 bus mode = PCM, check for ping. transition, send ack.
         case PCM :
           if(c== ENQ)
           { 
             
-            Serial.write("to handshake...\n");
+            Serial.write("Handshake\n");
             modem.write(ACK);
+            modem.write('\0');
             hsctr = 0;  //reset the handshake character counter.
             _mPolicyState.comMode = Handshake;
+            //TODO: decide if the buffer should be re-set by this loop. I don't think so actually.
           }
             
         break;
     
         //S1 bus mode = FSK, check for ver (ping stay in S1, ver go to S2, else goto S0) transition, send ver. stay send ack.
-        case Handshake :
-          //if(c == ENQ)
-          //  {/*modem.write(ACK);TODO: technically this should be sent, but breaks android app*/break;}  //cycle here... TODO: should actually send back more ACK.
-          //Serial.write(c);
+        case Handshake :            
+            if(c == ENQ)
+                {modem.write(ACK);modem.write('\0');break;}  //TODO: technically this should be sent, but breaks android app*///cycle here... TODO: should actually send back more ACK.
             Serial.write(c);
+            if(hsctr== LENBUSPROTVER)
+            {
+              hsctr = 0;
+              Serial.write("Overflow reading protocol version\n");
+              _mPolicyState.comMode = PCM;
+              break;
+            }
             if(c = *(busProtVer+hsctr))
             {
-              Serial.write(c);
+              //Serial.write(c);
               hsctr++;            
-              if(hsctr>4)
+              if(hsctr>7)
               {
-                Serial.write(c);
-                Serial.write('\n');
-                //Don't transition until you see a newline...
-                
-                //will not work well  if(c == '\0')
+                //Serial.write(c);
+                //Serial.write('\n');     
                 //{
-                  //Respond with the same string
-                  modem.write('{');
-                  modem.write('\"');
-                  modem.write('1');
-                  modem.write('\"');
-                  modem.write(':');
-                  modem.write('{');
-                  modem.write('}');
-                  modem.write('}');
+                  //Respond with the same string 
+                  modem.write(busProtVer,LENBUSPROTVER);
+                  modem.write(busProtVer,LENBUSPROTVER);
                   modem.write('\0');
                   
-                  Serial.write("to IO...\n");
-                  _mPolicyState.comMode = IO; //we are in IO mode. cool!
+                  Serial.write("IO\n");
+                  _mMasterData.bufptr = 0;              //start reading in commands at buffer position 0
+                  _mMasterData.buffer_cmd[0] = '\0';    //trash any old command
+                  _mPolicyState.comMode = IO;           //we are in IO mode. cool!
+                  hsctr = 0;
                 //}
               }
             }
@@ -440,49 +455,81 @@ void AudioIO::busMaintainance()
         break;
         //S2 bus mode = IO. transition watchdog timeout. stay, modem available.
         case IO :
-          //Serial.write("IO\n");
-          //reset watchdog.
-          _mPolicyState.watchDogCtr = 100;//= 100; //should enter loop every 10mS
-    
-    
-          //If this was just a ping, send back ACK
+            
           if(c == ENQ)
-            {modem.write(ACK); break;}  
-    
+              {hsctr=0;_mPolicyState.watchDogCtr=0;_mPolicyState.comMode = PCM;break;} 
+            
+          //reset watchdog.
+          _mPolicyState.watchDogCtr =WATCHDOGPERIOD;//maintain bus status if a character is read.
+
+          //modem.write(c); //Loop back. Actually this mode will even train up the bus if the ping and ack are symetric and you have no noise.
+
+          //If this was just a ping, send back ACK, do not add to the buffer.
+          if(c == PNG)
+            {modem.write(PNG); break;}  
+
           //bufer the data for message decoding.
           _mMasterData.buffer_cmd[_mMasterData.bufptr]=c;
-          _mMasterData.bufptr++;
-          //check if message is complete.
-          if(c == '\0' || _mMasterData.bufptr==BUFFERSIZE);  //TODO not sure this is sent...
-            {
-              _mMasterData.bufptr = 0;      //Will overwrite next time
-              _mMasterData.available = true;//Give someone a chance to process this data.
-            }
-        break;
+          //Only accept JSON dictionaries (they start with '{'.
+          if(_mMasterData.buffer_cmd[0]=='{')
+          {
+              _mMasterData.bufptr++;
+              //check if message is complete.
+              if((c == '\r') || (_mMasterData.bufptr >= BUFFERSIZE))  //TODO rather not terminate strings on carriage return, but null is not picked up / sent from phone.
+              {
+                  //Serial.write(_mMasterData.buffer_cmd,_mMasterData.bufptr);
+                  //Serial.write("\n");
+                  //Serial.write("\n");
+                  _mMasterData.buffer_cmd[_mMasterData.bufptr] = '\0';  //Null terminate.
+                  _mMasterData.bufptr = 0;      //Will overwrite next time
+                  _mMasterData.available = true;//Give someone a chance to process this data.
     
-        //default :
-        //  Serial.write("Bus mode error!\n");
+                  //DEBUG write out the command
+                  //Serial.write("Got command\n");    
+              }
+          }
+        break;
+
+        /*default :
+          Serial.write("Bus mode error!\n");
+          //Serial.print(c);
+          Serial.write("Com mode:");
+          Serial.print(_mPolicyState.comMode,DEC);
+          Serial.write("\n");*/
       }
     }
-    
+
     //Do a watchdog timeout always called on the timer period even if we have no characters.
     if(_mPolicyState.watchDogCtr > 0)
-      if(--_mPolicyState.watchDogCtr == 0)
+    {
+      _mPolicyState.watchDogCtr-=POLLBUSMS;
+      if(_mPolicyState.watchDogCtr <= 0)
+      {
+          Serial.write("Watchdog Out!\n");
           _mPolicyState.comMode = PCM;  //If you don't get anything, then go back to PCM
+      }
+    }
 }
 
 //BUS MAINTAINENCE UTILITY FUNCTIONS
+
+//pollBusStatus()
+//  1: Maintain a data channel between the ventilator and a remote control. 
+//  2: Parse data channel for commands and process them.
+//  (Should be in a callback called every POLLBUSMS (100ms))
 void AudioIO::pollBusStatus()
 {
     //TODO: Handshaking and buffer maintainance.
     busMaintainance();
+    
     //If the bus is running, try to process commands.
     if(_mPolicyState.comMode = IO)
     {   
-        Serial.println("Poll Bus\n");
+        //Serial.println("Poll Bus\n");
         
         //If we are in Bus mode, call the command parser
         parseCommand(); //Check the command buffer to see if any action needs taking.
     }
+    
 }
 
