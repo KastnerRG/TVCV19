@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, EventEmitter } from '@angular/core';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatListModule } from '@angular/material/list';
@@ -54,6 +54,10 @@ export class PhysicianMessagingChecklistComponent implements OnInit {
       item4: new FormControl(''),
     });
     console.log(this.checkListForm);
+  }
+  // remove: EventEmitter<mat-form-field> = new EventEmitter();
+  closeButtonClick() {
+    console.log('Button Clicks');
   }
 
   onSubmit() {
