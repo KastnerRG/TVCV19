@@ -76,7 +76,7 @@ public class FSKConfig {
 	public static final int RMS_SILENCE_THRESHOLD_8BIT = 7;
 	public static final int RMS_SILENCE_THRESHOLD_16BIT = 2000;
 
-	public static final int DECODER_DATA_BUFFER_SIZE = 32;//MB
+	public static final int DECODER_DATA_BUFFER_SIZE = 128;//32;//MB
 	public static final int ENCODER_DATA_BUFFER_SIZE = 128;
 
 	public static final int ENCODER_PRE_CARRIER_BITS = 3;

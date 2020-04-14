@@ -6,7 +6,7 @@
 #ifndef AudioIO_h
 #define AudioIO_h
 
-#define SERIALDEBUG /*use to view output JSON in serial terminal*/
+//#define SERIALDEBUG /*use to view output JSON in serial terminal*/
 
 // include types & constants of Wiring core API
 #include <Arduino.h>
@@ -36,7 +36,7 @@
 #define PeakInspiratoryPressure         "PkIP"
 #define PCO2                            "PCO2"
 
-//control knob keys (note that the string itself is reversed)
+//control knob keys (note that the string from the defines above has been reversed in hex)
 #define RrRtkey 0x74527252
 #define TlVmkey 0x6d566c54
 #define MmIPkey 0x50496d4d
@@ -199,9 +199,8 @@ class AudioIO
 	readout         _mreadoutRegs;  //appropriately mapped readout registers. Read to get ventilator info
 
 //	void reportVentilatorData();      //Send ventilator data to the bus master
-//	void reportVentilatorKnobs();    //Set control register values using data from bus master
-//    void setVentilatorKnobs();      //
-	//void func1( void (AudioIO::*func)() );  //wrapper to allow function pointer?
+//	void reportVentilatorKnobs();    //Report control register values to bus master
+//    void setVentilatorKnobs();      //Set control register values using data from bus master
 	void AudioIO::busMaintainance();
 };
 

@@ -294,105 +294,104 @@ void AudioIO::setVentilatorKnobs()
 //Report Ventilator Knobs
 void AudioIO::reportVentilatorKnobs()
 {
-    //DEBUG ONLY, WRITE A GENERIC STRING TO THE UART
-    //Set the internal control word of class struct
-    unsigned char j,i = 0;    //counter
-    
-    char val[8];//ascii representation of control register
+    unsigned char j,i = 0;    //loop counters
     
     //uController is not fast enough to complete itoa before a character should be sent.
-    //Only option is to reserve enough memory to pre-compute itoa.
+    //Only option is to reserve enough memory to pre-compute itoa for every control knob.
+    char rrrtstr[8],tlvmstr[8],mmipstr[8],pkepstr[8],itetstr[8],fio2str[8];
+    itoa(_mControlRegs.rrrt,rrrtstr,10); 
+    itoa(_mControlRegs.tlvm,tlvmstr,10);
+    itoa(_mControlRegs.mmip,mmipstr,10);
+    itoa(_mControlRegs.pkep,pkepstr,10);
+    itoa(_mControlRegs.itet,itetstr,10);
+    itoa(_mControlRegs.fio2,fio2str,10);
     
-    while(i<REPORTKNOBSLEN-(6*2)//DEBUG!!!!!
+    //Print out the JSON string (ReportKnobs). when we reach a value offset, e.g. RRRT
+    //then print out the itoa value of the corresponding control knob. 
+    while(i<REPORTKNOBSLEN-(6*2)
             )
     {
         modem.write(*(ReportKnobs+i));
-#ifdef SERIALDEBUG        
+#ifdef SERIALONLYDEBUG        
         Serial.print(*(ReportKnobs+i));
 #endif
         i++;
         //Send out the struct data
         if(i==RRRT)
         {
-            itoa(_mControlRegs.rrrt,val,10);    //convert ventilator readout to ascii
             j=0;
-            while(val[j])   //print out the ascii string for the register
+            while(rrrtstr[j])   //print out the ascii string for the register
             {
-#ifdef SERIALDEBUG                  
-                Serial.print(val[j]);
+#ifdef SERIALONLYDEBUG                  
+                Serial.print(rrrtstr[j]);
 #endif
-                modem.write(val[j++]);
+                modem.write(rrrtstr[j++]);
             }
             i+=2;
         }
         if(i==TLVM)
         {
-            itoa(_mControlRegs.tlvm,val,10);    //convert ventilator readout to ascii
             j=0;
-            while(val[j])   //print out the ascii string for the register
+            while(tlvmstr[j])   //print out the ascii string for the register
             {
-#ifdef SERIALDEBUG                  
-                Serial.print(val[j]);
+#ifdef SERIALONLYDEBUG                  
+                Serial.print(tlvmstr[j]);
 #endif
-                modem.write(val[j++]);
+                modem.write(tlvmstr[j++]);
             }
             i+=2;
         }
         if(i==MMIP)
         {
-            itoa(_mControlRegs.mmip,val,10);    //convert ventilator readout to ascii
             j=0;
-            while(val[j])   //print out the ascii string for the register
+            while(mmipstr[j])   //print out the ascii string for the register
             {
-#ifdef SERIALDEBUG                  
-                Serial.print(val[j]);
+#ifdef SERIALONLYDEBUG                  
+                Serial.print(mmipstr[j]);
 #endif
-                modem.write(val[j++]);
+                modem.write(mmipstr[j++]);
             }
             i+=2;
         }
         if(i==PKEP)
         {
-            itoa(_mControlRegs.pkep,val,10);    //convert ventilator readout to ascii
             j=0;
-            while(val[j])   //print out the ascii string for the register
+            while(pkepstr[j])   //print out the ascii string for the register
             {
-#ifdef SERIALDEBUG                  
-                Serial.print(val[j]);
+#ifdef SERIALONLYDEBUG                  
+                Serial.print(pkepstr[j]);
 #endif
-                modem.write(val[j++]);
+                modem.write(pkepstr[j++]);
             }
             i+=2;
         }
         if(i==ITET)
         {
-            itoa(_mControlRegs.itet,val,10);    //convert ventilator readout to ascii
             j=0;
-            while(val[j])   //print out the ascii string for the register
+            while(itetstr[j])   //print out the ascii string for the register
             {
-#ifdef SERIALDEBUG                  
-                Serial.print(val[j]);
+#ifdef SERIALONLYDEBUG                  
+                Serial.print(itetstr[j]);
 #endif
-                modem.write(val[j++]);
+                modem.write(itetstr[j++]);
             }
             i+=2;
         }
         if(i==FIO2)
         {
-            itoa(_mControlRegs.fio2,val,10);    //convert ventilator readout to ascii
             j=0;
-            while(val[j])   //print out the ascii string for the register
+            while(fio2str[j])   //print out the ascii string for the register
             {
-#ifdef SERIALDEBUG                  
-                Serial.print(val[j]);
+#ifdef SERIALONLYDEBUG                  
+                Serial.print(fio2str[j]);
 #endif
-                modem.write(val[j++]);
+                modem.write(fio2str[j++]);
             }
             i+=2;
         }
 
     }
-#ifdef SERIALDEBUG     
+#ifdef SERIALONLYDEBUG     
     Serial.print('\n');
 #endif
     modem.write('\0');
@@ -437,10 +436,12 @@ void AudioIO::busMaintainance()
         break;
     
         //S1 bus mode = FSK, check for ver (ping stay in S1, ver go to S2, else goto S0) transition, send ver. stay send ack.
-        case Handshake :            
+        case Handshake :
+            _mPolicyState.watchDogCtr =WATCHDOGPERIOD;
+            
             if(c == ENQ)
                 {modem.write(ACK);modem.write('\0');break;}  //TODO: technically this should be sent, but breaks android app*///cycle here... TODO: should actually send back more ACK.
-            Serial.write(c);
+            //annoying->Serial.write(c);
             if(hsctr== LENBUSPROTVER)
             {
               hsctr = 0;
