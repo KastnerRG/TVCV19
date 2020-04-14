@@ -300,9 +300,9 @@ void AudioIO::reportVentilatorKnobs()
     
     char val[8];//ascii representation of control register
     
-    //nonNullShortitoa(56, val);      
-    itoa(56,val,10);    //convert ventilator readout to ascii
-    //DEBUG! check the offsets are the correct length
+    //uController is not fast enough to complete itoa before a character should be sent.
+    //Only option is to reserve enough memory to pre-compute itoa.
+    
     while(i<REPORTKNOBSLEN-(6*2)//DEBUG!!!!!
             )
     {
@@ -318,8 +318,10 @@ void AudioIO::reportVentilatorKnobs()
             j=0;
             while(val[j])   //print out the ascii string for the register
             {
-                
-                Serial.print(val[j++]);
+#ifdef SERIALDEBUG                  
+                Serial.print(val[j]);
+#endif
+                modem.write(val[j++]);
             }
             i+=2;
         }
@@ -329,7 +331,10 @@ void AudioIO::reportVentilatorKnobs()
             j=0;
             while(val[j])   //print out the ascii string for the register
             {
-                Serial.print(val[j++]);
+#ifdef SERIALDEBUG                  
+                Serial.print(val[j]);
+#endif
+                modem.write(val[j++]);
             }
             i+=2;
         }
@@ -339,7 +344,10 @@ void AudioIO::reportVentilatorKnobs()
             j=0;
             while(val[j])   //print out the ascii string for the register
             {
-                Serial.print(val[j++]);
+#ifdef SERIALDEBUG                  
+                Serial.print(val[j]);
+#endif
+                modem.write(val[j++]);
             }
             i+=2;
         }
@@ -349,7 +357,10 @@ void AudioIO::reportVentilatorKnobs()
             j=0;
             while(val[j])   //print out the ascii string for the register
             {
-                Serial.print(val[j++]);
+#ifdef SERIALDEBUG                  
+                Serial.print(val[j]);
+#endif
+                modem.write(val[j++]);
             }
             i+=2;
         }
@@ -359,7 +370,10 @@ void AudioIO::reportVentilatorKnobs()
             j=0;
             while(val[j])   //print out the ascii string for the register
             {
-                Serial.print(val[j++]);
+#ifdef SERIALDEBUG                  
+                Serial.print(val[j]);
+#endif
+                modem.write(val[j++]);
             }
             i+=2;
         }
@@ -369,13 +383,19 @@ void AudioIO::reportVentilatorKnobs()
             j=0;
             while(val[j])   //print out the ascii string for the register
             {
-                Serial.print(val[j++]);
+#ifdef SERIALDEBUG                  
+                Serial.print(val[j]);
+#endif
+                modem.write(val[j++]);
             }
             i+=2;
         }
 
     }
+#ifdef SERIALDEBUG     
     Serial.print('\n');
+#endif
+    modem.write('\0');
 }
 
 //HANDSHAKING AND WATCHDOG
