@@ -35,11 +35,13 @@ public class MainActivity extends AppCompatActivity {
     private static SeekBar maxPres;
     private static SeekBar o2Con;
     private static SeekBar MmIPs;
+    private static SeekBar ITETs;
     private static TextView respText;
     private static TextView tidText;
     private static TextView presText;
     private static TextView o2Text;
     private static TextView MmIPsText;
+    private static TextView ITETsText;
     private static Button getReadouts;
     //private static Button pcmButton;
     //private static Button fskButton;
@@ -130,136 +132,97 @@ public class MainActivity extends AppCompatActivity {
     };
 
     public void RespRate() {
-        //final PWMRun pmwRun = new PWMRun();
-        //final Thread soundThread = new Thread(pmwRun);
-        //soundThread.start();
         respText.setText("Respiratory Rate : " + respRate.getProgress() + " / " + respRate.getMax());
         respRate.setOnSeekBarChangeListener(
                 new SeekBar.OnSeekBarChangeListener() {
                     int progress_value;
                     @Override
-                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                        progress_value = progress;
-                        //ENCODER_DATA_BUF = "Respiratory Rate : " + progress + " / " + respRate.getMax();
-                        //respText.setText("Respiratory Rate : " + progress + " / " + respRate.getMax());
-                        //Toast.makeText(MainActivity.this,"SeekBar in progress", Toast.LENGTH_LONG).show();
-
-                    }
+                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {}
 
                     @Override
-                    public void onStartTrackingTouch(SeekBar seekBar) {
-                        //Toast.makeText(MainActivity.this,"SeekBar in StartTracking", Toast.LENGTH_LONG).show();
-
-
-                    }
+                    public void onStartTrackingTouch(SeekBar seekBar) {}
 
                     @Override
                     public void onStopTrackingTouch(SeekBar seekBar) {
-                        //ENCODER_DATA_BUF = "Respiratory Rate : " + progress_value + " / " + respRate.getMax();
-                        //respText.setText("Respiratory Rate : " + progress_value + " / " + respRate.getMax());
-                        //Toast.makeText(MainActivity.this,"SeekBar in StopTracking", Toast.LENGTH_LONG).show();
+                        short RrRt = (short)respRate.getProgress();//*This* slider.
+                        short TlVm = (short)tidVol.getProgress();
+                        short MmIP = (short)MmIPs.getProgress();
+                        short PkEP = (short)maxPres.getProgress();
+                        short ITET = (short)ITETs.getProgress();
+                        short FiO2 = (short)o2Con.getProgress();
 
-
+                        //Write out all sensors at once. This is just expected in our first basic implementation of a ventilator controller.
+                        ENCODER_DATA_BUF = "{\"wr\":[{\"RrRt\":" + RrRt + "},{\"TlVm\":"+ TlVm +"},{\"MmIP\":" + MmIP + "},{\"PkEP\":" + PkEP + "},{\"ITET\":" + ITET + "},{\"FiO2\":"+ FiO2 +"}]}\r\n";
+                        respText.setText("Respiratory Rate : " + RrRt + " / " + respRate.getMax());
                     }
                 }
         );
     }
 
     public void TidVol() {
-        //final PWMRun pmwRun = new PWMRun();
-        //final Thread soundThread = new Thread(pmwRun);
-        //soundThread.start();
         tidText.setText("Tidal Volume : " + tidVol.getProgress() + " / " + tidVol.getMax());
         tidVol.setOnSeekBarChangeListener(
                 new SeekBar.OnSeekBarChangeListener() {
                     int progress_value;
                     @Override
-                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                        progress_value = progress;
-                        //ENCODER_DATA_BUF = "Tidal Volume : " + progress + " / " + tidVol.getMax();
-                        //tidText.setText("Tidal Volume : " + progress + " / " + tidVol.getMax());
-                        //Toast.makeText(MainActivity.this,"SeekBar in progress", Toast.LENGTH_LONG).show();
-
-                    }
+                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {}
 
                     @Override
-                    public void onStartTrackingTouch(SeekBar seekBar) {
-                        //Toast.makeText(MainActivity.this,"SeekBar in StartTracking", Toast.LENGTH_LONG).show();
-
-
-                    }
+                    public void onStartTrackingTouch(SeekBar seekBar) {}
 
                     @Override
                     public void onStopTrackingTouch(SeekBar seekBar) {
-                        //ENCODER_DATA_BUF = "Tidal Volume : " + progress_value + " / " + tidVol.getMax();
-                        //tidText.setText("Tidal Volume : " + progress_value + " / " + tidVol.getMax());
-                        //Toast.makeText(MainActivity.this,"SeekBar in StopTracking", Toast.LENGTH_LONG).show();
+                        short RrRt = (short)respRate.getProgress();
+                        short TlVm = (short)tidVol.getProgress();//*This* slider.
+                        short MmIP = (short)MmIPs.getProgress();
+                        short PkEP = (short)maxPres.getProgress();
+                        short ITET = (short)ITETs.getProgress();
+                        short FiO2 = (short)o2Con.getProgress();
 
-
+                        //Write out all sensors at once. This is just expected in our first basic implementation of a ventilator controller.
+                        ENCODER_DATA_BUF = "{\"wr\":[{\"RrRt\":" + RrRt + "},{\"TlVm\":"+ TlVm +"},{\"MmIP\":" + MmIP + "},{\"PkEP\":" + PkEP + "},{\"ITET\":" + ITET + "},{\"FiO2\":"+ FiO2 +"}]}\r\n";
+                        tidText.setText("Tidal Volume : "  + TlVm + " / " + tidVol.getMax());
                     }
                 }
         );
     }
 
     public void MaxPres() {
-        //final PWMRun pmwRun = new PWMRun();
-        //final Thread soundThread = new Thread(pmwRun);
-        //soundThread.start();
-        presText.setText("Peak Pressure : " + maxPres.getProgress() + " / " + maxPres.getMax());
+        presText.setText("Peak End Exp Pressure : " + maxPres.getProgress() + " / " + maxPres.getMax());
         maxPres.setOnSeekBarChangeListener(
                 new SeekBar.OnSeekBarChangeListener() {
-                    int progress_value;
                     @Override
-                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                        progress_value = progress;
-                        // ENCODER_DATA_BUF = "Peak Pressure : " + progress + " / " + maxPres.getMax();
-                        // presText.setText("Peak Pressure : " + progress + " / " + maxPres.getMax());
-                        //Toast.makeText(MainActivity.this,"SeekBar in progress", Toast.LENGTH_LONG).show();
-
-                    }
+                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {}
 
                     @Override
-                    public void onStartTrackingTouch(SeekBar seekBar) {
-                        //Toast.makeText(MainActivity.this,"SeekBar in StartTracking", Toast.LENGTH_LONG).show();
-
-
-                    }
+                    public void onStartTrackingTouch(SeekBar seekBar) {}
 
                     @Override
                     public void onStopTrackingTouch(SeekBar seekBar) {
-                        //ENCODER_DATA_BUF = "Peak Pressure : " + progress_value + " / " + maxPres.getMax();
-                        //presText.setText("Peak Pressure : " + progress_value + " / " + maxPres.getMax());
-                        //Toast.makeText(MainActivity.this,"SeekBar in StopTracking", Toast.LENGTH_LONG).show();
+                        short RrRt = (short)respRate.getProgress();
+                        short TlVm = (short)tidVol.getProgress();
+                        short MmIP = (short)MmIPs.getProgress();
+                        short PkEP = (short)maxPres.getProgress();//*This* slider.
+                        short ITET = (short)ITETs.getProgress();
+                        short FiO2 = (short)o2Con.getProgress();
 
-
+                        //Write out all sensors at once. This is just expected in our first basic implementation of a ventilator controller.
+                        ENCODER_DATA_BUF = "{\"wr\":[{\"RrRt\":" + RrRt + "},{\"TlVm\":"+ TlVm +"},{\"MmIP\":" + MmIP + "},{\"PkEP\":" + PkEP + "},{\"ITET\":" + ITET + "},{\"FiO2\":"+ FiO2 +"}]}\r\n";
+                        presText.setText("Peak End Exp Pressure : " + PkEP + " / " + maxPres.getMax());
                     }
                 }
         );
     }
 
     public void O2Con() {
-        //final PWMRun pmwRun = new PWMRun();
-        //final Thread soundThread = new Thread(pmwRun);
-        //soundThread.start();
         o2Text.setText("O2 Concentration : " + o2Con.getProgress() + " / " + o2Con.getMax());
         o2Con.setOnSeekBarChangeListener(
                 new SeekBar.OnSeekBarChangeListener() {
-                    int progress_value;
                     @Override
-                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                        //progress_value = progress;
-                        //ENCODER_DATA_BUF = "O2 Concentration : " + progress + " / " + o2Con.getMax() + "\n\r\0";
-                        //o2Text.setText("O2 Concentration : " + progress + " / " + o2Con.getMax());
-                        //Toast.makeText(MainActivity.this,"SeekBar in progress", Toast.LENGTH_LONG).show();
-
-                    }
+                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {}
 
                     @Override
-                    public void onStartTrackingTouch(SeekBar seekBar) {
-                        //Toast.makeText(MainActivity.this,"SeekBar in StartTracking", Toast.LENGTH_LONG).show();
-
-
-                    }
+                    public void onStartTrackingTouch(SeekBar seekBar) {}
 
                     @Override
                     public void onStopTrackingTouch(SeekBar seekBar) {
@@ -267,10 +230,11 @@ public class MainActivity extends AppCompatActivity {
                         short TlVm = (short)tidVol.getProgress();
                         short MmIP = (short)MmIPs.getProgress();
                         short PkEP = (short)maxPres.getProgress();
+                        short ITET = (short)ITETs.getProgress();
                         short FiO2 = (short)o2Con.getProgress();//*This* slider.
 
                         //Write out all sensors at once. This is just expected in our first basic implementation of a ventilator controller.
-                        ENCODER_DATA_BUF = "{\"wr\":[{\"RrRt\":" + RrRt + "},{\"TlVm\":"+ TlVm +"},{\"MmIP\":" + MmIP + "},{\"PkEP\":" + PkEP + "},{\"ITET\":" + MmIP + "},{\"FiO2\":"+ FiO2 +"}]}\r\n";
+                        ENCODER_DATA_BUF = "{\"wr\":[{\"RrRt\":" + RrRt + "},{\"TlVm\":"+ TlVm +"},{\"MmIP\":" + MmIP + "},{\"PkEP\":" + PkEP + "},{\"ITET\":" + ITET + "},{\"FiO2\":"+ FiO2 +"}]}\r\n";
                         o2Text.setText("O2 Concentration : " + FiO2 + " / " + o2Con.getMax());
                     }
                 }
@@ -295,13 +259,42 @@ public class MainActivity extends AppCompatActivity {
                     short TlVm = (short)tidVol.getProgress();
                     short MmIP = (short)MmIPs.getProgress();
                     short PkEP = (short)maxPres.getProgress();
+                    short ITET = (short)ITETs.getProgress();
                     short FiO2 = (short)o2Con.getProgress();
 
                     //Write out all sensors at once. This is just expected in our first basic basic implementation of a ventilator controller.
-                    ENCODER_DATA_BUF = "{\"wr\":[{\"RrRt\":" + RrRt + "},{\"TlVm\":"+ TlVm +"},{\"MmIP\":" + MmIP + "},{\"PkEP\":" + PkEP + "},{\"ITET\":" + MmIP + "},{\"FiO2\":"+ FiO2 +"}]}\r\n";
+                    ENCODER_DATA_BUF = "{\"wr\":[{\"RrRt\":" + RrRt + "},{\"TlVm\":"+ TlVm +"},{\"MmIP\":" + MmIP + "},{\"PkEP\":" + PkEP + "},{\"ITET\":" + ITET + "},{\"FiO2\":"+ FiO2 +"}]}\r\n";
                     MmIPsText.setText("Max Insp Pressure : " + MmIP + " / " + MmIPs.getMax());
                 }
             }
+        );
+    }
+
+    public void ITETs(){
+        ITETsText.setText(" Inspire t / Expire t : " + ITETs.getProgress() + " / " + ITETs.getMax());
+        ITETs.setOnSeekBarChangeListener(
+                new SeekBar.OnSeekBarChangeListener() {
+                    int progress_value;
+                    @Override
+                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {}
+
+                    @Override
+                    public void onStartTrackingTouch(SeekBar seekBar) {}
+
+                    @Override
+                    public void onStopTrackingTouch(SeekBar seekBar) {
+                        short RrRt = (short)respRate.getProgress();
+                        short TlVm = (short)tidVol.getProgress();
+                        short MmIP = (short)MmIPs.getProgress();
+                        short PkEP = (short)maxPres.getProgress();
+                        short ITET = (short)ITETs.getProgress();
+                        short FiO2 = (short)o2Con.getProgress();
+
+                        //Write out all sensors at once. This is just expected in our first basic basic implementation of a ventilator controller.
+                        ENCODER_DATA_BUF = "{\"wr\":[{\"RrRt\":" + RrRt + "},{\"TlVm\":"+ TlVm +"},{\"MmIP\":" + MmIP + "},{\"PkEP\":" + PkEP + "},{\"ITET\":" + ITET + "},{\"FiO2\":"+ FiO2 +"}]}\r\n";
+                        ITETsText.setText(" Inspire t / Expire t : " + ITET + " / " + MmIPs.getMax());
+                    }
+                }
         );
     }
 
@@ -317,11 +310,13 @@ public class MainActivity extends AppCompatActivity {
         maxPres = (SeekBar)findViewById(R.id.maxPres);
         o2Con = (SeekBar)findViewById(R.id.o2Con);
         MmIPs = (SeekBar)findViewById(R.id.MmIPs);
+        ITETs = (SeekBar)findViewById(R.id.ITETs);
         respText = (TextView)findViewById(R.id.respText);
         tidText = (TextView)findViewById(R.id.tidText);
         presText = (TextView)findViewById(R.id.presText);
         o2Text = (TextView)findViewById(R.id.o2Text);
         MmIPsText = (TextView)findViewById(R.id.MmIpsText);
+        ITETsText = (TextView)findViewById(R.id.ITETsText);
         getReadouts = (Button)findViewById(R.id.getReadouts);
         //Removed pcmButton = (Button)findViewById(R.id.pcm);
         //Removed fskButton = (Button)findViewById((R.id.fsk));
@@ -445,12 +440,14 @@ public class MainActivity extends AppCompatActivity {
                                                   maxPres.setEnabled(false);
                                                   o2Con.setEnabled(false);
                                                   MmIPs.setEnabled(false);
+                                                  ITETs.setEnabled(false);
                                                   getReadouts.setEnabled(false);    //can't query ventilator
                                               } else {
                                                   tidVol.setEnabled(true);
                                                   maxPres.setEnabled(true);
                                                   o2Con.setEnabled(true);
                                                   MmIPs.setEnabled(true);
+                                                  ITETs.setEnabled(true);
                                                   getReadouts.setEnabled(true);     //can query ventilator
                                               }
                                           }
@@ -462,7 +459,8 @@ public class MainActivity extends AppCompatActivity {
                         //Not used String ackStr = Character.toString(ack);
                         if(watchdogTimer <=1000 && MODE.equals("FSK"))   //try to keep bus up
                         {
-                            ENCODER_DATA_BUF = "##########";    //use a different ping in IO mode.
+                            //ENCODER_DATA_BUF = "##########";    //use a different ping in IO mode.
+                            ENCODER_DATA_BUF = "#         ";    //Don't send so many ping characters. its annoying.
                         }
 
                         if (watchdogTimer <= 0){
@@ -490,14 +488,6 @@ public class MainActivity extends AppCompatActivity {
 
                                 MODE = "FSK";
                                 Log.i("Handshake Thread", "FSK Mode on.");
-
-                                /*Causes a crash. IDK why runOnUiThread(new Runnable() {
-                                    public void run() {
-
-                                        //Below is debug
-                                        Toast.makeText(MainActivity.this, "FSK Mode!", Toast.LENGTH_SHORT).show();
-                                    }
-                                });*/
                             }
 
                         } else  //watchdog timer is not 0
@@ -520,11 +510,13 @@ public class MainActivity extends AppCompatActivity {
         handshake.start();
 
 
-
+        //Instantiate Ventilator Control Knob Sliders
         RespRate();
         TidVol();
         MaxPres();
         O2Con();
+        MmIPs();
+        ITETs();
 
 
         // PCM Thread
@@ -537,47 +529,9 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 //TODO: should pause the watchdog thread?
                 ENCODER_DATA_BUF = "{\"rk\":[{\"RrRt\",\"TlVm\",\"MmIP\",\"PkEP\",\"ITET\",\"FiO2\"]}\r\n"; //read knobs.
-                /*Not sure what this is for... if (MODE.equals("FSK")) {
-                    //synchronized (lock) {
-                    FSKinProg = true;
-                    ENCODER_DATA_BUF = "{\n\t\"ventilator control\": [\n\t\t\"Respiration Rate\": \"" + respRate.getProgress()
-                            + "\"\n\t\t\"Tidal Volume\": \"" + tidVol.getProgress()
-                            + "\"\n\t\t\"Peak Pressure\": \"" + maxPres.getProgress()
-                            + "\"\n\t\t\"O2 Concentration\": \"" + o2Con.getProgress()
-                            + "\"\n\t]\n}\0";
-                    respText.setText("Respiratory Rate : " + respRate.getProgress() + " / " + respRate.getMax());
-                    tidText.setText("Tidal Volume : " + tidVol.getProgress() + " / " + tidVol.getMax());
-                    presText.setText("Peak Pressure : " + maxPres.getProgress() + " / " + maxPres.getMax());
-                    o2Text.setText("O2 Concentration : " + o2Con.getProgress() + " / " + o2Con.getMax());
-                    //FSKinProg = false;
-                    //lock.notifyAll();
-                    //}
-                }
-                else*{
-                    Log.d("PCM", "PCM MODE");
-                    pcmRun.setFreq_level(respRate.getProgress());
-                }*/
             }
         });
 
-        /*Removed.
-        pcmButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                setFSKChar = false;
-                //view1.setText("");
-                //ENCODER_DATA_BUF = "Data Decode Test!";
-
-            }
-        });
-        fskButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                setFSKChar = true;
-                //view1.setText("");
-                //ENCODER_DATA_BUF = "Data Decode Test!";
-
-            }
-        });
-        */
     }
 
 
