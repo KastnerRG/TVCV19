@@ -17,7 +17,8 @@
 |	CONTROL STRINGS FOR COMPLIANCE WITH VENTILATOR API SPECIFICATION Ver 1	  |
 \*===========================================================================*/
 
-#define WATCHDOGPERIOD 2000
+#define WATCHDOGPERIOD 4000
+#define POLLBUSMS 100
 
 //Constant control strings. Meet specification but do not require complex logic.
 
@@ -73,9 +74,14 @@
 
 //TODO: These do not seem to really go to PROGMEM...
 //Command String Constants
-#define ENQ 5   /*Ping character of master enquiring if we are listening*/
-#define ACK 6	/*Ack character to send (should really replace with 'ACK')*/
-const char* const busProtVer PROGMEM = "{\"1\":{}}";	//Send bus capabilities during handshake (version 1, no vendor extensions).
+//#define ENQ 5   /*Ping character of master enquiring if we are listening*/
+#define ENQ (char)'$'   /*Ping character of master enquiring if we are listening*/
+//#define ACK 6  /*Ack character to send (should really replace with 'ACK')*/
+#define ACK (char) '$'  /*Ack character to send (should really replace with 'ACK')*/
+#define PNG (char) '#'  /*the IO mode ping. to make sure everyone is on the same page*/
+
+#define LENBUSPROTVER 10
+const char* const busProtVer PROGMEM = " {\"1\":{}} ";  //Send bus capabilities during handshake (version 1, no vendor extensions).
 const char* const FullRead PROGMEM =                  //Read All Sensors at once.
 "{\"rd\":[\
 {\"" MinuteVentilation "\":%i},\
@@ -94,17 +100,20 @@ const char* const ReportKnobs PROGMEM =                 //Report back all contro
 ]}";                                            //94 chars (including null)
 
 
-enum{PCM,Handshake,IO}busMode;
+//enum busMode{PCM=0,Handshake,IO};
+#define PCM 0
+#define Handshake PCM +1
+#define IO Handshake + 1
 
 //Use to keep track of policy FSM
 typedef struct POLICY
 {
-	int comMode;
-	bool watchDogOn;
-	int watchDogCtr;
+  char comMode;
+  bool watchDogOn;
+  int watchDogCtr;
 
-	//Initial control policy state
-	POLICY(){comMode=PCM;watchDogOn=false;watchDogCtr=0;}
+  //Initial control policy state
+  POLICY(){comMode=PCM;watchDogOn=false;watchDogCtr=0;}
 
 }policy;
 
@@ -134,11 +143,11 @@ typedef struct _STATUS
 //Global data buffer.
 typedef struct _INCOMINGDATA
 {
-    char bufptr;                  //Track position writing to in buffer.
     char buffer_cmd[BUFFERSIZE];
+    char bufptr;
     bool available;               //Set when new data is found.
+    _INCOMINGDATA(){bufptr=0;available=false;}
 }incomingdata;
-
 
 /*===========================================================================*\
 |				VENTILATOR CONTROL API FUNCTION SIGNATURES	  				  |
@@ -188,7 +197,7 @@ class AudioIO
     policy          _mPolicyState; //bus policy state
     control         _mControlRegs; //appropriately mapped control registers
 	readout         _mreadoutRegs;  //appropriately mapped readout registers. Read to get ventilator info
-	
+
 //	void reportVentilatorData();      //Send ventilator data to the bus master
 //	void reportVentilatorKnobs();    //Set control register values using data from bus master
 //    void setVentilatorKnobs();      //
