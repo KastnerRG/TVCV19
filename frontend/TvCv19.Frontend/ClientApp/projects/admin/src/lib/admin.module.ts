@@ -7,9 +7,8 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { RouterModule } from '@angular/router';
 import { RootComponent } from './root/root.component';
 import { MatButtonModule } from '@angular/material/button';
-import { HttpClientModule } from '@angular/common/http';
 import { SharedModule } from 'projects/shared/src/public-api';
-import { MatOptionModule } from '@angular/material/core';
+import { MatInputModule } from '@angular/material/input';
 
 
 @NgModule({
@@ -27,7 +26,7 @@ import { MatOptionModule } from '@angular/material/core';
     MatFormFieldModule,
     MatToolbarModule,
     MatButtonModule,
-    MatOptionModule,
+    MatInputModule,
     SharedModule
   ],
   exports: [

@@ -27,6 +27,30 @@ function Get-DailyCoRoom {
     }
 }
 
+function Remove-DailyCoRoom {
+    param(
+        [Parameter(ParameterSetName='RoomValue', Mandatory=$true, ValueFromPipeline=$true)]
+        [TvCv19.DailyCo.Client.Models.Room]$Room,
+        [Parameter(ParameterSetName='RoomName', Mandatory=$true, ValueFromPipeline=$true)]
+        [string]$Name
+    )
+
+    PROCESS {
+        $client = New-Object -TypeName TvCv19.DailyCo.Client.RoomClient -ArgumentList $dailyCoToken
+
+        switch ($PSCmdlet.ParameterSetName) {
+            'RoomValue' {
+                $client.DeleteRoomAsync($Room).Wait()
+            }
+            'RoomName' {
+                $client.DeleteRoomAsync($Name).Wait()
+            }
+        }
+
+        $client.Dispose()
+    }
+}
+
 function New-DailyCoRoom {
     param(
         [Parameter(Mandatory=$true, ValueFromPipeline=$true)]
