@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { PatientService } from 'projects/shared/src/public-api';
+import { PatientService, PatientModel } from 'projects/shared/src/public-api';
 
 @Component({
   selector: 'lib-root',
@@ -7,8 +7,12 @@ import { PatientService } from 'projects/shared/src/public-api';
   styleUrls: ['./root.component.scss']
 })
 export class RootComponent implements OnInit {
+  patients: PatientModel[];
 
-  constructor() { }
+  constructor(patientService: PatientService) {
+    patientService.getPatients()
+      .subscribe(p => this.patients = p);
+  }
 
   ngOnInit(): void {
   }
