@@ -7,7 +7,7 @@ import {
 import { Observable, of, EMPTY } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
 import { AssignCareGiverModel } from './assign-caregiver-route-model';
-import { PhysicianService } from 'projects/physician/src/public-api';
+import { PhysicianService } from 'projects/shared/src/public-api';
 import { PatientService } from 'projects/shared/src/public-api';
 
 @Injectable({

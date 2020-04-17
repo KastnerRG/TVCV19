@@ -15,11 +15,17 @@
         <mat-icon matSuffix>mode_edit</mat-icon>
     </mat-form-field>
     <mat-form-field>
-        <mat-label>Heirachy</mat-label>
-        <select matNativeControl required formControlName="heirachy">
-          <option value="firstLine">First Line</option>
-          <option value="secondLine">Second Line</option>
+        <mat-label>Care Type</mat-label>
+        <select matNativeControl required formControlName="hierarchy">
+          <option value="firstLine">Bedside Care</option>
+          <option value="secondLine">Physician</option>
           <option value="commander">Commander</option>
+        </select>
+    </mat-form-field>
+    <mat-form-field *ngIf="physicians && caregiverRegistrationForm.get('hierarchy').value === 'FirstLine'">
+        <mat-label>Supervisor</mat-label>
+        <select matNativeControl formControlName="supervisorId" >
+          <option *ngFor="let physician of physicians;" value="{{physician.id}}" >{{physician.name}}</option>
         </select>
     </mat-form-field>
     <div mat-dialog-actions align="end">
