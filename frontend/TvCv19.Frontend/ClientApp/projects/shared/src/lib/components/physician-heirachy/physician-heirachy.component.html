@@ -14,14 +14,10 @@
     <span>You have {{patients.length}} Patient(s)</span>
   </mat-toolbar>  
   <mat-grid-tile *ngFor="let patient of patients;">
-    <div flexLayout="column">
-      <div flexLayout="row" fxFill fxFlex>
-        <a mat-button fxFill fxFlex>
-          {{patient.name}}
-          <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
-        </a>
-      </div>
-    </div>
+      <a mat-button>
+        {{patient.name}}
+        <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
+      </a>
   </mat-grid-tile>
 </mat-grid-list>
 <button color="primary" mat-raised-button (click)="scanPatientQr = !scanPatientQr">Add Patient</button>
