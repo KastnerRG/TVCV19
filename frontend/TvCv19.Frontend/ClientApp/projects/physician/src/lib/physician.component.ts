@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'lib-physician',
-  template: `<p>physician-works</p>`
+  template: `<router-outlet></router-outlet>`
 })
 export class PhysicianComponent {
   

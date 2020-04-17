@@ -6,8 +6,9 @@ import {
 }                                 from '@angular/router';
 import { Observable, of, EMPTY }  from 'rxjs';
 import { mergeMap }         from 'rxjs/operators';
-import { FirstLinePatientRouteDataModel } from './firstlinePatientRouteData.model';
-import { PatientService, PhysicianService } from 'projects/shared/src/public-api';
+import { FirstLinePatientRouteDataModel } from '../../models/first-line-patient-route-data.model';
+import { PatientService } from '../../services/patient.service';
+import { PhysicianService } from '../../services/physician.service';
 
 @Injectable({
   providedIn: 'root'

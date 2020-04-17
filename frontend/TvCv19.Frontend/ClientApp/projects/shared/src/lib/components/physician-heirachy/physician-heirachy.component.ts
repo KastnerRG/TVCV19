@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { FirstLinePatientRouteDataModel } from '../physician-heirachy/firstlinePatientRouteData.model';
-import { PatientService, PatientModel, AdmissionStatus, PhysicianModel, HierarchyLevel } from 'projects/shared/src/public-api';
+import { PatientService } from '../../services/patient.service';
+import { PatientModel } from '../../models/patient.model';
+import { FirstLinePatientRouteDataModel } from '../../models/first-line-patient-route-data.model';
+import { PhysicianModel } from '../../models/physician.model';
 
 @Component({
   selector: 'app-physician-heirachy',
