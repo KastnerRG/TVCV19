@@ -6,10 +6,8 @@ import { LiveVideoComponent } from './live-video/live-video.component';
 import { PatientNavigationComponent } from './patient-navigation/patient-navigation.component';
 import { ChatComponent } from './chat/chat.component';
 import { PatientListComponent } from './patient-list/patient-list.component';
-import { PatientDetailComponent } from './patient-detail/patient-detail.component';
-import { SharedModule, PhysicianHeirachyComponent, PhysicianRouteResolverService } from 'projects/shared/src/public-api';
+import { SharedModule, PhysicianHeirachyComponent, PhysicianRouteResolverService, PatientDetailComponent } from 'projects/shared/src/public-api';
 import { CommonModule } from '@angular/common';
-import { VideoReceiverComponent } from './video-receiver/video-receiver.component';
 import { QRCodeModule } from 'angularx-qrcode';
 import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
@@ -32,8 +30,6 @@ import { PhysicianRootComponent } from './physician-root/physician-root.componen
     PatientNavigationComponent,
     ChatComponent,
     PatientListComponent,
-    PatientDetailComponent,
-    VideoReceiverComponent,
     ChangeShiftComponent,
     PhysicianRootComponent
   ],
@@ -47,6 +43,9 @@ import { PhysicianRootComponent } from './physician-root/physician-root.componen
               model: PhysicianRouteResolverService
             }
         },
+        { path: 'patient/:id', component: PhysicianRootComponent, children: [
+          { path: '', component: PatientDetailComponent }
+        ]}
       ]}
     ]),
     CommonModule,
