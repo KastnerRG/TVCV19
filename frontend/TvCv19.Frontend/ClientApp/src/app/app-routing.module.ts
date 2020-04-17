@@ -17,7 +17,7 @@ const routes: Routes = [
   { path: '', component: RootComponent },
   { path: 'admin', component: AdminComponent, loadChildren: 'projects/admin/src/public-api#AdminModule' },
   { path: 'caregiver', component: BedsideComponent, loadChildren: 'projects/bedside/src/public-api#BedsideModule'  },
-  { path: 'patient', component: PatientComponent },
+  { path: 'patient', component: PatientComponent, loadChildren: 'projects/patient/src/public-api#PatientModule' },
   { path: 'physician', component: PhysicianComponent, loadChildren: 'projects/physician/src/public-api#PhysicianModule' },
 
 

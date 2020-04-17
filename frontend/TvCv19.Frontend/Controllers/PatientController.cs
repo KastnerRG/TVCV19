@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -32,20 +33,21 @@ namespace TvCv19.Frontend.Controllers
         {
             patientModel.Id = await _patientRepository.AdmitPatient(patientModel);
 
-            try
-            {
-                using (var roomClient = new RoomClient(DAILY_TOKEN))
-                {
-                  await roomClient.CreateRoomAsync(new Room
-                  {
-                    Name = patientModel.Id
-                  });
-                }
-            }
-            catch (System.Exception)
-            {
-                
-            }
+            // Cannot use a GUID as room name.
+            //try
+            //{
+            //    using (var roomClient = new RoomClient(DAILY_TOKEN))
+            //    {
+            //      await roomClient.CreateRoomAsync(new Room
+            //      {
+            //        Name = patientModel.Id
+            //      });
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    throw ex;
+            //}
 
             return Ok(patientModel);
         }
