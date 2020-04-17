@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FirstLinePatientRouteDataModel } from '../physician-heirachy/firstlinePatientRouteData.model';
-import { PatientModel, PhysicianModel } from 'projects/shared/src/public-api';
+import { PatientModel, PhysicianModel, FirstLinePatientRouteDataModel } from 'projects/shared/src/public-api';
 
 @Component({
   selector: 'lib-patient-list',

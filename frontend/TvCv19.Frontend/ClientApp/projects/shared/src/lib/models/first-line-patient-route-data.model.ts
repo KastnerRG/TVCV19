@@ -1,4 +1,5 @@
-import { PatientModel, PhysicianModel } from 'projects/shared/src/public-api';
+import { PatientModel } from './patient.model';
+import { PhysicianModel } from '../../public-api';
 
 export class FirstLinePatientRouteDataModel {
     patients: Array<PatientModel>;

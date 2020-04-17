@@ -6,9 +6,8 @@ import { LiveVideoComponent } from './live-video/live-video.component';
 import { PatientNavigationComponent } from './patient-navigation/patient-navigation.component';
 import { ChatComponent } from './chat/chat.component';
 import { PatientListComponent } from './patient-list/patient-list.component';
-import { PhysicianHeirachyComponent } from './physician-heirachy/physician-heirachy.component';
 import { PatientDetailComponent } from './patient-detail/patient-detail.component';
-import { SharedModule } from 'projects/shared/src/public-api';
+import { SharedModule, PhysicianHeirachyComponent, PhysicianRouteResolverService } from 'projects/shared/src/public-api';
 import { CommonModule } from '@angular/common';
 import { VideoReceiverComponent } from './video-receiver/video-receiver.component';
 import { QRCodeModule } from 'angularx-qrcode';
@@ -22,6 +21,8 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { ChangeShiftComponent } from './change-shift/change-shift.component';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatButtonModule } from '@angular/material/button';
+import { PhysicianRootComponent } from './physician-root/physician-root.component';
 
 @NgModule({
   declarations: [
@@ -30,15 +31,23 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
     LiveVideoComponent,
     PatientNavigationComponent,
     ChatComponent,
-    PhysicianHeirachyComponent,
     PatientListComponent,
     PatientDetailComponent,
     VideoReceiverComponent,
-    ChangeShiftComponent
+    ChangeShiftComponent,
+    PhysicianRootComponent
   ],
   imports: [
     RouterModule.forChild([
-      { path: '', component: RootComponent}
+      { path: '', component: RootComponent},
+      { path: ':id', component: PhysicianRootComponent, children: [
+        { path: '',
+            component: PhysicianHeirachyComponent,
+            resolve: {
+              model: PhysicianRouteResolverService
+            }
+        },
+      ]}
     ]),
     CommonModule,
     QRCodeModule,
@@ -52,6 +61,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
     MatSidenavModule,
     MatListModule,
     MatAutocompleteModule,
+    MatButtonModule,
     SharedModule
   ],
   exports: [PhysicianComponent, RouterModule]
