@@ -1,11 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
-import { PatientModel } from 'src/app/shared/models/patient-model';
 import { map, startWith } from 'rxjs/operators';
 import { ChangeShiftModel } from './change-shift.model';
-import { PatientService } from '../../../../../src/app/shared/services/patient.service';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
+import { PatientService, PatientModel } from 'projects/shared/src/public-api';
 
 export interface Caregiver {
   name: string;

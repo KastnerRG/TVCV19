@@ -5,7 +5,6 @@ import { RootComponent } from './root/root.component';
 import { LiveVideoComponent } from './live-video/live-video.component';
 import { PatientNavigationComponent } from './patient-navigation/patient-navigation.component';
 import { ChatComponent } from './chat/chat.component';
-import { routes } from './physician.routes';
 import { PatientListComponent } from './patient-list/patient-list.component';
 import { PhysicianHeirachyComponent } from './physician-heirachy/physician-heirachy.component';
 import { PatientDetailComponent } from './patient-detail/patient-detail.component';
@@ -17,11 +16,12 @@ import { MatCardModule } from '@angular/material/card';
 import { MatIconModule } from '@angular/material/icon';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { ChangeShiftComponent } from './change-shift/change-shift.component';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 @NgModule({
   declarations: [
@@ -37,10 +37,13 @@ import { ChangeShiftComponent } from './change-shift/change-shift.component';
     ChangeShiftComponent
   ],
   imports: [
-    RouterModule.forChild(routes),
+    RouterModule.forChild([
+      { path: '', component: RootComponent}
+    ]),
     CommonModule,
     QRCodeModule,
     FormsModule,
+    ReactiveFormsModule,
     MatCardModule,
     MatIconModule,
     MatGridListModule,
@@ -48,6 +51,7 @@ import { ChangeShiftComponent } from './change-shift/change-shift.component';
     MatFormFieldModule,
     MatSidenavModule,
     MatListModule,
+    MatAutocompleteModule,
     SharedModule
   ],
   exports: [PhysicianComponent, RouterModule]

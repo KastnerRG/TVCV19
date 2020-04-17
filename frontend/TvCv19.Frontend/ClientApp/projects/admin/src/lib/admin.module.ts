@@ -9,6 +9,7 @@ import { RootComponent } from './root/root.component';
 import { MatButtonModule } from '@angular/material/button';
 import { SharedModule } from 'projects/shared/src/public-api';
 import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
 
 
 @NgModule({
@@ -27,6 +28,7 @@ import { MatInputModule } from '@angular/material/input';
     MatToolbarModule,
     MatButtonModule,
     MatInputModule,
+    MatIconModule,
     SharedModule
   ],
   exports: [
