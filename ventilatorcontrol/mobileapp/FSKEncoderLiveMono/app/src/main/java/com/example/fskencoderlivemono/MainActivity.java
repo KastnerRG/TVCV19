@@ -570,6 +570,11 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 //TODO: should pause the watchdog thread?
                 ENCODER_DATA_BUF = "{\"rd\":[{\"MtVn\",\"PkIP\",\"PCO2\"]}\r\n"; //read knobs.
+
+                //TODO: Get real data
+                MtVndisp.setText("0");
+                PkIPdisp.setText("0");
+                PCO2disp.setText("0");
             }
         });
 
