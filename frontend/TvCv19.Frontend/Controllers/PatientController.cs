@@ -66,8 +66,11 @@ namespace TvCv19.Frontend.Controllers
             return Ok(patient);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetPatients() => Ok(await _patientRepository.GetPatients());
+
         [HttpGet("physician/{id}")]
-        public async Task<IActionResult> GetPatients(string id)
+        public async Task<IActionResult> GetPatientByPhysician(string id)
         {
             var patient = await _patientRepository.GetPatientsByPhysician(id);
             return Ok(patient);

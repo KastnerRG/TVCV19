@@ -42,6 +42,12 @@ export class PatientService {
       .pipe(catchError(this.handleError));
   }
 
+  getPatients(): Observable<PatientModel[]> {
+    return this.http
+      .get<PatientModel[]>('/api/patient')
+      .pipe(catchError(this.handleError));
+  }
+
   getMessages(id: string): Observable<Array<MessageModel>> {
     return this.http
       .get<Array<MessageModel>>(`/api/patient/${id}/messages`)
