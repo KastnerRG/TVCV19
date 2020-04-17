@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
     private static TextView MmIPsText;
     private static TextView ITETsText;
     private static Button getReadouts;
+    private PCMRun pcmRun;
     //private static Button pcmButton;
     //private static Button fskButton;
     private static TextView view1;
@@ -151,9 +152,15 @@ public class MainActivity extends AppCompatActivity {
                         short ITET = (short)ITETs.getProgress();
                         short FiO2 = (short)o2Con.getProgress();
 
-                        //Write out all sensors at once. This is just expected in our first basic implementation of a ventilator controller.
-                        ENCODER_DATA_BUF = "{\"wr\":[{\"RrRt\":" + RrRt + "},{\"TlVm\":"+ TlVm +"},{\"MmIP\":" + MmIP + "},{\"PkEP\":" + PkEP + "},{\"ITET\":" + ITET + "},{\"FiO2\":"+ FiO2 +"}]}\r\n";
+                        if (MODE == "FSK") {
+                            //Write out all sensors at once. This is just expected in our first basic implementation of a ventilator controller.
+                            ENCODER_DATA_BUF = "{\"wr\":[{\"RrRt\":" + RrRt + "},{\"TlVm\":" + TlVm + "},{\"MmIP\":" + MmIP + "},{\"PkEP\":" + PkEP + "},{\"ITET\":" + ITET + "},{\"FiO2\":" + FiO2 + "}]}\r\n";
+                        }
+                        else {
+                            pcmRun.setFreq_level(respRate.getProgress());
+                        }
                         respText.setText("Respiratory Rate : " + RrRt + " / " + respRate.getMax());
+
                     }
                 }
         );
@@ -520,7 +527,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         // PCM Thread
-        final PCMRun pcmRun = new PCMRun();
+        pcmRun = new PCMRun();
         Thread soundThread = new Thread(pcmRun);
         soundThread.start();
 
