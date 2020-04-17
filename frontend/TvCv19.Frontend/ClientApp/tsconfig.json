@@ -39,6 +39,10 @@
       "admin": [
         "dist/admin/admin",
         "dist/admin"
+      ],
+      "bedside": [
+        "dist/bedside/bedside",
+        "dist/bedside"
       ]
     }
   },

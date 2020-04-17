@@ -8,12 +8,12 @@ import { map } from 'rxjs/operators';
   styleUrls: ['./root.component.scss']
 })
 export class RootComponent implements OnInit {
-  physicians: PhysicianModel[];
+  bedsideCaregivers: PhysicianModel[];
 
   constructor(physicianService: PhysicianService) {
     physicianService.getPhysicians()
       .pipe(map(models => models.filter(p => p.hierarchy === HierarchyLevel.FirstLine)))
-      .subscribe(p => this.physicians = p);
+      .subscribe(p => this.bedsideCaregivers = p);
   }
 
   ngOnInit(): void {

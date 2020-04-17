@@ -5,9 +5,9 @@ import {
   RouterStateSnapshot,
 } from '@angular/router';
 import { MessageModel } from '../chat.service';
-import { Observable, of, EMPTY, BehaviorSubject } from 'rxjs';
-import { mergeMap, take, catchError } from 'rxjs/operators';
-import { PatientService } from 'src/app/shared/services/patient.service';
+import { Observable, of, BehaviorSubject } from 'rxjs';
+import { mergeMap, catchError } from 'rxjs/operators';
+import { PatientService } from 'projects/shared/src/public-api'
 
 @Injectable({
   providedIn: 'root',

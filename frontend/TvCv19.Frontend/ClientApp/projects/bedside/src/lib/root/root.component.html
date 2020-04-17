@@ -1,0 +1,5 @@
+<mat-list>
+    <mat-list-item *ngFor="let bedsideCaregiver of bedsideCaregivers">
+        <a mat-raised-button color="primary" routerLink="{{bedsideCaregiver.id}}">{{bedsideCaregiver.name}}</a>
+    </mat-list-item>
+</mat-list>

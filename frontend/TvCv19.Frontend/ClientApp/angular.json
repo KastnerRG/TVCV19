@@ -246,46 +246,6 @@
         }
       }
     },
-    "caregiver": {
-      "projectType": "library",
-      "root": "projects/caregiver",
-      "sourceRoot": "projects/caregiver/src",
-      "prefix": "lib",
-      "architect": {
-        "build": {
-          "builder": "@angular-devkit/build-ng-packagr:build",
-          "options": {
-            "tsConfig": "projects/caregiver/tsconfig.lib.json",
-            "project": "projects/caregiver/ng-package.json"
-          },
-          "configurations": {
-            "production": {
-              "tsConfig": "projects/caregiver/tsconfig.lib.prod.json"
-            }
-          }
-        },
-        "test": {
-          "builder": "@angular-devkit/build-angular:karma",
-          "options": {
-            "main": "projects/caregiver/src/test.ts",
-            "tsConfig": "projects/caregiver/tsconfig.spec.json",
-            "karmaConfig": "projects/caregiver/karma.conf.js"
-          }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": [
-              "projects/caregiver/tsconfig.lib.json",
-              "projects/caregiver/tsconfig.spec.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
-          }
-        }
-      }
-    },
     "admin": {
       "projectType": "library",
       "root": "projects/admin",
@@ -318,6 +278,46 @@
             "tsConfig": [
               "projects/admin/tsconfig.lib.json",
               "projects/admin/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
+    },
+    "bedside": {
+      "projectType": "library",
+      "root": "projects/bedside",
+      "sourceRoot": "projects/bedside/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/bedside/tsconfig.lib.json",
+            "project": "projects/bedside/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/bedside/tsconfig.lib.prod.json"
+            }
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/bedside/src/test.ts",
+            "tsConfig": "projects/bedside/tsconfig.spec.json",
+            "karmaConfig": "projects/bedside/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/bedside/tsconfig.lib.json",
+              "projects/bedside/tsconfig.spec.json"
             ],
             "exclude": [
               "**/node_modules/**"

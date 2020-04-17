@@ -12,6 +12,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { QRCodeModule } from 'angularx-qrcode';
+import { RootComponent } from './root/root.component';
 
 
 
@@ -21,6 +22,7 @@ import { QRCodeModule } from 'angularx-qrcode';
     PatientRegistrationComponent,
     AssignCareGiverComponent,
     CameraSetupComponent,
+    RootComponent,
   ],
   imports: [
     RouterModule,
