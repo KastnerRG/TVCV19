@@ -54,11 +54,14 @@ public class MainActivity extends AppCompatActivity {
     //buttons etc.
     private static Button getReadouts;
     private static Button getControlKnobs;
+    private PCMRun pcmRun;
+    //private static Button pcmButton;
+    //private static Button fskButton;
     private static TextView view1;
 
     public String ENCODER_DATA_BUF = "\0";
     public String DECODER_DATA_BUF = "\0";
-    //public Boolean setFSKChar = false;
+    public Boolean setFSKChar = false;
     public Boolean FSKinProg = false;
     public String MODE = "PCM";
 
@@ -161,16 +164,22 @@ public class MainActivity extends AppCompatActivity {
                         short ITET = (short)ITETs.getProgress();
                         short FiO2 = (short)o2Con.getProgress();
 
-                        //Write out all sensors at once. This is just expected in our first basic implementation of a ventilator controller.
-                        ENCODER_DATA_BUF = "{\"wr\":[{\"RrRt\":" + RrRt + "},{\"TlVm\":"+ TlVm +"},{\"MmIP\":" + MmIP + "},{\"PkEP\":" + PkEP + "},{\"ITET\":" + ITET + "},{\"FiO2\":"+ FiO2 +"}]}\r\n";
-                        respText.setText("Respiratory Rate Set : " + RrRt + " / " + respRate.getMax());
+                        if (MODE == "FSK") {
+                            //Write out all sensors at once. This is just expected in our first basic implementation of a ventilator controller.
+                            ENCODER_DATA_BUF = "{\"wr\":[{\"RrRt\":" + RrRt + "},{\"TlVm\":" + TlVm + "},{\"MmIP\":" + MmIP + "},{\"PkEP\":" + PkEP + "},{\"ITET\":" + ITET + "},{\"FiO2\":" + FiO2 + "}]}\r\n";
+                        }
+                        else {
+                            pcmRun.setFreq_level(respRate.getProgress());
+                        }
+                        respText.setText("Respiratory Rate : " + RrRt + " / " + respRate.getMax());
+
                     }
                 }
         );
     }
 
     public void TidVol() {
-        tidText.setText("Tidal Volume Set : " + tidVol.getProgress() + " / " + tidVol.getMax());
+        tidText.setText("Tidal Volume : " + tidVol.getProgress() + " / " + tidVol.getMax());
         tidVol.setOnSeekBarChangeListener(
                 new SeekBar.OnSeekBarChangeListener() {
                     int progress_value;
@@ -552,7 +561,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         // PCM Thread
-        final PCMRun pcmRun = new PCMRun();
+        pcmRun = new PCMRun();
         Thread soundThread = new Thread(pcmRun);
         soundThread.start();
 
