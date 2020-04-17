@@ -27,6 +27,8 @@ import android.media.AudioManager;
 import android.media.AudioTrack;
 import android.os.Bundle;
 
+import org.json.JSONException;
+
 public class MainActivity extends AppCompatActivity {
 
 
@@ -36,20 +38,27 @@ public class MainActivity extends AppCompatActivity {
     private static SeekBar o2Con;
     private static SeekBar MmIPs;
     private static SeekBar ITETs;
+    //Control knob text that read slider views (requested value)
     private static TextView respText;
     private static TextView tidText;
     private static TextView presText;
     private static TextView o2Text;
     private static TextView MmIPsText;
     private static TextView ITETsText;
+
+    //Ventilator readout text (read value)
+    private static TextView MtVndisp;
+    private static TextView PkIPdisp;
+    private static TextView PCO2disp;
+
+    //buttons etc.
     private static Button getReadouts;
-    //private static Button pcmButton;
-    //private static Button fskButton;
+    private static Button getControlKnobs;
     private static TextView view1;
 
     public String ENCODER_DATA_BUF = "\0";
     public String DECODER_DATA_BUF = "\0";
-    public Boolean setFSKChar = false;
+    //public Boolean setFSKChar = false;
     public Boolean FSKinProg = false;
     public String MODE = "PCM";
 
@@ -131,8 +140,9 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    //---------------------------------------SLIDER CONTROL. RAW INTERACTION WITH BUFFER--------------------
     public void RespRate() {
-        respText.setText("Respiratory Rate : " + respRate.getProgress() + " / " + respRate.getMax());
+        respText.setText("Respiratory Rate Set : " + respRate.getProgress() + " / " + respRate.getMax());
         respRate.setOnSeekBarChangeListener(
                 new SeekBar.OnSeekBarChangeListener() {
                     int progress_value;
@@ -153,14 +163,14 @@ public class MainActivity extends AppCompatActivity {
 
                         //Write out all sensors at once. This is just expected in our first basic implementation of a ventilator controller.
                         ENCODER_DATA_BUF = "{\"wr\":[{\"RrRt\":" + RrRt + "},{\"TlVm\":"+ TlVm +"},{\"MmIP\":" + MmIP + "},{\"PkEP\":" + PkEP + "},{\"ITET\":" + ITET + "},{\"FiO2\":"+ FiO2 +"}]}\r\n";
-                        respText.setText("Respiratory Rate : " + RrRt + " / " + respRate.getMax());
+                        respText.setText("Respiratory Rate Set : " + RrRt + " / " + respRate.getMax());
                     }
                 }
         );
     }
 
     public void TidVol() {
-        tidText.setText("Tidal Volume : " + tidVol.getProgress() + " / " + tidVol.getMax());
+        tidText.setText("Tidal Volume Set : " + tidVol.getProgress() + " / " + tidVol.getMax());
         tidVol.setOnSeekBarChangeListener(
                 new SeekBar.OnSeekBarChangeListener() {
                     int progress_value;
@@ -181,14 +191,14 @@ public class MainActivity extends AppCompatActivity {
 
                         //Write out all sensors at once. This is just expected in our first basic implementation of a ventilator controller.
                         ENCODER_DATA_BUF = "{\"wr\":[{\"RrRt\":" + RrRt + "},{\"TlVm\":"+ TlVm +"},{\"MmIP\":" + MmIP + "},{\"PkEP\":" + PkEP + "},{\"ITET\":" + ITET + "},{\"FiO2\":"+ FiO2 +"}]}\r\n";
-                        tidText.setText("Tidal Volume : "  + TlVm + " / " + tidVol.getMax());
+                        tidText.setText("Tidal Volume Set : "  + TlVm + " / " + tidVol.getMax());
                     }
                 }
         );
     }
 
     public void MaxPres() {
-        presText.setText("Peak End Exp Pressure : " + maxPres.getProgress() + " / " + maxPres.getMax());
+        presText.setText("Peak End Exp Pressure Set : " + maxPres.getProgress() + " / " + maxPres.getMax());
         maxPres.setOnSeekBarChangeListener(
                 new SeekBar.OnSeekBarChangeListener() {
                     @Override
@@ -208,14 +218,14 @@ public class MainActivity extends AppCompatActivity {
 
                         //Write out all sensors at once. This is just expected in our first basic implementation of a ventilator controller.
                         ENCODER_DATA_BUF = "{\"wr\":[{\"RrRt\":" + RrRt + "},{\"TlVm\":"+ TlVm +"},{\"MmIP\":" + MmIP + "},{\"PkEP\":" + PkEP + "},{\"ITET\":" + ITET + "},{\"FiO2\":"+ FiO2 +"}]}\r\n";
-                        presText.setText("Peak End Exp Pressure : " + PkEP + " / " + maxPres.getMax());
+                        presText.setText("Peak End Exp Pressure Set : " + PkEP + " / " + maxPres.getMax());
                     }
                 }
         );
     }
 
     public void O2Con() {
-        o2Text.setText("O2 Concentration : " + o2Con.getProgress() + " / " + o2Con.getMax());
+        o2Text.setText("O2 Concentration Set : " + o2Con.getProgress() + " / " + o2Con.getMax());
         o2Con.setOnSeekBarChangeListener(
                 new SeekBar.OnSeekBarChangeListener() {
                     @Override
@@ -235,7 +245,7 @@ public class MainActivity extends AppCompatActivity {
 
                         //Write out all sensors at once. This is just expected in our first basic implementation of a ventilator controller.
                         ENCODER_DATA_BUF = "{\"wr\":[{\"RrRt\":" + RrRt + "},{\"TlVm\":"+ TlVm +"},{\"MmIP\":" + MmIP + "},{\"PkEP\":" + PkEP + "},{\"ITET\":" + ITET + "},{\"FiO2\":"+ FiO2 +"}]}\r\n";
-                        o2Text.setText("O2 Concentration : " + FiO2 + " / " + o2Con.getMax());
+                        o2Text.setText("O2 Concentration Set : " + FiO2 + " / " + o2Con.getMax());
                     }
                 }
         );
@@ -243,7 +253,7 @@ public class MainActivity extends AppCompatActivity {
 
     //Class overrides for MmIPs
     public void MmIPs(){
-        MmIPsText.setText("Max Insp Pressure : " + MmIPs.getProgress() + " / " + MmIPs.getMax());
+        MmIPsText.setText("Max Insp Pressure Set : " + MmIPs.getProgress() + " / " + MmIPs.getMax());
         MmIPs.setOnSeekBarChangeListener(
             new SeekBar.OnSeekBarChangeListener() {
                 int progress_value;
@@ -264,14 +274,14 @@ public class MainActivity extends AppCompatActivity {
 
                     //Write out all sensors at once. This is just expected in our first basic basic implementation of a ventilator controller.
                     ENCODER_DATA_BUF = "{\"wr\":[{\"RrRt\":" + RrRt + "},{\"TlVm\":"+ TlVm +"},{\"MmIP\":" + MmIP + "},{\"PkEP\":" + PkEP + "},{\"ITET\":" + ITET + "},{\"FiO2\":"+ FiO2 +"}]}\r\n";
-                    MmIPsText.setText("Max Insp Pressure : " + MmIP + " / " + MmIPs.getMax());
+                    MmIPsText.setText("Max Insp Pressure Set : " + MmIP + " / " + MmIPs.getMax());
                 }
             }
         );
     }
 
     public void ITETs(){
-        ITETsText.setText(" Inspire t / Expire t : " + ITETs.getProgress() + " / " + ITETs.getMax());
+        ITETsText.setText(" Inspire t / Expire t Set : " + ITETs.getProgress() + " / " + ITETs.getMax());
         ITETs.setOnSeekBarChangeListener(
                 new SeekBar.OnSeekBarChangeListener() {
                     int progress_value;
@@ -292,7 +302,7 @@ public class MainActivity extends AppCompatActivity {
 
                         //Write out all sensors at once. This is just expected in our first basic basic implementation of a ventilator controller.
                         ENCODER_DATA_BUF = "{\"wr\":[{\"RrRt\":" + RrRt + "},{\"TlVm\":"+ TlVm +"},{\"MmIP\":" + MmIP + "},{\"PkEP\":" + PkEP + "},{\"ITET\":" + ITET + "},{\"FiO2\":"+ FiO2 +"}]}\r\n";
-                        ITETsText.setText(" Inspire t / Expire t : " + ITET + " / " + MmIPs.getMax());
+                        ITETsText.setText(" Inspire t / Expire t Set : " + ITET + " / " + MmIPs.getMax());
                     }
                 }
         );
@@ -311,13 +321,20 @@ public class MainActivity extends AppCompatActivity {
         o2Con = (SeekBar)findViewById(R.id.o2Con);
         MmIPs = (SeekBar)findViewById(R.id.MmIPs);
         ITETs = (SeekBar)findViewById(R.id.ITETs);
+        //Desired control knob value text boxes
         respText = (TextView)findViewById(R.id.respText);
         tidText = (TextView)findViewById(R.id.tidText);
         presText = (TextView)findViewById(R.id.presText);
         o2Text = (TextView)findViewById(R.id.o2Text);
         MmIPsText = (TextView)findViewById(R.id.MmIpsText);
         ITETsText = (TextView)findViewById(R.id.ITETsText);
+        //Ventilator readout text boxes
+        MtVndisp = (TextView)findViewById(R.id.MtVndisp);
+        PkIPdisp = (TextView)findViewById(R.id.PkIPdisp);
+        PCO2disp = (TextView)findViewById(R.id.PCO2disp);
+
         getReadouts = (Button)findViewById(R.id.getReadouts);
+        getControlKnobs = (Button)findViewById(R.id.getControlKnobs);
         //Removed pcmButton = (Button)findViewById(R.id.pcm);
         //Removed fskButton = (Button)findViewById((R.id.fsk));
         view1 = (TextView)findViewById(R.id.decoded);
@@ -352,7 +369,20 @@ public class MainActivity extends AppCompatActivity {
                         watchdogTimer = watchdogPeriod;
 
                         DECODER_DATA_BUF = text;
-                        view1.setText(text);//view1.getText()+text);
+/*
+                        //Decode JSON
+                        try {
+                            JSONObject jsonObj = new JSONObject(jsonStr);
+                        } catch (final JSONException)
+
+*/
+                        //Show the value of what came on the bus for debugging.
+
+
+                        view1.setText(text);
+
+                        //Decode.
+
 
                     }
                 });
@@ -442,6 +472,7 @@ public class MainActivity extends AppCompatActivity {
                                                   MmIPs.setEnabled(false);
                                                   ITETs.setEnabled(false);
                                                   getReadouts.setEnabled(false);    //can't query ventilator
+                                                  getControlKnobs.setEnabled(false);
                                               } else {
                                                   tidVol.setEnabled(true);
                                                   maxPres.setEnabled(true);
@@ -449,6 +480,7 @@ public class MainActivity extends AppCompatActivity {
                                                   MmIPs.setEnabled(true);
                                                   ITETs.setEnabled(true);
                                                   getReadouts.setEnabled(true);     //can query ventilator
+                                                  getControlKnobs.setEnabled(true);
                                               }
                                           }
                                       });
@@ -459,8 +491,8 @@ public class MainActivity extends AppCompatActivity {
                         //Not used String ackStr = Character.toString(ack);
                         if(watchdogTimer <=1000 && MODE.equals("FSK"))   //try to keep bus up
                         {
-                            //ENCODER_DATA_BUF = "##########";    //use a different ping in IO mode.
-                            ENCODER_DATA_BUF = "#         ";    //Don't send so many ping characters. its annoying.
+                            ENCODER_DATA_BUF = "##########";    //use a different ping in IO mode.
+                            //Wwith this you inject crap into the command potentially ENCODER_DATA_BUF = "#         ";    //Don't send so many ping characters. its annoying.
                         }
 
                         if (watchdogTimer <= 0){
@@ -524,12 +556,21 @@ public class MainActivity extends AppCompatActivity {
         Thread soundThread = new Thread(pcmRun);
         soundThread.start();
 
-        //Button press to get readouts. Should nuke the output buffer and send its own command.
+        //Button press to get readouts. This JSON will get sent over the modem and if all is well, set the data. An ACK will confirm.
         getReadouts.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                //TODO: should pause the watchdog thread?
+                ENCODER_DATA_BUF = "{\"rd\":[{\"MtVn\",\"PkIP\",\"PCO2\"]}\r\n"; //read knobs.
+            }
+        });
+
+        //Button press to get control knobs
+        getControlKnobs.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 //TODO: should pause the watchdog thread?
                 ENCODER_DATA_BUF = "{\"rk\":[{\"RrRt\",\"TlVm\",\"MmIP\",\"PkEP\",\"ITET\",\"FiO2\"]}\r\n"; //read knobs.
             }
+
         });
 
     }
