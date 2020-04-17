@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { PatientService } from 'projects/shared/src/public-api';
 
 @Component({
   selector: 'lib-root',
