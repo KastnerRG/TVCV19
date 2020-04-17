@@ -22,12 +22,31 @@ export class PhysicianService {
   }
 
   getPhysicians(): Observable<Array<PhysicianModel>> {
-    return this.http.get<Array<PhysicianModel>>('/api/physician', {
-      headers: new HttpHeaders({
-        Accept: 'application/json',
-      }),
-    })
-    .pipe(catchError(this.handleError));
+    return this.http
+      .get<Array<PhysicianModel>>('/api/physician', {
+        headers: new HttpHeaders({
+          Accept: 'application/json',
+        }),
+      })
+      .pipe(catchError(this.handleError));
+  }
+
+  deletePhysician(id: string): Observable<any> {
+    return this.http
+      .delete(`api/physician/${id}`)
+      .pipe(catchError(this.handleError));
+  }
+
+  getPhysician(id: string): Observable<PhysicianModel> {
+    return this.http
+      .get<PhysicianModel>(`api/physician/${id}`)
+      .pipe(catchError(this.handleError));
+  }
+
+  updatePhysician(physician: PhysicianModel): Observable<any> {
+    return this.http
+      .put(`api/physician/${physician.id}`, physician)
+      .pipe(catchError(this.handleError));
   }
 
   private handleError(error: HttpErrorResponse) {

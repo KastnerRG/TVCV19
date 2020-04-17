@@ -21,6 +21,7 @@ import { FormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
+import { ChangeShiftComponent } from './change-shift/change-shift.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import { MatListModule } from '@angular/material/list';
     PhysicianHeirachyComponent,
     PatientListComponent,
     PatientDetailComponent,
-    VideoReceiverComponent
+    VideoReceiverComponent,
+    ChangeShiftComponent
   ],
   imports: [
     RouterModule.forChild(routes),

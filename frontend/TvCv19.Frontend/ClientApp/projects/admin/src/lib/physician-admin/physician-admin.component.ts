@@ -10,12 +10,16 @@ import { PhysicianModel, PhysicianService } from 'projects/shared/src/public-api
 })
 export class PhysicianAdminComponent implements OnInit {
   caregiverRegistrationForm;
-  patients: Array<PhysicianModel> = []
+  physicians: Array<PhysicianModel> = []
   constructor(private formBuilder: FormBuilder, private service: PhysicianService, private router: Router) {
+    
+    service.getPhysicians().subscribe(physicians => this.physicians = physicians);
+    
     this.caregiverRegistrationForm = this.formBuilder.group({
       name: '',
       location: '',
-      heirachy: ''
+      hierarchy: '',
+      supervisorId: ''
     })
   }
 

@@ -1,9 +1,12 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using TvCv19.DailyCo.Client;
 using TvCv19.DailyCo.Client.Models;
 using TvCv19.Frontend.Domain;
+using TvCv19.Frontend.Domain.Models;
+using TvCv19.Frontend.Domain.Repositories;
 
 namespace TvCv19.Frontend.Controllers
 {
@@ -15,11 +18,13 @@ namespace TvCv19.Frontend.Controllers
 
         private ILogger<PatientController> _logger;
         private IPatientRepository _patientRepository;
-         
-        public PatientController(IPatientRepository patientRepository, ILogger<PatientController> logger)
+        private readonly IMessageRepository _messageRepository;
+
+        public PatientController(IPatientRepository patientRepository, IMessageRepository messageRepository, ILogger<PatientController> logger)
         {
             _logger = logger;
             _patientRepository = patientRepository;
+            _messageRepository = messageRepository;
         }
 
         [HttpPost()]
@@ -77,6 +82,14 @@ namespace TvCv19.Frontend.Controllers
             }
 
             return Ok(_id);
+        }
+
+        [HttpGet("{id}/messages")]
+        public async Task<IActionResult> GetPatientMessages(string id)
+        {
+            var msgs = await _messageRepository.GetMessagesByGroup(id);
+            var messages = msgs.Select(x => new MessageDto(x.Sender, x.Body, x.Date, x.Id, x.IsCareInstruction));
+            return Ok(messages);
         }
 
     }
