@@ -14,7 +14,7 @@
     <span>You have {{patients.length}} Patient(s)</span>
   </mat-toolbar>  
   <mat-grid-tile *ngFor="let patient of patients;">
-      <a mat-button>
+      <a mat-button routerLink="patient/{{patient.id}}">
         {{patient.name}}
         <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
       </a>

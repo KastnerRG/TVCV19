@@ -10,6 +10,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatButtonModule } from '@angular/material/button';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { PatientDetailComponent } from './components/patient-detail/patient-detail.component';
+import { VideoReceiverComponent } from './components/video-receiver/video-receiver.component';
+import { FlexLayoutModule } from '@angular/flex-layout';
 
 
 
@@ -17,9 +21,12 @@ import { CommonModule } from '@angular/common';
   declarations: [
     SharedComponent,
     QrScannerComponent,
-    PhysicianHeirachyComponent
+    PhysicianHeirachyComponent,
+    PatientDetailComponent,
+    VideoReceiverComponent
   ],
   imports: [
+    RouterModule,
     CommonModule,
     QRCodeModule,
     ZXingScannerModule,
@@ -27,12 +34,14 @@ import { CommonModule } from '@angular/common';
     MatToolbarModule,
     MatIconModule,
     MatGridListModule,
-    MatButtonModule
+    MatButtonModule,
+    FlexLayoutModule
   ],
   exports: [
     SharedComponent,
     QrScannerComponent,
-    HttpClientModule
+    HttpClientModule,
+    VideoReceiverComponent
   ]
 })
 export class SharedModule { }
