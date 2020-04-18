@@ -9,6 +9,7 @@ export interface MessageModel {
   date: Date;
   id: string;
   isCareInstruction: boolean;
+  isAudio: boolean
 }
 
 @Injectable({
@@ -28,13 +29,14 @@ export class ChatService {
       .configureLogging(LogLevel.Information)
       .build();
 
-    this.connection.on('ReceiveMessage', (message: string, name: string, date: Date, id: string, isCareInstruction: boolean) => {
+    this.connection.on('ReceiveMessage', (message: string, name: string, date: Date, id: string, isCareInstruction: boolean, isAudio: boolean) => {
       this.messagesSubject.next({
         name,
         message,
         date,
         id,
-        isCareInstruction
+        isCareInstruction,
+        isAudio
       });
     });
   }
@@ -48,9 +50,9 @@ export class ChatService {
     await this.connection.invoke("SubscribeAsync", patientId);
   }
 
-  async sendMessageAsync(patientId: string, physicianId: string, message: string, isCareInstruction: boolean): Promise<void> {
+  async sendMessageAsync(patientId: string, physicianId: string, message: string, isCareInstruction: boolean, isAudio: boolean = false): Promise<void> {
     await this.connectAsync();
-    await this.connection.invoke("SendMessageAsync", patientId, physicianId, message, isCareInstruction);
+    await this.connection.invoke("SendMessageAsync", patientId, physicianId, message, isCareInstruction, isAudio);
   }
 
   private async connectAsync(): Promise<void> {
