@@ -88,7 +88,7 @@ namespace TvCv19.Frontend.Controllers
         public async Task<IActionResult> GetPatientMessages(string id)
         {
             var msgs = await _messageRepository.GetMessagesByGroup(id);
-            var messages = msgs.Select(x => new MessageDto(x.Sender, x.Body, x.Date, x.Id, x.IsCareInstruction, x.IsAudio));
+            var messages = msgs.Select(x => new MessageDto(x.Sender, x.Body, x.Date, x.Id, x.IsCareInstruction, x.IsAudio, x.IsImage));
             return Ok(messages);
         }
 
