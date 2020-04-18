@@ -1,10 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ChatService, MessageModel } from '../chat.service';
 import { ActivatedRoute } from '@angular/router';
-import {
-  AudioRecordingService,
-} from '../audio-recording.service';
-import { MessageService } from '../message.service';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { AudioRecordingService } from '../audio-recording.service';
+import { MediaService } from '../media.service';
+import { first } from 'rxjs/operators';
+
+export interface DownloadedImage {
+  url: SafeUrl;
+  fileName: string;
+}
 
 @Component({
   selector: 'lib-chat',
@@ -14,15 +19,19 @@ import { MessageService } from '../message.service';
 export class ChatComponent implements OnInit {
   private patientId: string;
   private physicianId: string;
-  messageToSend: string = '';
-  chatMessages: MessageModel[];
-  isRecording: boolean;
-  recordedTime: string;
+  public messageToSend: string = '';
+  public chatMessages: MessageModel[];
+  public isRecording: boolean;
+  public recordedTime: string;
+  public downloadedImage: DownloadedImage = { url: '', fileName: '' };
+
+  @ViewChild('downloadImage') download: any;
 
   constructor(
     private chatService: ChatService,
     private audioRecordingService: AudioRecordingService,
-    private messageService: MessageService,
+    private mediaService: MediaService,
+    private sanitizer: DomSanitizer,
     route: ActivatedRoute
   ) {
     chatService.messages.subscribe((m) => {
@@ -67,6 +76,18 @@ export class ChatComponent implements OnInit {
       this.physicianId,
       fileName,
       false,
+      true,
+      false
+    );
+  }
+
+  async sendPictureMessage(fileName: string): Promise<void> {
+    await this.chatService.sendMessageAsync(
+      this.patientId,
+      this.physicianId,
+      fileName,
+      false,
+      false,
       true
     );
   }
@@ -84,12 +105,13 @@ export class ChatComponent implements OnInit {
     this.audioRecordingService.stopRecording();
     this.isRecording = false;
     this.recordedTime = '';
-    this.audioRecordingService.getRecordedBlob().subscribe((b) => {
-      let recording = new File([b.blob], b.title);
-      this.messageService
-        .sendRecording({
+    this.audioRecordingService.getRecordedBlob().pipe(first()).subscribe((b) => {
+      let file = new File([b.blob], b.title);
+      this.mediaService
+        .sendMedia({
           fileName: b.title,
-          recording,
+          file,
+          mimeType: 'audio/mpeg',
         })
         .subscribe(async (x) => {
           await this.sendAudioMessage(x.fileName);
@@ -97,14 +119,37 @@ export class ChatComponent implements OnInit {
     });
   }
 
-  play(message: MessageModel): void {
-    if (message.isAudio) {
-      this.messageService.getRecording(message.message).subscribe((x: any) => {
-        let blob = new Blob([x], { type: 'audio/mpeg3' });
-        let audioUrl = URL.createObjectURL(blob);
-        let audio = new Audio(audioUrl);
-        audio.play();
+  getMedia(message: MessageModel): void {
+    if (message.isAudio || message.isImage) {
+      this.mediaService.getMedia(message.message).subscribe((blob: Blob) => {
+        if (message.isAudio) {
+          this.playAudio(blob);
+        } else if (message.isImage) {
+          this.downloadImage(message, blob);
+        }
       });
     }
+  }
+
+  private downloadImage(message: MessageModel, blob: Blob) {
+    this.downloadedImage.fileName = message.message;
+    this.downloadedImage.url = this.sanitizer.bypassSecurityTrustUrl(URL.createObjectURL(blob));
+    setTimeout(() => this.download.nativeElement.click(), 200);
+  }
+
+  private playAudio(x: Blob) {
+    let blob = new Blob([x], { type: 'audio/mpeg3' });
+    let audioUrl = URL.createObjectURL(blob);
+    let audio = new Audio(audioUrl);
+    audio.play();
+  }
+
+  imgInputChange(fileInputEvent: any): void {
+    const file: File = fileInputEvent.target.files[0];
+    this.mediaService
+      .sendMedia({ file, fileName: file.name, mimeType: file.type })
+      .subscribe(async (x) => {
+        await this.sendPictureMessage(file.name);
+      });
   }
 }

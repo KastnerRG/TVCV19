@@ -4,10 +4,10 @@
       class="messages__message"
       fxLayout="column"
       *ngFor="let chatMessage of chatMessages"
-      (click)="play(chatMessage)"
+      (click)="getMedia(chatMessage)"
     >
       <span>{{ chatMessage.name }} </span>
-      <div [ngClass]="{'recording' : chatMessage.isAudio}" class="messages__message__text">{{chatMessage.isAudio ? '' : chatMessage.message }}</div>
+      <div [ngClass]="{'recording' : chatMessage.isAudio, 'image-upload' : chatMessage.isImage}" class="messages__message__text">{{chatMessage.isAudio || chatMessage.isImage ? '' : chatMessage.message }}</div>
       <span>{{ chatMessage.date | date: "shortTime" }}</span>
     </div>
   </div>
@@ -35,7 +35,9 @@
           <span>{{ recordedTime }}</span>
         </span>
         <span>
-          <img src="/assets/img/camera.png" />
+          <img (click)="imgInput.click()" src="/assets/img/camera.png" />
+          <input (change)="imgInputChange($event)" #imgInput hidden="true" id="image" type="file" accept="image/*">
+          <a #downloadImage [href]="downloadedImage.url" [download]="downloadedImage.fileName"></a>
         </span>
       </div>
       <div></div>

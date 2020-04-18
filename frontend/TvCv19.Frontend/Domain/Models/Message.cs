@@ -3,7 +3,7 @@ namespace TvCv19.Frontend.Domain.Models
 {
     public class Message
     {
-        public Message(string groupId, string message, string sender, DateTime date, bool isCareInstruction, bool isAudio)
+        public Message(string groupId, string message, string sender, DateTime date, bool isCareInstruction, bool isAudio, bool isImage)
         {
             GroupId = groupId;
             Body = message;
@@ -11,6 +11,7 @@ namespace TvCv19.Frontend.Domain.Models
             Date = date;
             IsCareInstruction = isCareInstruction;
             IsAudio = isAudio;
+            IsImage = isImage;
         }
 
         public string Id { get; set; } = Guid.NewGuid().ToString();
@@ -20,5 +21,6 @@ namespace TvCv19.Frontend.Domain.Models
         public DateTime Date { get; }
         public bool IsCareInstruction { get; }
         public bool IsAudio { get; }
+        public bool IsImage { get; }
     }
 }
