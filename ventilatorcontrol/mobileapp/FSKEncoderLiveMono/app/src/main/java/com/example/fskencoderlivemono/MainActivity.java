@@ -1,6 +1,7 @@
 package com.example.fskencoderlivemono;
 
 import java.io.IOException;
+import java.io.StringReader;
 import java.nio.ByteBuffer;
 
 import com.example.fskencoderlivemono.bg.cytec.android.fskmodem.FSKConfig;
@@ -17,6 +18,7 @@ import android.content.pm.PackageManager;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
 import android.os.Looper;
+import android.util.JsonReader;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -28,6 +30,7 @@ import android.media.AudioTrack;
 import android.os.Bundle;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -45,6 +48,13 @@ public class MainActivity extends AppCompatActivity {
     private static TextView o2Text;
     private static TextView MmIPsText;
     private static TextView ITETsText;
+    //Actual values from Arduino (read back in)
+    private static TextView readRespText;
+    private static TextView readTidText;
+    private static TextView readPresText;
+    private static TextView readO2Text;
+    private static TextView readMmIPsText;
+    private static TextView readITETsText;
 
     //Ventilator readout text (read value)
     private static TextView MtVndisp;
@@ -61,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
 
     public String ENCODER_DATA_BUF = "\0";
     public String DECODER_DATA_BUF = "\0";
-    public Boolean setFSKChar = false;
+    //public Boolean setFSKChar = false;
     public Boolean FSKinProg = false;
     public String MODE = "PCM";
 
@@ -317,11 +327,163 @@ public class MainActivity extends AppCompatActivity {
         );
     }
 
+    //Function to update ventilator readout display if ventialtor readout data can be found in rawJSON (which can be dirty)
+    public void parseVentReadout(String dirtyJSON){
+
+        //TODO read in old value from text box to avoid wierd 0 on missed read from device.
+        int mtvn = 0; int pkip = 0; int pc02 = 0;
+
+        JsonReader dirtyReader;   //We cannot simply parse JSON from arduino, it is dirty usually.
+        int JSONstart = dirtyJSON.indexOf("{");
+        if(JSONstart >= 0){
+            String clnJSON = dirtyJSON.substring(JSONstart);  //Discard first junk.
+            dirtyReader = new JsonReader(new StringReader(clnJSON));
+            //try to parse dirtyJSON with a streaming parser.
+
+            //Structure is like so: { k :[ {k:v},...,{k:v}]}
+            try {
+                dirtyReader.beginObject();//Deal with the first object in the dictionary.
+                while (dirtyReader.hasNext()) {
+
+                    String name = dirtyReader.nextName();
+
+                    if (name.equals("rd")) {
+
+                        dirtyReader.beginArray();   //Go through the value array
+                        while(dirtyReader.hasNext()) {
+                            dirtyReader.beginObject();  //each element is a dictionary
+
+                            name = dirtyReader.nextName();
+
+                            while(dirtyReader.hasNext()) {
+                                if (name.equals("MtVn")) {     //should only be one key per innermost dictionary
+                                    mtvn = dirtyReader.nextInt();
+                                } else if (name.equals("PkIP")) {
+                                    pkip = dirtyReader.nextInt();
+                                } else if (name.equals("PCO2")) {
+                                    pc02 = dirtyReader.nextInt();
+                                } else {
+                                    dirtyReader.skipValue();
+                                }
+                            }
+
+                            dirtyReader.endObject();    //End element dictionary
+                        }
+                        dirtyReader.endArray();
+
+                    }
+                    else{
+                        dirtyReader.skipValue();    //We don't handle this object.
+                    }
+                }
+                dirtyReader.endObject();
+                dirtyReader.close();
+
+            }catch (Exception e){/*No action*/}
+        }
+        //Update text views. This is a bit neater here rrrt,tlvm,mmip,pkep,itet,fio2
+        final int _mtvn = mtvn;
+        final int _pkip = pkip;
+        final int _pc02 = pc02;
+
+        runOnUiThread(new Runnable() {
+            public void run() {
+                MtVndisp.setText(_mtvn);
+                PkIPdisp.setText(_pkip);
+                PCO2disp.setText(_pc02);
+            }
+        });
+
+    }
+
+
+    //Function to update control knob display if control knobs data can be found in rawJSON (which can be dirty)
+    public void parseControlKnobs(String dirtyJSON){
+        //String poo = (char)0x05 + (char)0x08 + "{\"rd\":[{\"Valid\":10},{\"Jay\":45},{\"dict\":67}]}" + (char)0x35;
+
+        //TODO read in old value from text box to avoid wierd 0 on missed read from device.
+        int rrrt = 0; int tlvm = 0; int mmip = 0; int pkep = 0; int itet = 0; int fio2 = 0;
+
+        JsonReader dirtyReader;   //We cannot simply parse JSON from arduino, it is dirty usually.
+        int JSONstart = dirtyJSON.indexOf("{");
+        if(JSONstart >= 0){
+            String clnJSON = dirtyJSON.substring(JSONstart);  //Discard first junk.
+            dirtyReader = new JsonReader(new StringReader(clnJSON));
+            //try to parse dirtyJSON with a streaming parser.
+
+            //Structure is like so: { k :[ {k:v},...,{k:v}]}
+            try {
+                dirtyReader.beginObject();//Deal with the first object in the dictionary.
+                while (dirtyReader.hasNext()) {
+
+                    String name = dirtyReader.nextName();
+
+                    if (name.equals("rk")) {
+
+                        dirtyReader.beginArray();   //Go through the value array
+                        while(dirtyReader.hasNext()) {
+                            dirtyReader.beginObject();  //each element is a dictionary
+
+                            name = dirtyReader.nextName();
+
+                            while(dirtyReader.hasNext()) {
+                                if (name.equals("RrRt")) {     //should only be one key per innermost dictionary
+                                    rrrt = dirtyReader.nextInt();
+                                } else if (name.equals("TlVm")) {
+                                    tlvm = dirtyReader.nextInt();
+                                } else if (name.equals("MmIP")) {
+                                    mmip = dirtyReader.nextInt();
+                                } else if (name.equals("PkEP")) {
+                                    pkep = dirtyReader.nextInt();
+                                } else if (name.equals("ITET")) {
+                                    itet = dirtyReader.nextInt();
+                                } else if (name.equals("FiO2")) {
+                                    fio2 = dirtyReader.nextInt();
+                                } else {
+                                    dirtyReader.skipValue();
+                                }
+                            }
+
+                            dirtyReader.endObject();    //End element dictionary
+                        }
+                        dirtyReader.endArray();
+
+                    }
+                    else{
+                        dirtyReader.skipValue();    //We don't handle this object.
+                    }
+                }
+                dirtyReader.endObject();
+                dirtyReader.close();
+
+            }catch (Exception e){/*No action*/}
+        }
+        //Update text views. This is a bit neater here rrrt,tlvm,mmip,pkep,itet,fio2
+        final int _rrrt = rrrt;
+        final int _tlvm = tlvm;
+        final int _mmip = mmip;
+        final int _pkep = pkep;
+        final int _itet = itet;
+        final int _fio2 = fio2;
+        runOnUiThread(new Runnable() {
+            public void run() {
+                readRespText.setText("Set: " + _rrrt);
+                readTidText.setText("Set: " + _tlvm);
+                readPresText.setText("Set: " + _mmip);
+                readMmIPsText.setText("Set: " + _pkep);
+                readITETsText.setText("Set: " + _itet);
+                readO2Text.setText("Set: " + _fio2);
+            }
+        });
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
 
         //Wire up some generic controls
         respRate = (SeekBar)findViewById(R.id.respRate);
@@ -337,6 +499,13 @@ public class MainActivity extends AppCompatActivity {
         o2Text = (TextView)findViewById(R.id.o2Text);
         MmIPsText = (TextView)findViewById(R.id.MmIpsText);
         ITETsText = (TextView)findViewById(R.id.ITETsText);
+        //Read Control knob text value boxes
+        readRespText = (TextView)findViewById(R.id.readRespText);
+        readTidText = (TextView)findViewById(R.id.readTidText);
+        readPresText = (TextView)findViewById(R.id.readPresText);
+        readO2Text = (TextView)findViewById(R.id.readO2Text);
+        readMmIPsText = (TextView)findViewById(R.id.readMmIpsText);
+        readITETsText = (TextView)findViewById(R.id.readITETsText);
         //Ventilator readout text boxes
         MtVndisp = (TextView)findViewById(R.id.MtVndisp);
         PkIPdisp = (TextView)findViewById(R.id.PkIPdisp);
@@ -344,8 +513,7 @@ public class MainActivity extends AppCompatActivity {
 
         getReadouts = (Button)findViewById(R.id.getReadouts);
         getControlKnobs = (Button)findViewById(R.id.getControlKnobs);
-        //Removed pcmButton = (Button)findViewById(R.id.pcm);
-        //Removed fskButton = (Button)findViewById((R.id.fsk));
+
         view1 = (TextView)findViewById(R.id.decoded);
         // Request Mic permission
         while (ContextCompat.checkSelfPermission(this,
@@ -366,28 +534,28 @@ public class MainActivity extends AppCompatActivity {
 
         /// INIT FSK DECODER
 
+        //TODO: bug bug, this does not assemble smaller packets into larger ones. fragmented JSON in several buffers wont be parsed!
         mDecoder = new FSKDecoder(mConfig, new FSKDecoderCallback() {
 
             @Override
             public void decoded(byte[] newData) {
 
                 final String text = new String(newData);
+                DECODER_DATA_BUF = text;
+                watchdogTimer = watchdogPeriod;
+
+                //Update control knobs if we should
+                if(DECODER_DATA_BUF.contains("rk"))
+                    parseControlKnobs(DECODER_DATA_BUF);
+                //Update readouts if we should
+                if(DECODER_DATA_BUF.contains("rd"))
+                    parseVentReadout(DECODER_DATA_BUF);
+
+                //DEBUG display
                 runOnUiThread(new Runnable() {
                     public void run() {
-                        //Reset the watchdog timer (otherwise bus will go back to PCM mode)
-                        watchdogTimer = watchdogPeriod;
 
-                        DECODER_DATA_BUF = text;
-/*
-                        //Decode JSON
-                        try {
-                            JSONObject jsonObj = new JSONObject(jsonStr);
-                        } catch (final JSONException)
-
-*/
-                        //Show the value of what came on the bus for debugging.
-
-
+                        //Always do this
                         view1.setText(text);
 
                         //Decode.
@@ -571,10 +739,7 @@ public class MainActivity extends AppCompatActivity {
                 //TODO: should pause the watchdog thread?
                 ENCODER_DATA_BUF = "{\"rd\":[{\"MtVn\",\"PkIP\",\"PCO2\"]}\r\n"; //read knobs.
 
-                //TODO: Get real data
-                MtVndisp.setText("0");
-                PkIPdisp.setText("0");
-                PCO2disp.setText("0");
+                //The data reader for DECODER_DATA_BUF will set any display elements after ventilator returns data
             }
         });
 
