@@ -4,11 +4,13 @@ import { HubConnectionBuilder, HubConnection, LogLevel, HubConnectionState } fro
 import { Subject, Observable } from 'rxjs';
 
 export interface MessageModel {
+  isImage: boolean;
   name: string;
   message: string;
   date: Date;
   id: string;
   isCareInstruction: boolean;
+  isAudio: boolean;
 }
 
 @Injectable({
@@ -28,13 +30,15 @@ export class ChatService {
       .configureLogging(LogLevel.Information)
       .build();
 
-    this.connection.on('ReceiveMessage', (message: string, name: string, date: Date, id: string, isCareInstruction: boolean) => {
+    this.connection.on('ReceiveMessage', (message: string, name: string, date: Date, id: string, isCareInstruction: boolean, isAudio: boolean, isImage: boolean) => {
       this.messagesSubject.next({
         name,
         message,
         date,
         id,
-        isCareInstruction
+        isCareInstruction,
+        isAudio,
+        isImage
       });
     });
   }
@@ -48,9 +52,9 @@ export class ChatService {
     await this.connection.invoke("SubscribeAsync", patientId);
   }
 
-  async sendMessageAsync(patientId: string, physicianId: string, message: string, isCareInstruction: boolean): Promise<void> {
+  async sendMessageAsync(patientId: string, physicianId: string, message: string, isCareInstruction: boolean, isAudio: boolean = false, isImage: boolean = false): Promise<void> {
     await this.connectAsync();
-    await this.connection.invoke("SendMessageAsync", patientId, physicianId, message, isCareInstruction);
+    await this.connection.invoke("SendMessageAsync", patientId, physicianId, message, isCareInstruction, isAudio, isImage);
   }
 
   private async connectAsync(): Promise<void> {

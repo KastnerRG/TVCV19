@@ -22,12 +22,12 @@ namespace TvCv19.Frontend.Hubs
         public Task UnsubscribeAsync(string patientId) =>
             this.Groups.RemoveFromGroupAsync(Context.ConnectionId, patientId);
 
-        public async Task SendMessageAsync(string patientId, string physicianId, string message, bool isCareInstruction)
+        public async Task SendMessageAsync(string patientId, string physicianId, string message, bool isCareInstruction, bool isAudio, bool isImage)
         {
             var date = DateTime.Now;
             var physician = await _physicianRepository.GetPhysicianAsync(physicianId);
-            var id = await _messageRepository.AddMessage(new Message(patientId, message, physician.Name, date, isCareInstruction));
-            await Clients.Group(patientId).SendAsync("ReceiveMessage", message, physician.Name, date, id, isCareInstruction);
+            var id = await _messageRepository.AddMessage(new Message(patientId, message, physician.Name, date, isCareInstruction, isAudio, isImage));
+            await Clients.Group(patientId).SendAsync("ReceiveMessage", message, physician.Name, date, id, isCareInstruction, isAudio, isImage);
         }
     }
 }
