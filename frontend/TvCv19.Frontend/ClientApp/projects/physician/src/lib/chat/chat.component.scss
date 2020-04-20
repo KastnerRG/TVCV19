@@ -3,7 +3,17 @@
   height: 81vh;
   overflow-y: auto;
   font-size: 10px;
+  .recording {
+    height: 48px;
+    background: url('/assets/img/recording.png') #f4f3f3;
+  }
+  
+  .image-upload {
+    height: 140px;
+    background: url('/assets/img/imgupload.png') #f4f3f3 no-repeat center;
 
+  }
+  
   &__message {
     margin: 20px 59px;
     &__text {

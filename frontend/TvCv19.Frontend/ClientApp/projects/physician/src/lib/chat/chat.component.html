@@ -4,9 +4,10 @@
       class="messages__message"
       fxLayout="column"
       *ngFor="let chatMessage of chatMessages"
+      (click)="getMedia(chatMessage)"
     >
       <span>{{ chatMessage.name }} </span>
-      <div class="messages__message__text">{{ chatMessage.message }}</div>
+      <div [ngClass]="{'recording' : chatMessage.isAudio, 'image-upload' : chatMessage.isImage}" class="messages__message__text">{{chatMessage.isAudio || chatMessage.isImage ? '' : chatMessage.message }}</div>
       <span>{{ chatMessage.date | date: "shortTime" }}</span>
     </div>
   </div>
@@ -20,7 +21,7 @@
         ></textarea>
       </mat-form-field>
 
-      <button mat-icon-button (click)="clickAsync()">
+      <button mat-icon-button (click)="sendMessage()">
         <mat-icon>send</mat-icon>
       </button>
     </div>
@@ -30,10 +31,13 @@
           <img src="/assets/img/respirator-info.png" />
         </span>
         <span>
-          <img src="/assets/img/mic.png" />
+          <img (click)="startRecording()" src="/assets/img/mic.png" />
+          <span>{{ recordedTime }}</span>
         </span>
         <span>
-          <img src="/assets/img/camera.png" />
+          <img (click)="imgInput.click()" src="/assets/img/camera.png" />
+          <input (change)="imgInputChange($event)" #imgInput hidden="true" id="image" type="file" accept="image/*">
+          <a #downloadImage [href]="downloadedImage.url" [download]="downloadedImage.fileName"></a>
         </span>
       </div>
       <div></div>
