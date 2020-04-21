@@ -15,3 +15,5 @@ export * from './lib/services/physician.service';
 
 export * from './lib/components/physician-heirachy/physician-heirachy.component';
 export * from './lib/components/physician-heirachy/physician-heirachy-route-resolver.service';
+
+export * from './lib/components/patient-detail/patient-detail.component';
