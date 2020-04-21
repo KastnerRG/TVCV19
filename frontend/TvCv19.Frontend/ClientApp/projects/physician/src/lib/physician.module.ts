@@ -2,11 +2,7 @@ import { NgModule, } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { PhysicianComponent } from './physician.component';
 import { RootComponent } from './root/root.component';
-import { LiveVideoComponent } from './live-video/live-video.component';
 import { PatientNavigationComponent } from './patient-navigation/patient-navigation.component';
-import { ChatComponent } from './chat/chat.component';
-import { PatientListComponent } from './patient-list/patient-list.component';
-import { SharedModule, PhysicianHeirachyComponent, PhysicianRouteResolverService, PatientDetailComponent } from 'projects/shared/src/public-api';
 import { CommonModule } from '@angular/common';
 import { QRCodeModule } from 'angularx-qrcode';
 import { MatCardModule } from '@angular/material/card';
@@ -17,20 +13,16 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
-import { ChangeShiftComponent } from './change-shift/change-shift.component';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { PhysicianRootComponent } from './physician-root/physician-root.component';
+import { PatientDetailComponent, PhysicianRouteResolverService, PhysicianHeirachyComponent, SharedCaregiverModule } from 'projects/shared-caregiver/src/public-api';
 
 @NgModule({
   declarations: [
     PhysicianComponent,
     RootComponent,
-    LiveVideoComponent,
     PatientNavigationComponent,
-    ChatComponent,
-    PatientListComponent,
-    ChangeShiftComponent,
     PhysicianRootComponent
   ],
   imports: [
@@ -61,7 +53,7 @@ import { PhysicianRootComponent } from './physician-root/physician-root.componen
     MatListModule,
     MatAutocompleteModule,
     MatButtonModule,
-    SharedModule
+    SharedCaregiverModule
   ],
   exports: [PhysicianComponent, RouterModule]
 })

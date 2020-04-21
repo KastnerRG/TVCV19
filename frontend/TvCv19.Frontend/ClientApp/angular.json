@@ -325,6 +325,46 @@
           }
         }
       }
+    },
+    "shared-caregiver": {
+      "projectType": "library",
+      "root": "projects/shared-caregiver",
+      "sourceRoot": "projects/shared-caregiver/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/shared-caregiver/tsconfig.lib.json",
+            "project": "projects/shared-caregiver/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/shared-caregiver/tsconfig.lib.prod.json"
+            }
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/shared-caregiver/src/test.ts",
+            "tsConfig": "projects/shared-caregiver/tsconfig.spec.json",
+            "karmaConfig": "projects/shared-caregiver/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/shared-caregiver/tsconfig.lib.json",
+              "projects/shared-caregiver/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
     }
   },
   "defaultProject": "tv-cv19"
