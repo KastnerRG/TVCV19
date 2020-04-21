@@ -14,6 +14,9 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { QRCodeModule } from 'angularx-qrcode';
+import { MatButtonModule } from '@angular/material/button';
+import { CommonModule } from '@angular/common';
+import { FlexModule } from '@angular/flex-layout';
 
 
 
@@ -27,14 +30,17 @@ import { QRCodeModule } from 'angularx-qrcode';
     PhysicianHeirachyComponent
   ],
   imports: [
+    CommonModule,
     RouterModule,
     FormsModule,
     ReactiveFormsModule,
+    FlexModule,
     MatAutocompleteModule,
     MatIconModule,
     MatGridListModule,
     MatToolbarModule,
     MatFormFieldModule,
+    MatButtonModule,
     QRCodeModule,
     SharedModule
   ],
