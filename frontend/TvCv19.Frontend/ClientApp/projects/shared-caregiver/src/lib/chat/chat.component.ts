@@ -1,10 +1,11 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ChatService, MessageModel } from '../chat.service';
 import { ActivatedRoute } from '@angular/router';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { first } from 'rxjs/operators';
+import { ChatService } from '../chat.service';
 import { AudioRecordingService } from '../audio-recording.service';
 import { MediaService } from '../media.service';
-import { first } from 'rxjs/operators';
+import { MessageModel } from 'projects/shared/src/public-api';
 
 export interface DownloadedImage {
   url: SafeUrl;

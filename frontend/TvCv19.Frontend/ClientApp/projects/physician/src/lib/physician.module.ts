@@ -16,7 +16,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { PhysicianRootComponent } from './physician-root/physician-root.component';
-import { PatientDetailComponent, PhysicianRouteResolverService, PhysicianHeirachyComponent, SharedCaregiverModule } from 'projects/shared-caregiver/src/public-api';
+import { PatientDetailComponent, PhysicianRouteResolverService, PhysicianHeirachyComponent, SharedCaregiverModule, getCaregiverRoute } from 'projects/shared-caregiver/src/public-api';
 
 @NgModule({
   declarations: [
@@ -26,20 +26,7 @@ import { PatientDetailComponent, PhysicianRouteResolverService, PhysicianHeirach
     PhysicianRootComponent
   ],
   imports: [
-    RouterModule.forChild([
-      { path: '', component: RootComponent},
-      { path: ':id', component: PhysicianRootComponent, children: [
-        { path: '',
-            component: PhysicianHeirachyComponent,
-            resolve: {
-              model: PhysicianRouteResolverService
-            }
-        },
-        { path: 'patient/:id', component: PhysicianRootComponent, children: [
-          { path: '', component: PatientDetailComponent }
-        ]}
-      ]}
-    ]),
+    RouterModule.forChild(getCaregiverRoute(RootComponent, PhysicianRootComponent)),
     CommonModule,
     QRCodeModule,
     FormsModule,
