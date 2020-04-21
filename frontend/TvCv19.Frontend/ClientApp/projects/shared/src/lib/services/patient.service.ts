@@ -3,8 +3,8 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { HttpHeaders } from '@angular/common/http';
 import { PatientModel } from '../models/patient.model';
 import { Observable, throwError } from 'rxjs';
-import { catchError, retry } from 'rxjs/operators';
-import { MessageModel } from 'projects/physician/src/lib/chat.service';
+import { catchError } from 'rxjs/operators';
+import { MessageModel } from '../models/message.model';
 
 @Injectable({
   providedIn: 'root',

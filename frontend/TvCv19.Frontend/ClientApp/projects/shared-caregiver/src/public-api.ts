@@ -14,3 +14,5 @@ export * from './lib/physician-heirachy/physician-heirachy.component';
 
 export * from './lib/physician-heirachy/physician-heirachy-route-resolver.service';
 
+export * from './lib/route-helper';
+

@@ -12,6 +12,8 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { VideoReceiverComponent } from './components/video-receiver/video-receiver.component';
 import { FlexLayoutModule } from '@angular/flex-layout';
+import { FormsModule } from '@angular/forms';
+import { MatInputModule } from '@angular/material/input';
 
 
 
@@ -25,12 +27,14 @@ import { FlexLayoutModule } from '@angular/flex-layout';
     RouterModule,
     CommonModule,
     QRCodeModule,
+    FormsModule,
     ZXingScannerModule,
     HttpClientModule,
     MatToolbarModule,
     MatIconModule,
     MatGridListModule,
     MatButtonModule,
+    MatInputModule,
     FlexLayoutModule
   ],
   exports: [

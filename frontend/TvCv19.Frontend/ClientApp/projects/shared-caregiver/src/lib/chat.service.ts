@@ -2,16 +2,7 @@ import { Injectable } from '@angular/core';
 
 import { HubConnectionBuilder, HubConnection, LogLevel, HubConnectionState } from '@microsoft/signalr';
 import { Subject, Observable } from 'rxjs';
-
-export interface MessageModel {
-  isImage: boolean;
-  name: string;
-  message: string;
-  date: Date;
-  id: string;
-  isCareInstruction: boolean;
-  isAudio: boolean;
-}
+import { MessageModel } from 'projects/shared/src/public-api';
 
 @Injectable({
   providedIn: 'root'

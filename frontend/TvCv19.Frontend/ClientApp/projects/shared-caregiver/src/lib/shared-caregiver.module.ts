@@ -17,6 +17,8 @@ import { QRCodeModule } from 'angularx-qrcode';
 import { MatButtonModule } from '@angular/material/button';
 import { CommonModule } from '@angular/common';
 import { FlexModule } from '@angular/flex-layout';
+import { ChatComponent } from './chat/chat.component';
+import { MatInputModule } from '@angular/material/input';
 
 
 
@@ -27,7 +29,8 @@ import { FlexModule } from '@angular/flex-layout';
     LiveVideoComponent,
     PatientDetailComponent,
     PatientListComponent,
-    PhysicianHeirachyComponent
+    PhysicianHeirachyComponent,
+    ChatComponent
   ],
   imports: [
     CommonModule,
@@ -41,6 +44,7 @@ import { FlexModule } from '@angular/flex-layout';
     MatToolbarModule,
     MatFormFieldModule,
     MatButtonModule,
+    MatInputModule,
     QRCodeModule,
     SharedModule
   ],
