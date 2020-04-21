@@ -5,8 +5,8 @@ import { RouterModule } from '@angular/router';
 import { MatListModule } from '@angular/material/list';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
-import { PhysicianHeirachyComponent, PhysicianRouteResolverService, PatientDetailComponent } from 'projects/shared/src/public-api';
 import { BedsideRootComponent } from './bedside-root/bedside-root.component';
+import { PhysicianHeirachyComponent, PhysicianRouteResolverService, PatientDetailComponent, SharedCaregiverModule } from 'projects/shared-caregiver/src/public-api';
 
 
 
@@ -33,7 +33,8 @@ import { BedsideRootComponent } from './bedside-root/bedside-root.component';
       ]}
     ]),
     MatListModule,
-    MatButtonModule
+    MatButtonModule,
+    SharedCaregiverModule
   ],
   exports: [BedsideComponent]
 })
