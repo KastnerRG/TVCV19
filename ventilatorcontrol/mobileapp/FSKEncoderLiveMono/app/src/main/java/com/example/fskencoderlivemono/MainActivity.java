@@ -686,6 +686,11 @@ public class MainActivity extends AppCompatActivity {
                             if (DECODER_DATA_BUF.contains("$")) {
                                 ENCODER_DATA_BUF = "{\"1\":{}}{\"1\":{}}   \n";
                             }
+                            else
+                            {
+                                Thread.sleep(3000);
+                            }
+
 
                             Thread.sleep(10);//modemPollPeriod);
 
