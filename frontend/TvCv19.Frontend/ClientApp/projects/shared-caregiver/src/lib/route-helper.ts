@@ -5,6 +5,7 @@ import { PhysicianRouteResolverService } from './physician-heirachy/physician-he
 import { PatientDetailComponent } from './patient-detail/patient-detail.component';
 import { ChatComponent } from './chat/chat.component';
 import { ChangeShiftComponent } from './change-shift/change-shift.component';
+import { ChatRouteResolverService } from './chat/chat-route-resolver.service';
 
 export function getCaregiverRoute(rootComponent: Type<any>, caregiverRootComponent: Type<any>): Routes {
     return [
@@ -18,7 +19,11 @@ export function getCaregiverRoute(rootComponent: Type<any>, caregiverRootCompone
             },
             { path: 'patient/:id', component: caregiverRootComponent, children: [
                 { path: '', component: PatientDetailComponent },
-                { path: 'chat', component: ChatComponent },
+                { path: 'chat', component: ChatComponent, 
+                  resolve: {
+                    messages: ChatRouteResolverService 
+                  } 
+                },
                 { path: 'change-shift', component: ChangeShiftComponent }
             ]}
         ]}

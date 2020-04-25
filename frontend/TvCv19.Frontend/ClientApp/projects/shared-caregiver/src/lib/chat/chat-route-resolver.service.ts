@@ -18,7 +18,7 @@ export class ChatRouteResolverService {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Observable<Array<MessageModel>> {
-    let patientId = route.paramMap.get('patient-id');
+    let patientId = route.parent.params['id']
     
     return this.patientService.getMessages(patientId).pipe(
       mergeMap((messages) => {
