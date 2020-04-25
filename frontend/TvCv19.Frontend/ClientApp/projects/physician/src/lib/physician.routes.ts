@@ -10,6 +10,7 @@ import { PatientListComponent } from './patient-list/patient-list.component';
 import { PatientDetailComponent } from './patient-detail/patient-detail.component';
 import { ChangeShiftComponent } from './change-shift/change-shift.component';
 import { ChatRouteResolverService } from './chat/chat-route-resolver.service';
+import { AssignCareGiverRouteResolverService } from 'projects/patient/src/lib/patient/patient-registration/assign-caregiver-route-resolver.service';
 
 export const routes: Routes = [
   { path: '', component: RootComponent },
@@ -31,6 +32,11 @@ export const routes: Routes = [
   { path: 'patient/:patient-id/chat', component: ChatComponent,
     resolve: {
       messages: ChatRouteResolverService 
+    }
+  },
+  { path: 'patient/:id/shift', component: ChangeShiftComponent,
+    resolve: {
+      model: AssignCareGiverRouteResolverService 
     }
   },
 ];

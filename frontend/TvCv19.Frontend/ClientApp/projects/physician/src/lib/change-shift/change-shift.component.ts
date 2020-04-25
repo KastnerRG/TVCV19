@@ -3,9 +3,10 @@ import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { PatientModel } from 'src/app/shared/models/patient-model';
 import { map, startWith } from 'rxjs/operators';
-import { ChangeShiftModel } from './change-shift.model';
-import { PatientService } from '../../../../../src/app/shared/services/patient.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { AssignCareGiverModel } from 'projects/patient/src/lib/patient/patient-registration/assign-caregiver-route-model';
+import { PhysicianModel } from 'src/app/shared/models/physician-model';
+import { PatientService } from 'src/app/shared/services/patient.service';
 
 export interface Caregiver {
   name: string;
@@ -20,32 +21,24 @@ export interface Caregiver {
 
 
 export class ChangeShiftComponent implements OnInit {
-  patients: Array<PatientModel>;
+  patient: PatientModel;
   caregiverControl = new FormControl();
   options: Caregiver[];
   filteredOptions: Observable<Caregiver[]>;
-  id: string;
-  constructor(private route: ActivatedRoute, private patientService: PatientService) { }
+
+  constructor(private route: ActivatedRoute, private patientService: PatientService, private router: Router) { }
 
   ngOnInit(): void {
-    this.route.data.subscribe(
-      ( data: { model: ChangeShiftModel }) => {
-        this.patients = data.model.patients || [];
-        this.id = data.model.physicianId || '123';
-        this.filteredOptions = this.caregiverControl.valueChanges.pipe(
-        startWith(''),
-        map((value) => (typeof value === 'string' ? value : value.name)),
-        map((name) => (name ? this._filter(name) : this.options.slice()))
-        );
-      }
-    );
-  }
+    this.route.data.subscribe((data: { model: AssignCareGiverModel }) => {
+      this.patient = data.model.patient;
+      this.options = data.model.caregivers;
+    });
 
-  onSubmit(caregiver: Caregiver) {
-    for (var patient of this.patients) { 
-         patient.caregiverId = caregiver.id
-      this.patientService.updatePatient(patient);
-    } 
+    this.filteredOptions = this.caregiverControl.valueChanges.pipe(
+      startWith(''),
+      map((value) => (typeof value === 'string' ? value : value.name)),
+      map((name) => (name ? this._filter(name) : this.options.slice()))
+    );
   }
 
   displayFn(user: Caregiver): string {
@@ -58,5 +51,11 @@ export class ChangeShiftComponent implements OnInit {
     return this.options.filter(
       (option) => option.name.toLowerCase().indexOf(filterValue) === 0
     );
+  }
+
+  onSubmit(caregiver: PhysicianModel) {
+    this.patient.caregiverId = caregiver.id
+    this.patientService.updatePatient(this.patient).subscribe()
+    this.router.navigateByUrl('/')
   }
 }
