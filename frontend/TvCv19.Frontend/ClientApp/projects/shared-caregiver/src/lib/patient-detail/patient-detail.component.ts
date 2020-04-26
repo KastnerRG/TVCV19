@@ -18,4 +18,12 @@ export class PatientDetailComponent implements OnInit {
   }
 
   ngOnInit(): void {}
+
+  chat(): void {
+    this.router.navigateByUrl(`/physician/${this.physicianId}/patient/${this.patientId}/chat`);
+  }
+
+  shift(): void {
+    this.router.navigateByUrl(`/physician/${this.physicianId}/patient/${this.patientId}/shift`);
+  }
 }
