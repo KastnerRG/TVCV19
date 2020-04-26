@@ -1,11 +1,16 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { MatDialog } from '@angular/material/dialog';
 import { first } from 'rxjs/operators';
 import { ChatService } from '../chat.service';
 import { AudioRecordingService } from '../audio-recording.service';
 import { MediaService } from '../media.service';
 import { MessageModel } from 'projects/shared/src/public-api';
+import {
+  PatientStatsDialog,
+  StatsData,
+} from '../patient-stats/patient-stats.dialog';
 
 export interface DownloadedImage {
   url: SafeUrl;
@@ -34,17 +39,18 @@ export class ChatComponent implements OnInit {
     private audioRecordingService: AudioRecordingService,
     private mediaService: MediaService,
     private sanitizer: DomSanitizer,
+    private dialog: MatDialog,
     route: ActivatedRoute
   ) {
     chatService.messages.subscribe((m) => {
       this.chatMessages.push(m);
     });
 
-    route.parent.params.subscribe((p:any) => {
+    route.parent.params.subscribe((p: any) => {
       this.patientId = p['id'];
 
       this.chatService.subscribeAsync(this.patientId);
-    })
+    });
 
     route.parent.parent.params.subscribe((p) => {
       this.physicianId = p['id'];
@@ -66,6 +72,7 @@ export class ChatComponent implements OnInit {
       this.patientId,
       this.physicianId,
       this.messageToSend,
+      null,
       false
     );
 
@@ -77,6 +84,7 @@ export class ChatComponent implements OnInit {
       this.patientId,
       this.physicianId,
       fileName,
+      null,
       false,
       true,
       false
@@ -88,9 +96,20 @@ export class ChatComponent implements OnInit {
       this.patientId,
       this.physicianId,
       fileName,
+      null,
       false,
       false,
       true
+    );
+  }
+
+  async sendRespiratorStats(stats: StatsData): Promise<void> {
+    await this.chatService.sendMessageAsync(
+      this.patientId,
+      this.physicianId,
+      this.messageToSend,
+      stats,
+      false
     );
   }
 
@@ -103,7 +122,44 @@ export class ChatComponent implements OnInit {
     }
   }
 
-  stopRecording() {
+  getMedia(message: MessageModel): void {
+    if (message.isAudio || message.isImage) {
+      const fileName = message.message;
+      if (this.audioCache[fileName]) {
+        this.audioCache[fileName].play();
+        return;
+      }
+      this.mediaService.getMedia(fileName).subscribe((blob: Blob) => {
+        if (message.isAudio) {
+          this.playAudio(blob, fileName);
+        } else if (message.isImage) {
+          this.downloadImage(fileName, blob);
+        }
+      });
+    }
+  }
+
+  uploadStats() {
+    const dialogRef = this.dialog.open(PatientStatsDialog, {
+      width: '80vw',
+      data: { stats: { pr: '', tv: '', pp: '', ie: '', mp: '', o2: '' } },
+    });
+
+    dialogRef.afterClosed().subscribe(async (result: StatsData) => {
+      if (result) await this.sendRespiratorStats(result);
+    });
+  }
+
+  imgInputChange(fileInputEvent: any): void {
+    const file: File = fileInputEvent.target.files[0];
+    this.mediaService
+      .sendMedia({ file, fileName: file.name, mimeType: file.type })
+      .subscribe(async () => {
+        await this.sendPictureMessage(file.name);
+      });
+  }
+
+  private stopRecording() {
     this.audioRecordingService.stopRecording();
     this.isRecording = false;
     this.recordedTime = '';
@@ -124,23 +180,6 @@ export class ChatComponent implements OnInit {
       });
   }
 
-  getMedia(message: MessageModel): void {
-    if (message.isAudio || message.isImage) {
-      const fileName = message.message;
-      if (this.audioCache[fileName]) {
-        this.audioCache[fileName].play();
-        return;
-      }
-      this.mediaService.getMedia(fileName).subscribe((blob: Blob) => {
-        if (message.isAudio) {
-          this.playAudio(blob, fileName);
-        } else if (message.isImage) {
-          this.downloadImage(fileName, blob);
-        }
-      });
-    }
-  }
-
   private downloadImage(fileName, blob: Blob) {
     this.downloadedImage.fileName = fileName;
     this.downloadedImage.url = this.sanitizer.bypassSecurityTrustUrl(
@@ -150,21 +189,10 @@ export class ChatComponent implements OnInit {
   }
 
   private playAudio(x: Blob, fileName: string) {
- 
-
     let blob = new Blob([x], { type: 'audio/mpeg3' });
     let audioUrl = URL.createObjectURL(blob);
     let audio = new Audio(audioUrl);
     this.audioCache[fileName] = audio;
     audio.play();
-  }
-
-  imgInputChange(fileInputEvent: any): void {
-    const file: File = fileInputEvent.target.files[0];
-    this.mediaService
-      .sendMedia({ file, fileName: file.name, mimeType: file.type })
-      .subscribe(async (x) => {
-        await this.sendPictureMessage(file.name);
-      });
   }
 }

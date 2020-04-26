@@ -3,7 +3,7 @@ namespace TvCv19.Frontend.Domain.Models
 {
     public class MessageDto
     {
-        public MessageDto(string name, string message, DateTime date, string id, bool isCareInstructions, bool isAudio, bool isImage)
+        public MessageDto(string name, string message, DateTime date, string id, bool isCareInstructions, bool isAudio, bool isImage, Stats stats)
         {
             Name = name;
             Message = message;
@@ -12,6 +12,7 @@ namespace TvCv19.Frontend.Domain.Models
             IsCareInstructions = isCareInstructions;
             IsAudio = isAudio;
             IsImage = isImage;
+            Stats = stats;
         }
 
         public string Name { get; set; }
@@ -21,6 +22,7 @@ namespace TvCv19.Frontend.Domain.Models
         public bool IsCareInstructions { get; }
         public bool IsAudio { get; }
         public bool IsImage { get; }
+        public Stats Stats { get; }
         public bool IsCareInstruction { get; set; }
     }
 }

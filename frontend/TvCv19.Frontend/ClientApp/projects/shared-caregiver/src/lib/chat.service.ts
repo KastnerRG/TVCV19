@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { HubConnectionBuilder, HubConnection, LogLevel, HubConnectionState } from '@microsoft/signalr';
 import { Subject, Observable } from 'rxjs';
 import { MessageModel } from 'projects/shared/src/public-api';
+import { StatsData } from './patient-stats/patient-stats.dialog';
 
 @Injectable({
   providedIn: 'root'
@@ -21,7 +22,7 @@ export class ChatService {
       .configureLogging(LogLevel.Information)
       .build();
 
-    this.connection.on('ReceiveMessage', (message: string, name: string, date: Date, id: string, isCareInstruction: boolean, isAudio: boolean, isImage: boolean) => {
+    this.connection.on('ReceiveMessage', (message: string, name: string, date: Date, id: string, isCareInstruction: boolean, isAudio: boolean, isImage: boolean, stats: StatsData) => {
       this.messagesSubject.next({
         name,
         message,
@@ -29,7 +30,8 @@ export class ChatService {
         id,
         isCareInstruction,
         isAudio,
-        isImage
+        isImage,
+        stats
       });
     });
   }
@@ -43,9 +45,9 @@ export class ChatService {
     await this.connection.invoke("SubscribeAsync", patientId);
   }
 
-  async sendMessageAsync(patientId: string, physicianId: string, message: string, isCareInstruction: boolean, isAudio: boolean = false, isImage: boolean = false): Promise<void> {
+  async sendMessageAsync(patientId: string, physicianId: string, message: string, stats: StatsData, isCareInstruction: boolean, isAudio: boolean = false, isImage: boolean = false): Promise<void> {
     await this.connectAsync();
-    await this.connection.invoke("SendMessageAsync", patientId, physicianId, message, isCareInstruction, isAudio, isImage);
+    await this.connection.invoke("SendMessageAsync", patientId, physicianId, message, stats, isCareInstruction, isAudio, isImage);
   }
 
   private async connectAsync(): Promise<void> {
