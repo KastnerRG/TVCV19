@@ -7,6 +7,7 @@ import { ChatComponent } from './chat/chat.component';
 import { ChangeShiftComponent } from './change-shift/change-shift.component';
 import { ChatRouteResolverService } from './chat/chat-route-resolver.service';
 import { PatientListComponent } from './patient-list/patient-list.component';
+import { CarerPatientRouteResolverService } from './patient-detail/carer-patient-route-resolver.service';
 
 export function getCaregiverRoute(rootComponent: Type<any>, caregiverRootComponent: Type<any>): Routes {
     return [
@@ -31,7 +32,11 @@ export function getCaregiverRoute(rootComponent: Type<any>, caregiverRootCompone
                     messages: ChatRouteResolverService 
                   } 
                 },
-                { path: 'change-shift', component: ChangeShiftComponent }
+                { path: 'change-shift', component: ChangeShiftComponent,
+                  resolve: {
+                    model: CarerPatientRouteResolverService 
+                  }
+                }
             ]}
         ]}
     ];
