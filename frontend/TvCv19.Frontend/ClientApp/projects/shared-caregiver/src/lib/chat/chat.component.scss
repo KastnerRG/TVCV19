@@ -5,15 +5,27 @@
   font-size: 10px;
   .recording {
     height: 48px;
-    background: url('/assets/img/recording.png') #f4f3f3;
+    background: url("/assets/img/recording.png") #f4f3f3;
   }
-  
+
   .image-upload {
     height: 140px;
-    background: url('/assets/img/imgupload.png') #f4f3f3 no-repeat center;
-
+    background: url("/assets/img/imgupload.png") #f4f3f3 no-repeat center;
   }
-  
+
+  .stats {
+    text-align: right;
+    background: #f4f3f3;
+    p {
+      padding-right: 15px;
+    }
+
+    img {
+      align-self: center;
+      padding: 15px;
+    }
+  }
+
   &__message {
     margin: 20px 59px;
     &__text {

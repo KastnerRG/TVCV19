@@ -1,17 +1,16 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
-import {
-  MatDialog,
-  MatDialogRef,
-  MAT_DIALOG_DATA,
-} from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { first } from 'rxjs/operators';
 import { ChatService } from '../chat.service';
 import { AudioRecordingService } from '../audio-recording.service';
 import { MediaService } from '../media.service';
 import { MessageModel } from 'projects/shared/src/public-api';
-import { PatientStatsDialog, StatsData } from '../patient-stats/patient-stats.dialog';
+import {
+  PatientStatsDialog,
+  StatsData,
+} from '../patient-stats/patient-stats.dialog';
 
 export interface DownloadedImage {
   url: SafeUrl;
@@ -32,7 +31,6 @@ export class ChatComponent implements OnInit {
   public recordedTime: string;
   public downloadedImage: DownloadedImage = { url: '', fileName: '' };
   private audioCache = {};
-  public stats: StatsData = { pr: '', tv: '', pp: '', ie: '', mp: '', o2: '' };
 
   @ViewChild('downloadImage') download: any;
 
@@ -74,6 +72,7 @@ export class ChatComponent implements OnInit {
       this.patientId,
       this.physicianId,
       this.messageToSend,
+      null,
       false
     );
 
@@ -85,6 +84,7 @@ export class ChatComponent implements OnInit {
       this.patientId,
       this.physicianId,
       fileName,
+      null,
       false,
       true,
       false
@@ -96,9 +96,20 @@ export class ChatComponent implements OnInit {
       this.patientId,
       this.physicianId,
       fileName,
+      null,
       false,
       false,
       true
+    );
+  }
+
+  async sendRespiratorStats(stats: StatsData): Promise<void> {
+    await this.chatService.sendMessageAsync(
+      this.patientId,
+      this.physicianId,
+      this.messageToSend,
+      stats,
+      false
     );
   }
 
@@ -131,13 +142,21 @@ export class ChatComponent implements OnInit {
   uploadStats() {
     const dialogRef = this.dialog.open(PatientStatsDialog, {
       width: '80vw',
-      data: { stats: this.stats}
-    })
-
-    dialogRef.afterClosed().subscribe(result => {
-      this.stats = result;
+      data: { stats: { pr: '', tv: '', pp: '', ie: '', mp: '', o2: '' } },
     });
 
+    dialogRef.afterClosed().subscribe(async (result: StatsData) => {
+      if (result) await this.sendRespiratorStats(result);
+    });
+  }
+
+  imgInputChange(fileInputEvent: any): void {
+    const file: File = fileInputEvent.target.files[0];
+    this.mediaService
+      .sendMedia({ file, fileName: file.name, mimeType: file.type })
+      .subscribe(async () => {
+        await this.sendPictureMessage(file.name);
+      });
   }
 
   private stopRecording() {
@@ -158,15 +177,6 @@ export class ChatComponent implements OnInit {
           .subscribe(async (x) => {
             await this.sendAudioMessage(x.fileName);
           });
-      });
-  }
-
-  imgInputChange(fileInputEvent: any): void {
-    const file: File = fileInputEvent.target.files[0];
-    this.mediaService
-      .sendMedia({ file, fileName: file.name, mimeType: file.type })
-      .subscribe(async (x) => {
-        await this.sendPictureMessage(file.name);
       });
   }
 
