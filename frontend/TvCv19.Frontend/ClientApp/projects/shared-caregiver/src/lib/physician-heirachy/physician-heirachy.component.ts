@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { PatientModel, PhysicianModel, PatientService, FirstLinePatientRouteDataModel } from 'projects/shared/src/public-api';
+import { PatientModel, PhysicianModel, PatientService, CaregiverRouteDataModel } from 'projects/shared/src/public-api';
 
 @Component({
   selector: 'app-physician-heirachy',
@@ -10,7 +10,7 @@ import { PatientModel, PhysicianModel, PatientService, FirstLinePatientRouteData
 
 export class PhysicianHeirachyComponent implements OnInit {
   patients: Array<PatientModel>
-  physicians: Array<PhysicianModel>
+  careTeam: Array<PhysicianModel>
   scanPatientQr: boolean
   scanPhysicianQr: boolean
   private id: string
@@ -18,11 +18,10 @@ export class PhysicianHeirachyComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.data
-      .subscribe((data: { model: FirstLinePatientRouteDataModel }) => {
+      .subscribe((data: { model: CaregiverRouteDataModel }) => {
         this.patients = data.model.patients || [];
-        this.id = data.model.physicianId || "123"
-        this.physicians = data.model.physicians
-        console.log(this.id)
+        this.id = data.model.id || "123"
+        this.careTeam = data.model.careTeam
       });
   }
 

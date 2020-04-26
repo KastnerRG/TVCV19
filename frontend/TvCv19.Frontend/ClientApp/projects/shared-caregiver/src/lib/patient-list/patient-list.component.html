@@ -1,5 +1,5 @@
 <div class="patient-list">
-  <div class="patient-list__patient" (click)="onClick(patient.id)" *ngFor="let patient of patients">
+  <div class="patient-list__patient" routerLink="../patient/{{patient.id}}" *ngFor="let patient of patients">
     <div fxLayout="row" fxLayoutAlign="center">
       <span class="patient-name">{{ patient.name }}</span>
       <img src="/assets/img/message-bubble.png" />

@@ -1,8 +1,8 @@
 import { PatientModel } from './patient.model';
 import { PhysicianModel } from '../../public-api';
 
-export class FirstLinePatientRouteDataModel {
+export class CaregiverRouteDataModel {
     patients: Array<PatientModel>;
-    physicianId: string
-    physicians: Array<PhysicianModel>
+    id: string
+    careTeam: Array<PhysicianModel>
 }

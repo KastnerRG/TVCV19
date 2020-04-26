@@ -6,28 +6,28 @@ import {
 }                                 from '@angular/router';
 import { Observable, of, EMPTY }  from 'rxjs';
 import { mergeMap }         from 'rxjs/operators';
-import { PatientService, PhysicianService, FirstLinePatientRouteDataModel } from 'projects/shared/src/public-api';
+import { PatientService, PhysicianService, CaregiverRouteDataModel } from 'projects/shared/src/public-api';
 
 @Injectable({
   providedIn: 'root'
 })
-export class PhysicianRouteResolverService {
+export class CarerRouteResolverService {
 
   constructor(private patientService: PatientService, private physicianService: PhysicianService, private router: Router) { }
 
-  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<FirstLinePatientRouteDataModel> | Observable<never> {
+  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<CaregiverRouteDataModel> | Observable<never> {
       const id = route.parent.params["id"];
        
       return this.patientService.getPatientsByPhysicianId(id).pipe(
-        mergeMap(patient => {
-          if(patient){
+        mergeMap(patients => {
+          if(patients){
            return this.physicianService.getPhysicians().pipe(
               mergeMap(physicians => {
-                const filtered = physicians.filter(p => p.supervisorId === id)
+                const careTeam = physicians.filter(p => p.supervisorId === id)
                 return of({
-                  patients: patient,
-                  physicians: filtered,
-                  physicianId: id
+                  patients,
+                  careTeam,
+                  id
                 })
               })
             )
