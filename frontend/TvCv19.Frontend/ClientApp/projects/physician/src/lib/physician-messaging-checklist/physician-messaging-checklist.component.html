@@ -3,15 +3,31 @@
     <span>{{ physicianName }} ({{ patientName }})</span>
   </mat-toolbar-row>
 </mat-toolbar>
+<!-- 
+<mat-list>
+  <mat-list-item>
+    <mat-checkbox> Pepper1 </mat-checkbox>
+  </mat-list-item>
+  <mat-list-item> <mat-checkbox> Pepper2 </mat-checkbox> </mat-list-item>
+  <mat-list-item> <mat-checkbox> Pepper3 </mat-checkbox> </mat-list-item>
+  <mat-list-item> <mat-checkbox> Pepper4 </mat-checkbox> </mat-list-item>
+</mat-list> -->
 
-<form [formGroup]="checkListForm" (ngSubmit)="onSubmit()">
-  <!-- <mat-checkbox [formControlName]="item1">Checklist 1</mat-checkbox>
-  <mat-icon>close</mat-icon>
-  <mat-checkbox [formControlName]="item2">Checklist item 1</mat-checkbox>
-  <mat-icon>close</mat-icon>
-  <mat-checkbox [formControlName]="item3">Checklist item 1</mat-checkbox>
-  <mat-icon>close</mat-icon> -->
+<mat-list>
+  <ng-container *ngFor="let item of checkList">
+    <mat-list-item *ngIf="!item.deleted">
+      <mat-checkbox [(ngModel)]="item.checked">
+        {{ item.id }} {{ item.name }} {{ item.checked }}
 
+        <button mat-icon-button (click)="itemRemoveClick(item)">
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-checkbox>
+    </mat-list-item>
+  </ng-container>
+</mat-list>
+
+<!-- <form [formGroup]="checkListForm" (ngSubmit)="onSubmit()">
   <mat-form-field appearance="fill">
     <mat-checkbox id="item1" formControlName="item1"
       >Checklist item 1
@@ -53,8 +69,7 @@
       <mat-icon>close</mat-icon>
     </button>
   </mat-form-field>
-</form>
 
-<!-- 
-<mat-checkbox>Disabled</mat-checkbox>
-<mat-checkbox checked="true">Checkbox Checked</mat-checkbox> -->
+  <mat-checkbox>Disabled</mat-checkbox>
+  <mat-checkbox checked="true">Checkbox Checked</mat-checkbox>
+</form> -->

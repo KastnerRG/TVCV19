@@ -2,6 +2,9 @@ import { Component, OnInit, EventEmitter } from '@angular/core';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatListModule } from '@angular/material/list';
+import { Router } from '@angular/router';
+import { PhysicianMessagingChecklistModel } from '../physician-messaging-checklist-model';
+import { PhysicianMessagingChecklistService } from '../physician-messaging-checklist.service';
 
 // import { ReactiveFormsModule } from '@angular/forms';
 
@@ -14,11 +17,34 @@ export class PhysicianMessagingChecklistComponent implements OnInit {
   physicianName: string = '<test physician>';
   patientName: string = '<test patient>';
   checkListForm;
-  // checkList = new FormGroup({
-  //   item1: new FormControl(' '),
-  //   item2: new FormControl(' '),
-  //   item3: new FormControl(' '),
-  // });
+
+  //checkList: Array<PhysicianMessagingChecklistModel> = [];
+  checkList: Array<PhysicianMessagingChecklistModel> = [
+    {
+      id: '1',
+      name: 'item1',
+      checked: false,
+      deleted: false,
+    },
+    {
+      id: '2',
+      name: 'item2',
+      checked: false,
+      deleted: false,
+    },
+    {
+      id: '3',
+      name: 'item3',
+      checked: false,
+      deleted: false,
+    },
+    {
+      id: '4',
+      name: 'item4',
+      checked: false,
+      deleted: false,
+    },
+  ];
 
   /*
   user = {
@@ -46,18 +72,19 @@ export class PhysicianMessagingChecklistComponent implements OnInit {
     return this.fb.array(arr);
   }*/
 
-  constructor(private formBuilder: FormBuilder) {
-    this.checkListForm = this.formBuilder.group({
-      item1: new FormControl(''),
-      item2: new FormControl(''),
-      item3: new FormControl(''),
-      item4: new FormControl(''),
-    });
-    console.log(this.checkListForm);
+  constructor(
+    private service: PhysicianMessagingChecklistService,
+    private router: Router
+  ) {
+    //service.getPhysicianMessagingChecklist().subscribe((checkList) => (this.checkList = checkList));
   }
   // remove: EventEmitter<mat-form-field> = new EventEmitter();
   closeButtonClick() {
     console.log('Button Clicks');
+  }
+
+  itemRemoveClick(item: PhysicianMessagingChecklistModel) {
+    item.deleted = true;
   }
 
   onSubmit() {
