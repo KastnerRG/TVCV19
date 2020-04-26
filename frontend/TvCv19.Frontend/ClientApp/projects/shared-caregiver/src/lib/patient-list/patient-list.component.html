@@ -1,0 +1,15 @@
+<div class="patient-list">
+  <div class="patient-list__patient" routerLink="../patient/{{patient.id}}" *ngFor="let patient of patients">
+    <div fxLayout="row" fxLayoutAlign="center">
+      <span class="patient-name">{{ patient.name }}</span>
+      <img src="/assets/img/message-bubble.png" />
+    </div>
+    <div>
+      <qrcode
+        [qrdata]="patient.id"
+        [width]="256"
+        [errorCorrectionLevel]="'M'"
+      ></qrcode>
+    </div>
+  </div>
+</div>

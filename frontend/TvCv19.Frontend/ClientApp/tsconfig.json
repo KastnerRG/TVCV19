@@ -23,6 +23,30 @@
       "physician": [
         "dist/physician/physician",
         "dist/physician"
+      ],
+      "shared": [
+        "dist/shared/shared",
+        "dist/shared"
+      ],
+      "care-giver": [
+        "dist/care-giver/care-giver",
+        "dist/care-giver"
+      ],
+      "caregiver": [
+        "dist/caregiver/caregiver",
+        "dist/caregiver"
+      ],
+      "admin": [
+        "dist/admin/admin",
+        "dist/admin"
+      ],
+      "bedside": [
+        "dist/bedside/bedside",
+        "dist/bedside"
+      ],
+      "shared-caregiver": [
+        "dist/shared-caregiver/shared-caregiver",
+        "dist/shared-caregiver"
       ]
     }
   },

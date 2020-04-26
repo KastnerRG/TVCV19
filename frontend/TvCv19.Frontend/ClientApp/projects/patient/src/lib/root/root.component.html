@@ -1,0 +1,5 @@
+<mat-list>
+    <mat-list-item><a mat-raised-button color="primary" routerLink="registration">Admit Patient</a></mat-list-item>
+
+    <mat-list-item *ngFor="let patient of patients"><a mat-raised-button color="primary" routerLink="registration/assign-caregiver/{{patient.id}}">{{patient.name}}</a></mat-list-item>
+</mat-list>

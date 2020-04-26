@@ -1,0 +1,55 @@
+<div fxLayout="column" fxFill>
+  <div class="messages">
+    <div
+      class="messages__message"
+      fxLayout="column"
+      *ngFor="let chatMessage of chatMessages"
+      (click)="getMedia(chatMessage)"
+    >
+      <span>{{ chatMessage.name }} </span>
+      <div *ngIf="!chatMessage.stats" [ngClass]="{'recording' : chatMessage.isAudio, 'image-upload' : chatMessage.isImage}" class="messages__message__text">{{chatMessage.isAudio || chatMessage.isImage ? '' : chatMessage.message }}</div>
+      <div *ngIf="chatMessage.stats" class="stats" fxLayout="column">
+        <img src="/assets/img/imgupload.png" >
+        <p>respiratory rate (RR) {{chatMessage.stats.pr}}</p>
+        <p>tidal volume (TV) {{chatMessage.stats.tv}}</p>
+        <p>peak inspiratory pressure (PP) {{chatMessage.stats.pp}}</p>
+        <p>Inspiratory/expiratory time (I/E) {{chatMessage.stats.ie}}</p>
+        <p>Max Inspirator Presurere (MP) {{chatMessage.stats.mp}}</p>
+        <p>FiO2 (02 conc) {{chatMessage.stats.o2}}</p>
+      </div>
+      <span>{{ chatMessage.date | date: "shortTime" }}</span>
+    </div>
+  </div>
+  <div class="footer">
+    <div fxLayout="row">
+      <mat-form-field appearance="none" fxFill fxFlex>
+        <textarea
+          matInput
+          placeholder="Send a message"
+          [(ngModel)]="messageToSend"
+        ></textarea>
+      </mat-form-field>
+
+      <button mat-icon-button (click)="sendMessage()">
+        <mat-icon>send</mat-icon>
+      </button>
+    </div>
+    <div class="message-toolbar" fxLayout="row">
+      <div fxLayout="row" class="message-toolbar__icons">
+        <span>
+          <img (click)="uploadStats()" src="/assets/img/respirator-info.png" />
+        </span>
+        <span>
+          <img (click)="startRecording()" src="/assets/img/mic.png" />
+          <span>{{ recordedTime }}</span>
+        </span>
+        <span>
+          <img (click)="imgInput.click()" src="/assets/img/camera.png" />
+          <input #imgInput (change)="imgInputChange($event)" hidden="true" id="image" type="file" accept="image/*">
+          <a #downloadImage [href]="downloadedImage.url" [download]="downloadedImage.fileName"></a>
+        </span>
+      </div>
+      <div></div>
+    </div>
+  </div>
+</div>

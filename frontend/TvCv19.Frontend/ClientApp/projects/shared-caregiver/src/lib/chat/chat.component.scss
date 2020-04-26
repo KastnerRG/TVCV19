@@ -1,0 +1,56 @@
+.messages {
+  flex: 1 0 auto;
+  height: 81vh;
+  overflow-y: auto;
+  font-size: 10px;
+  .recording {
+    height: 48px;
+    background: url("/assets/img/recording.png") #f4f3f3;
+  }
+
+  .image-upload {
+    height: 140px;
+    background: url("/assets/img/imgupload.png") #f4f3f3 no-repeat center;
+  }
+
+  .stats {
+    text-align: right;
+    background: #f4f3f3;
+    p {
+      padding-right: 15px;
+    }
+
+    img {
+      align-self: center;
+      padding: 15px;
+    }
+  }
+
+  &__message {
+    margin: 20px 59px;
+    &__text {
+      background: #f4f3f3;
+      padding: 5px;
+      font-size: 16px;
+      margin: 5px 0;
+    }
+  }
+}
+
+.footer {
+  flex-shrink: 0;
+  padding: 5px 20px;
+  background: #f4f3f3;
+
+  .message-toolbar {
+    div {
+      flex-grow: 1;
+    }
+    &__icons {
+      flex-grow: 1;
+      span {
+        flex-grow: 1;
+      }
+    }
+  }
+}
