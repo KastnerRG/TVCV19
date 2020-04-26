@@ -1,13 +1,13 @@
 <mat-grid-list cols="2" rowHeight="2:1">
     <mat-toolbar color="secondary">
-      <span>You have {{physicians.length}} Report(s)</span>
+      <span>You have {{careTeam.length}} team member(s)</span>
     </mat-toolbar>  
-    <mat-grid-tile *ngFor="let physician of physicians;">
-        {{physician.name}}
+    <mat-grid-tile *ngFor="let carer of careTeam;">
+        {{carer.name}}
         <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
       </mat-grid-tile>
   </mat-grid-list>
-  <button color="primary" mat-raised-button (click)="scanPhysicianQr = !scanPhysicianQr">Add Report</button>
+  <button color="primary" mat-raised-button (click)="scanPhysicianQr = !scanPhysicianQr">Add Team Member</button>
   <qr-scanner *ngIf="scanPhysicianQr" (scannedId)="addPhysician($event)"></qr-scanner>
 <mat-grid-list cols="2" rowHeight="2:1">
   <mat-toolbar color="secondary">

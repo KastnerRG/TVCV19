@@ -12,7 +12,7 @@ export * from './lib/patient-detail/patient-detail.component';
 export * from './lib/patient-list/patient-list.component';
 export * from './lib/physician-heirachy/physician-heirachy.component';
 
-export * from './lib/physician-heirachy/physician-heirachy-route-resolver.service';
+export * from './lib/physician-heirachy/carer-route-resolver.service';
 
 export * from './lib/route-helper';
 

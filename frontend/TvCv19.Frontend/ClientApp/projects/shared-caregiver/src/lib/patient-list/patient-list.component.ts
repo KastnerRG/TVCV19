@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { PatientModel, PhysicianModel, FirstLinePatientRouteDataModel } from 'projects/shared/src/public-api';
+import { PatientModel, PhysicianModel, CaregiverRouteDataModel } from 'projects/shared/src/public-api';
 
 @Component({
   selector: 'lib-patient-list',
@@ -10,21 +10,17 @@ import { PatientModel, PhysicianModel, FirstLinePatientRouteDataModel } from 'pr
 export class PatientListComponent implements OnInit {
   patients: Array<PatientModel>;
   id: string;
-  physicians: Array<PhysicianModel> = [];
+  careTeam: Array<PhysicianModel> = [];
 
   constructor(private route: ActivatedRoute, private router: Router) {}
 
   ngOnInit(): void {
     this.route.data.subscribe(
-      (data: { model: FirstLinePatientRouteDataModel }) => {
+      (data: { model: CaregiverRouteDataModel }) => {
         this.patients = data.model.patients || [];
-        this.id = data.model.physicianId || '123';
-        this.physicians = data.model.physicians;
-        console.log(this.id);
+        this.id = data.model.id || '123';
+        this.careTeam = data.model.careTeam;
       }
     );
-  }
-  onClick(patientId: string): void {
-      this.router.navigateByUrl(`physician/${this.id}/patient/${patientId}`)
   }
 }

@@ -1,11 +1,12 @@
 import { Routes } from '@angular/router';
 import { Type } from '@angular/core';
 import { PhysicianHeirachyComponent } from './physician-heirachy/physician-heirachy.component';
-import { PhysicianRouteResolverService } from './physician-heirachy/physician-heirachy-route-resolver.service';
+import { CarerRouteResolverService } from './physician-heirachy/carer-route-resolver.service';
 import { PatientDetailComponent } from './patient-detail/patient-detail.component';
 import { ChatComponent } from './chat/chat.component';
 import { ChangeShiftComponent } from './change-shift/change-shift.component';
 import { ChatRouteResolverService } from './chat/chat-route-resolver.service';
+import { PatientListComponent } from './patient-list/patient-list.component';
 
 export function getCaregiverRoute(rootComponent: Type<any>, caregiverRootComponent: Type<any>): Routes {
     return [
@@ -14,8 +15,14 @@ export function getCaregiverRoute(rootComponent: Type<any>, caregiverRootCompone
             { path: '',
                 component: PhysicianHeirachyComponent,
                 resolve: {
-                    model: PhysicianRouteResolverService
+                    model: CarerRouteResolverService
                 }
+            },
+            {
+              path: 'patients', component: PatientListComponent,
+              resolve: {
+                model: CarerRouteResolverService
+            }  
             },
             { path: 'patient/:id', component: caregiverRootComponent, children: [
                 { path: '', component: PatientDetailComponent },
