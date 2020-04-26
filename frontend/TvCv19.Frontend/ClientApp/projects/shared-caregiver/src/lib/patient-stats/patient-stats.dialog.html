@@ -1,0 +1,32 @@
+<h1 mat-dialog-title>Upload latest stats</h1>
+<div mat-dialog-content>
+  <p>Fill in latest respiratory stats</p>
+  <mat-form-field>
+    <mat-label>respiratory rate (RR)</mat-label>
+    <input matInput [(ngModel)]="data.stats.pr">
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>tidal volume (TV)</mat-label>
+    <input matInput [(ngModel)]="data.stats.tv">
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>peak inspiratory pressure (PP)</mat-label>
+    <input matInput [(ngModel)]="data.stats.pp">
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Inspiratory/expiratory time (I/E)</mat-label>
+    <input matInput [(ngModel)]="data.stats.ie">
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>Max Inspirator Presurere (MP)</mat-label>
+    <input matInput [(ngModel)]="data.stats.mp">
+  </mat-form-field>
+  <mat-form-field>
+    <mat-label>FiO2 (02 conc)</mat-label>
+    <input matInput [(ngModel)]="data.stats.o2">
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Cancel</button>
+  <button mat-button [mat-dialog-close]="data.stats" cdkFocusInitial>Submit</button>
+</div>
