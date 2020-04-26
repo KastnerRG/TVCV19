@@ -2,10 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
-import { ChangeShiftModel } from './change-shift.model';
 import { ActivatedRoute, Router } from '@angular/router';
-import { PatientService, PatientModel, PhysicianModel } from 'projects/shared/src/public-api';
-import { AssignCareGiverModel } from 'projects/patient/src/public-api';
+import { PatientService, PatientModel, PhysicianModel, CarerPatientRouteDataModel } from 'projects/shared/src/public-api';
 
 export interface Caregiver {
   name: string;
@@ -18,7 +16,6 @@ export interface Caregiver {
   styleUrls: ['./change-shift.component.scss']
 })
 
-
 export class ChangeShiftComponent implements OnInit {
   patient: PatientModel;
   caregiverControl = new FormControl();
@@ -28,9 +25,9 @@ export class ChangeShiftComponent implements OnInit {
   constructor(private route: ActivatedRoute, private patientService: PatientService, private router: Router) { }
 
   ngOnInit(): void {
-    this.route.data.subscribe((data: { model: AssignCareGiverModel }) => {
+    this.route.data.subscribe((data: { model: CarerPatientRouteDataModel }) => {
       this.patient = data.model.patient;
-      this.options = data.model.caregivers;
+      this.options = data.model.careTeam;
     });
 
     this.filteredOptions = this.caregiverControl.valueChanges.pipe(
@@ -52,9 +49,9 @@ export class ChangeShiftComponent implements OnInit {
     );
   }
 
-  onSubmit(caregiver: PhysicianModel) {
+  async onSubmit(caregiver: PhysicianModel) {
     this.patient.caregiverId = caregiver.id
-    this.patientService.updatePatient(this.patient).subscribe()
+    await this.patientService.updatePatient(this.patient).toPromise()
     this.router.navigateByUrl('/')
   }
 }
