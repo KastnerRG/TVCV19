@@ -86,7 +86,7 @@ export class AudioRecordingService {
     if (this.recorder) {
       this.recorder.stop((blob) => {
         if (this.startTime) {
-          const mp3Name = `recording-${new Date().toTimeString()}.mp3`;
+          const mp3Name = `recording-${new Date().toISOString()}.mp3`;
           this.stopMedia();
           this._recorded.next({ blob: blob, title: mp3Name });
         }

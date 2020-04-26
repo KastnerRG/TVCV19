@@ -25,6 +25,7 @@ export class ChatComponent implements OnInit {
   public isRecording: boolean;
   public recordedTime: string;
   public downloadedImage: DownloadedImage = { url: '', fileName: '' };
+  private audioCache = {};
 
   @ViewChild('downloadImage') download: any;
 
@@ -106,42 +107,55 @@ export class ChatComponent implements OnInit {
     this.audioRecordingService.stopRecording();
     this.isRecording = false;
     this.recordedTime = '';
-    this.audioRecordingService.getRecordedBlob().pipe(first()).subscribe((b) => {
-      let file = new File([b.blob], b.title);
-      this.mediaService
-        .sendMedia({
-          fileName: b.title,
-          file,
-          mimeType: 'audio/mpeg',
-        })
-        .subscribe(async (x) => {
-          await this.sendAudioMessage(x.fileName);
-        });
-    });
+    this.audioRecordingService
+      .getRecordedBlob()
+      .pipe(first())
+      .subscribe((b) => {
+        let file = new File([b.blob], b.title);
+        this.mediaService
+          .sendMedia({
+            fileName: b.title,
+            file,
+            mimeType: 'audio/mpeg',
+          })
+          .subscribe(async (x) => {
+            await this.sendAudioMessage(x.fileName);
+          });
+      });
   }
 
   getMedia(message: MessageModel): void {
     if (message.isAudio || message.isImage) {
-      this.mediaService.getMedia(message.message).subscribe((blob: Blob) => {
+      const fileName = message.message;
+      if (this.audioCache[fileName]) {
+        this.audioCache[fileName].play();
+        return;
+      }
+      this.mediaService.getMedia(fileName).subscribe((blob: Blob) => {
         if (message.isAudio) {
-          this.playAudio(blob);
+          this.playAudio(blob, fileName);
         } else if (message.isImage) {
-          this.downloadImage(message, blob);
+          this.downloadImage(fileName, blob);
         }
       });
     }
   }
 
-  private downloadImage(message: MessageModel, blob: Blob) {
-    this.downloadedImage.fileName = message.message;
-    this.downloadedImage.url = this.sanitizer.bypassSecurityTrustUrl(URL.createObjectURL(blob));
+  private downloadImage(fileName, blob: Blob) {
+    this.downloadedImage.fileName = fileName;
+    this.downloadedImage.url = this.sanitizer.bypassSecurityTrustUrl(
+      URL.createObjectURL(blob)
+    );
     setTimeout(() => this.download.nativeElement.click(), 200);
   }
 
-  private playAudio(x: Blob) {
+  private playAudio(x: Blob, fileName: string) {
+ 
+
     let blob = new Blob([x], { type: 'audio/mpeg3' });
     let audioUrl = URL.createObjectURL(blob);
     let audio = new Audio(audioUrl);
+    this.audioCache[fileName] = audio;
     audio.play();
   }
 
