@@ -19,8 +19,8 @@ import { CommonModule } from '@angular/common';
 import { FlexModule } from '@angular/flex-layout';
 import { ChatComponent } from './chat/chat.component';
 import { MatInputModule } from '@angular/material/input';
-
-
+import { MatDialogModule } from '@angular/material/dialog';
+import { PatientStatsDialog } from './patient-stats/patient-stats.dialog';
 
 @NgModule({
   declarations: [
@@ -30,7 +30,8 @@ import { MatInputModule } from '@angular/material/input';
     PatientDetailComponent,
     PatientListComponent,
     PhysicianHeirachyComponent,
-    ChatComponent
+    ChatComponent,
+    PatientStatsDialog,
   ],
   imports: [
     CommonModule,
@@ -45,9 +46,10 @@ import { MatInputModule } from '@angular/material/input';
     MatFormFieldModule,
     MatButtonModule,
     MatInputModule,
+    MatDialogModule,
     QRCodeModule,
-    SharedModule
+    SharedModule,
   ],
-  exports: [SharedCaregiverComponent]
+  exports: [SharedCaregiverComponent],
 })
-export class SharedCaregiverModule { }
+export class SharedCaregiverModule {}

@@ -28,7 +28,7 @@
     <div class="message-toolbar" fxLayout="row">
       <div fxLayout="row" class="message-toolbar__icons">
         <span>
-          <img src="/assets/img/respirator-info.png" />
+          <img (click)="uploadStats()" src="/assets/img/respirator-info.png" />
         </span>
         <span>
           <img (click)="startRecording()" src="/assets/img/mic.png" />
@@ -36,7 +36,7 @@
         </span>
         <span>
           <img (click)="imgInput.click()" src="/assets/img/camera.png" />
-          <input (change)="imgInputChange($event)" #imgInput hidden="true" id="image" type="file" accept="image/*">
+          <input #imgInput (change)="imgInputChange($event)" hidden="true" id="image" type="file" accept="image/*">
           <a #downloadImage [href]="downloadedImage.url" [download]="downloadedImage.fileName"></a>
         </span>
       </div>
