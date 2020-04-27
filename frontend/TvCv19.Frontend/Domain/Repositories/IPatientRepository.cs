@@ -13,19 +13,18 @@ namespace TvCv19.Frontend.Domain
         string DischargePatient(string id);
         Task<IEnumerable<Patient>> GetPatientsByPhysician(string id);
         Task<Patient> UpdatePatient(Patient patientModel);
-        //  string RegisterCareGiver(RegisterCareGiverModel registerCareGiverModel);
-        // SetPatientChartModel SetPatientChart(string id, List<VentilatorData> ventilatorData);
-        //   EnterPatientReadingsModel EnterPatientReadings(string id, List<VentilatorData> ventilatorData);
-
     }
 
     public class PocPatientRepository : IPatientRepository
     {
         private static List<Patient> _admittedPatients = new List<Patient>();
+        private static int _count;
 
 
         public Task<string> AdmitPatient(Patient patient)
         {
+            _count++;
+            patient.Id = $"{_count}";
             _admittedPatients.Add(patient);
             
             return Task.FromResult(patient.Id);

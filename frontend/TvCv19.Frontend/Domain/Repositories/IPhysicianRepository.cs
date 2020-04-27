@@ -18,11 +18,13 @@ namespace TvCv19.Frontend.Domain.Repositories
     public class PocPhyscianRepository : IPhysicianRepository
     {
         private static HashSet<Physician> _physicians = new HashSet<Physician>();
+        private static int count;
 
         public Task<Physician> AddPhysicianAsync(Physician physician)
         {
+            count++;
+            physician.Id = $"{count}";
             _physicians.Add(physician);
-
             return Task.FromResult(physician);
         }
 
