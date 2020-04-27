@@ -1,20 +1,17 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component } from '@angular/core';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-camera-setup',
   templateUrl: './camera-setup.component.html',
   styleUrls: ['./camera-setup.component.scss']
 })
-export class CameraSetupComponent implements OnInit {
+export class CameraSetupComponent {
+  patientId: string;
+  constructor(route: ActivatedRoute, private router: Router) {
+    route.params.subscribe((p) => {
+      this.patientId = p['id'];
+    });
 
-  constructor(private router: Router) { }
-
-  ngOnInit(): void {
   }
-
-  next(): void {
-    this.router.navigateByUrl('/')
-  }
-
 }
