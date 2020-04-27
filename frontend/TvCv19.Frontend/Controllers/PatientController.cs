@@ -34,20 +34,20 @@ namespace TvCv19.Frontend.Controllers
             patientModel.Id = await _patientRepository.AdmitPatient(patientModel);
 
             // Cannot use a GUID as room name.
-            //try
-            //{
-            //    using (var roomClient = new RoomClient(DAILY_TOKEN))
-            //    {
-            //      await roomClient.CreateRoomAsync(new Room
-            //      {
-            //        Name = patientModel.Id
-            //      });
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    throw ex;
-            //}
+            try
+            {
+               using (var roomClient = new RoomClient(DAILY_TOKEN))
+               {
+                 await roomClient.CreateRoomAsync(new Room
+                 {
+                   Name = $"patient-{patientModel.Id}"
+                 });
+               }
+            }
+            catch (Exception ex)
+            {
+               throw ex;
+            }
 
             return Ok(patientModel);
         }
