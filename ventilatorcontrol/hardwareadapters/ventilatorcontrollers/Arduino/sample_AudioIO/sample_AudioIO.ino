@@ -1,0 +1,70 @@
+#include <AudioIO.h>
+#include <Thread.h>
+
+//if you don't want Thread.h you can also do:
+
+char const wj[] PROGMEM  = "{\"wr\":[{\"RrRt\":1986},{\"TlVm\":12},{\"MmIP\":1623},{\"PkEP\":14},{\"ITET\":12345},{\"FiO2\":0}]}"; //write knobs
+char const rj[] PROGMEM  = "{\"wk\":[{\"RrRt\":1},{\"TlVm\":12},{\"MmIP\":123},{\"PkEP\":1234},{\"ITET\":12345},{\"FiO2\":0}]}"; //read knobs.
+control c;
+readout r;
+AudioIO io = AudioIO();
+
+//My simple Thread
+Thread myThread = Thread();
+
+//Bus management
+void niceCallback()
+{
+  io.pollBusStatus();//Does bus maintainance and command parsing if needed
+  //Below is stuff before handshake was added
+  /*io._mMasterData.available =true;
+  io.pollBusStatus();
+  
+  //DEBUG to check the command parser
+
+  //OK io.sendVentilatorData();
+  //OK  io.reportVentilatorKnobs();
+  //OK 
+  io.setVentilatorKnobs();    //as in, parse the data buffer filled by master.
+  io.getVentilatorKnobs(&c);
+
+  //print every controll knob. They should have been set above using io.parseCommand();
+  Serial.print("rrrt: ");  Serial.print(c.rrrt);Serial.print('\n');
+  Serial.print("tlvm: ");  Serial.print(c.tlvm);Serial.print('\n');
+  Serial.print("mmip: ");  Serial.print(c.mmip);Serial.print('\n');
+  Serial.print("pkep: ");  Serial.print(c.pkep);Serial.print('\n');
+  Serial.print("itet: ");  Serial.print(c.itet);Serial.print('\n');
+  Serial.print("fio2: ");  Serial.print(c.fio2);Serial.print('\n');
+
+  r.mtvn += 4;
+  r.pkip += 1;
+  r.pco2 +=3;
+  io.setVentilatorReadings(&r);
+  io.reportVentilatorData();
+  */
+}
+
+void setup() {
+  Serial.begin(115200);
+  Serial.println("Booting with 1ms loop");
+  //delay(100);
+  
+  io.begin();
+  /*Commented stuff was there before handshake.
+  strcpy_P(io._mMasterData.buffer_cmd,rj);
+  //Debug write the strings to control knobs
+  io.setVentilatorKnobs();
+  */
+
+  myThread.onRun(niceCallback);
+  myThread.setInterval(POLLBUSMS);//works every 100ms POLLBUSMS);     //call more frequently to poll the serial data
+}
+
+
+
+void loop() 
+{ 
+  //TODO: Main Program?
+    if(myThread.shouldRun())
+      myThread.run();
+}
