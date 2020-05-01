@@ -72,10 +72,7 @@ export class PhysicianMessagingChecklistComponent implements OnInit {
     return this.fb.array(arr);
   }*/
 
-  constructor(
-    private service: PhysicianMessagingChecklistService,
-    private router: Router
-  ) {
+  constructor(private service: PhysicianMessagingChecklistService) {
     //service.getPhysicianMessagingChecklist().subscribe((checkList) => (this.checkList = checkList));
   }
   // remove: EventEmitter<mat-form-field> = new EventEmitter();

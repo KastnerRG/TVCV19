@@ -21,6 +21,10 @@ import { ChatComponent } from './chat/chat.component';
 import { MatInputModule } from '@angular/material/input';
 import { MatDialogModule } from '@angular/material/dialog';
 import { PatientStatsDialog } from './patient-stats/patient-stats.dialog';
+import { HttpClientModule } from '@angular/common/http';
+import { PhysicianMessagingChecklistComponent } from './physician-messaging-checklist/physician-messaging-checklist.component';
+import { MatListModule } from '@angular/material/list';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 @NgModule({
   declarations: [
@@ -32,6 +36,7 @@ import { PatientStatsDialog } from './patient-stats/patient-stats.dialog';
     PhysicianHeirachyComponent,
     ChatComponent,
     PatientStatsDialog,
+    PhysicianMessagingChecklistComponent,
   ],
   imports: [
     CommonModule,
@@ -47,8 +52,11 @@ import { PatientStatsDialog } from './patient-stats/patient-stats.dialog';
     MatButtonModule,
     MatInputModule,
     MatDialogModule,
+    MatListModule,
+    MatCheckboxModule,
     QRCodeModule,
     SharedModule,
+    HttpClientModule,
   ],
   exports: [SharedCaregiverComponent],
 })

@@ -1,0 +1,41 @@
+<mat-toolbar color="secondary">
+  <mat-toolbar-row>
+    <span>{{ physicianName }} ({{ patientName }})</span>
+  </mat-toolbar-row>
+</mat-toolbar>
+<!-- 
+<mat-list>
+  <mat-list-item>
+    <mat-checkbox> Pepper1 </mat-checkbox>
+  </mat-list-item>
+  <mat-list-item> <mat-checkbox> Pepper2 </mat-checkbox> </mat-list-item>
+  <mat-list-item> <mat-checkbox> Pepper3 </mat-checkbox> </mat-list-item>
+  <mat-list-item> <mat-checkbox> Pepper4 </mat-checkbox> </mat-list-item>
+</mat-list> -->
+
+<!-- <mat-list fxLayout>
+  <ng-container *ngFor="let item of checkList">
+    <mat-list-item *ngIf="!item.deleted" fxLayout fxFlex fxFill>
+      <mat-checkbox [(ngModel)]="item.checked" fxLayout fxFlex fxFill
+        ><span fxFlex fxFill>
+          {{ item.id }} {{ item.name }} {{ item.checked }}</span
+        >
+        <button mat-icon-button (click)="itemRemoveClick(item)" fxFlex>
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-checkbox>
+    </mat-list-item>
+  </ng-container>
+</mat-list> -->
+<mat-list>
+  <ng-container *ngFor="let item of checkList">
+    <mat-list-item *ngIf="!item.deleted">
+      <mat-checkbox [(ngModel)]="item.checked">
+        {{ item.id }} {{ item.name }} {{ item.checked }}
+        <button mat-icon-button (click)="itemRemoveClick(item)">
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-checkbox>
+    </mat-list-item>
+  </ng-container>
+</mat-list>
