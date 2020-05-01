@@ -46,7 +46,7 @@ void niceCallback()
 
 void setup() {
   Serial.begin(115200);
-  Serial.println("Booting with 1ms loop");
+  Serial.println("Booting with SPI support...");
   //delay(100);
   
   io.begin();
@@ -58,6 +58,28 @@ void setup() {
 
   myThread.onRun(niceCallback);
   myThread.setInterval(POLLBUSMS);//works every 100ms POLLBUSMS);     //call more frequently to poll the serial data
+
+  //DEBUG TO CHECK SPI IO
+  *(io._mrrrt.front)=0x33;
+  *(io._mrrrt.front+1)=0x30;//0x39;
+    *(io._mrrrt.front+2)=0x33;//0x39;
+      *(io._mrrrt.front+3)=0x31;//0x39;
+  *(io._mrrrt.front+4)='\0';
+
+  *(io._mtlvm.front)=0x34;
+  *(io._mtlvm.front+1)='\0';
+
+  *(io._mmmip.front)=0x35;
+  *(io._mmmip.front+1)='\0';
+
+  *(io._mpkep.front)=0x36;
+  *(io._mpkep.front+1)='\0';
+
+  *(io._mitet.front)=0x37;
+  *(io._mitet.front+1)='\0';
+
+  *(io._mfio2.front)=0x38;
+  *(io._mfio2.front+1)='\0';
 }
 
 
