@@ -20,6 +20,7 @@ import { PatientRegistrationRootComponent } from './patient-registration-root/pa
 import { AssignCareGiverRouteResolverService } from './patient/patient-registration/assign-caregiver-route-resolver.service';
 import { MatOptionModule } from '@angular/material/core';
 import { CommonModule } from '@angular/common';
+import { PatientFeedComponent } from './patient-feed/patient-feed.component';
 
 
 
@@ -31,16 +32,18 @@ import { CommonModule } from '@angular/common';
     CameraSetupComponent,
     RootComponent,
     PatientRegistrationRootComponent,
+    PatientFeedComponent
   ],
   imports: [
     RouterModule.forChild([
       { path: '', component: RootComponent },
+      { path: 'live/:id', component: PatientFeedComponent},
       { path: 'registration', component: PatientRegistrationRootComponent, children: [
         { path: '', component: PatientRegistrationComponent },
         { path: 'assign-caregiver/:id', component: AssignCareGiverComponent, resolve: {
           model: AssignCareGiverRouteResolverService }
         },
-        { path: 'camera-setup', component: CameraSetupComponent }
+        { path: 'camera-setup/:id', component: CameraSetupComponent }
       ]}
     ]),
     ReactiveFormsModule,

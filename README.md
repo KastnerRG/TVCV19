@@ -2,7 +2,7 @@
 
 ![](landing/Splash.png) 
 
-**TV CV19** is an opensource telemedicine app to allow clinicians to better scale personnel resources.
+**MedECC** is an opensource telemedicine app to allow clinicians to better scale personnel resources.
 Although hardware can be mass produced, clinician knowledge and experience cannot and this needs to be scaled out somehow.
 Our platform aims to organize the heterogeneous hardware and manpower resources into a patient monitoring and decision making hierarchy.
 

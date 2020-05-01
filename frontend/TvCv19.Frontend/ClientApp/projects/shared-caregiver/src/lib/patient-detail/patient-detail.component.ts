@@ -7,23 +7,14 @@ import { ActivatedRoute, Router } from '@angular/router';
   styleUrls: ['./patient-detail.component.scss'],
 })
 export class PatientDetailComponent implements OnInit {
-  patientId: any;
-  physicianId: any;
+  room: any;
 
   constructor(route: ActivatedRoute, private router: Router) {
-    route.params.subscribe((p) => (this.patientId = p['patient-id']));
-    route.parent.params.subscribe((p: any) => {
-      this.physicianId = p['physician-id']
-    })
+    route.params.subscribe((p) => {
+      this.room = `patient-${p['id']}`;
+    });
+
   }
 
   ngOnInit(): void {}
-
-  chat(): void {
-    this.router.navigateByUrl(`/physician/${this.physicianId}/patient/${this.patientId}/chat`);
-  }
-
-  shift(): void {
-    this.router.navigateByUrl(`/physician/${this.physicianId}/patient/${this.patientId}/shift`);
-  }
 }

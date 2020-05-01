@@ -1,4 +1,4 @@
-<lib-video-receiver [patientID]="patientId"></lib-video-receiver>
+<lib-video-receiver [room]="room"></lib-video-receiver>
 <div class="care-options">
   <div
     class="care-options__row"
@@ -33,7 +33,7 @@
       <span>Heirachy</span>
     </div>
     <div fxLayout="column" fxFlexAlign="center" class="care-options__shifts">
-      <img (click)="shift()" fxFlexAlign="center" src="/assets/img/shift-change.png" />
+      <img routerLink="change-shift" fxFlexAlign="center" src="/assets/img/shift-change.png" />
       <span>Shift change</span>
     </div>
   </div>
