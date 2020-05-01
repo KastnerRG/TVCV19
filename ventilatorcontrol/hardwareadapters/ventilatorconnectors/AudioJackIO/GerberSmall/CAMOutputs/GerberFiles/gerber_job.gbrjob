@@ -1,0 +1,24 @@
+{
+    "Header": {
+        "Comment": "All values are metric (mm)",
+        "CreationDate": "2020-04-26T20:48:09Z",
+        "GenerationSoftware": {
+            "Application": "EAGLE",
+            "Vendor": "Autodesk",
+            "Version": "9.6.1"
+        },
+        "Part": "Single"
+    },
+    "Overall": {
+        "BoardThickness": 1.57,
+        "LayerNumber": 2,
+        "Name": {
+            "ProjectId": "AudioJackIO_Small"
+        },
+        "Owner": "Mario Rossi <devil.1989@hotmail.it>",
+        "Size": {
+            "X": 47.625,
+            "Y": 53.34
+        }
+    }
+}
