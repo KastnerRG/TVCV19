@@ -559,7 +559,7 @@ void AudioIO::audioBusMaintainance()
 //Probably not an option given the speed of UNO. All logic has to be done here too.
 void AudioIO::SPIBusMaintainence()
 {   
-    
+        
     //State machine to modify SPDR.
     //just start chucking out a generic JSON response. once you get to char 4, pick the correct
     //output string to use and the right string buffers also. We use these as the IO ctrlr has to
@@ -635,13 +635,12 @@ void AudioIO::SPIBusMaintainence()
                             _mSPIData.bufptr+=2;    //TODO: reset the front.                                                            
                         break;                    
                     default:
-                        if(SPDR=='\0')//end of command
+                        SPDR=*(ReportKnobs+_mSPIData.bufptr);
+                        if(*(ReportKnobs+_mSPIData.bufptr)=='\0')//end of command
                             {_mSPIData.cmd=NOSPICMD;_mSPIData.bufptr=0-SPILATENCY;}
                         else
-                        {
-                            SPDR=*(ReportKnobs+_mSPIData.bufptr);
                             _mSPIData.bufptr++;
-                        }
+                        
                 }
             }
             //Note, the SPIData.bufptr will not auto increment.
