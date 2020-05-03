@@ -7,8 +7,8 @@
   </mat-toolbar-row>
 </mat-toolbar>
 <qrcode [qrdata]="patient.id" width="256" errorCorrectionLevel="M"></qrcode>
-<form class="example-form" (ngSubmit)="onSubmit(caregiverControl.value)">
-    <mat-form-field class="example-full-width">
+<form fxLayout="column" class="example-form" (ngSubmit)="onSubmit(caregiverControl.value)">
+    <mat-form-field fxFlexAlign="center" class="example-full-width">
       <mat-icon matPreffix>search</mat-icon>
       <input type="text" matInput [formControl]="caregiverControl" [matAutocomplete]="auto">
       <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
