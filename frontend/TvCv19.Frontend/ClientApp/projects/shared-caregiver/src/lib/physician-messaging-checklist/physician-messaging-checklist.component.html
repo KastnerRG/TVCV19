@@ -8,7 +8,7 @@
   <ng-container *ngFor="let item of checkList">
     <mat-list-item *ngIf="!item.deleted">
       <mat-checkbox [(ngModel)]="item.checked">
-        {{ item.id }} {{ item.name }} {{ item.checked }}
+        ({{ item.id }}) {{ item.name }} [{{ item.checked }}]
         <button mat-icon-button (click)="itemRemoveClick(item)">
           <mat-icon>close</mat-icon>
         </button>

@@ -22,28 +22,28 @@ export class PhysicianMessagingChecklistComponent implements OnInit {
   checkList: Array<PhysicianMessagingChecklistModel> = [
     {
       id: '1',
-      name: 'item1',
+      name: 'Checklist Item 1',
       checked: false,
       deleted: false,
       scheduleInterval: '',
     },
     {
       id: '2',
-      name: 'item2',
+      name: 'Checklist Item 2',
       checked: false,
       deleted: false,
       scheduleInterval: '',
     },
     {
       id: '3',
-      name: 'item3',
+      name: 'Checklist Item 3',
       checked: false,
       deleted: false,
       scheduleInterval: '',
     },
     {
       id: '4',
-      name: 'item4',
+      name: 'Checklist Item 4',
       checked: false,
       deleted: false,
       scheduleInterval: '',
