@@ -3,4 +3,5 @@ export interface PhysicianMessagingChecklistModel {
   name: string;
   checked: boolean;
   deleted: boolean;
+  scheduleInterval: string;
 }

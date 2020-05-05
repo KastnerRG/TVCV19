@@ -25,24 +25,28 @@ export class PhysicianMessagingChecklistComponent implements OnInit {
       name: 'item1',
       checked: false,
       deleted: false,
+      scheduleInterval: '',
     },
     {
       id: '2',
       name: 'item2',
       checked: false,
       deleted: false,
+      scheduleInterval: '',
     },
     {
       id: '3',
       name: 'item3',
       checked: false,
       deleted: false,
+      scheduleInterval: '',
     },
     {
       id: '4',
       name: 'item4',
       checked: false,
       deleted: false,
+      scheduleInterval: '',
     },
   ];
 
