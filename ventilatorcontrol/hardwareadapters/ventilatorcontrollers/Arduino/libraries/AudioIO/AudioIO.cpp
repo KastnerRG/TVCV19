@@ -554,202 +554,7 @@ void AudioIO::audioBusMaintainance()
     }
 }
 
-//SLAVE MODE HANDLER FOR SPI BUS
-//TODO: currently an ISR. move to an ARTe polled loop?
-//Probably not an option given the speed of UNO. All logic has to be done here too.
-void AudioIO::SPIBusMaintainence()
-{   
-        
-    //State machine to modify SPDR.
-    //just start chucking out a generic JSON response. once you get to char 4, pick the correct
-    //output string to use and the right string buffers also. We use these as the IO ctrlr has to
-    //do at least some basic validation of the numbers both way (don't just tx and rx generic strings).
-    switch(_mSPIData.bufptr)
-    {
-        case 0-SPILATENCY:
-            SPDR=' ';
-            if(SPDR=='{')
-            {
-                //begin to output a response and reset all front pointers we may access
-                _mSPIData.bufptr++;
-                //Reset control knob read buffers.
-                _mrrrt.rstfront();_mtlvm.rstfront();_mmmip.rstfront();_mpkep.rstfront();_mitet.rstfront();_mfio2.rstfront();
-                //Reset monitor knob write buffers.
-            }
-            break;
-        case 1-SPILATENCY:
-        case 2-SPILATENCY:
-            SPDR=' ';
-            _mSPIData.bufptr++;
-            break;
-        case 3-SPILATENCY:
-            //change the output buffer depending on cmd. only get knobs and set readouts supported.
-            if(SPDR=='s')
-                {SPDR=ACK;_mSPIData.cmd = WRSNSRS;_mSPIData.bufptr++;break;}
-            if(SPDR=='k')
-                {SPDR=ACK;_mSPIData.cmd = RDKNBS;_mSPIData.bufptr++;break;}
-            {SPDR='\0';_mSPIData = SPIdata();_mSPIData.bufptr=0-SPILATENCY;}   //default, reset the state machine if command was not understood.
-            break;
-        case BUFFERSIZE-SPILATENCY:
-            {SPDR='\0';_mSPIData = SPIdata();_mSPIData.bufptr=0-SPILATENCY;} //TODO use a -ve number so as to access strings after reading cmd character 4.
-            break;
-        default:        //Respond to the command if it is read knobs, else just take in date
-            if(_mSPIData.cmd== WRSNSRS)
-            {
-                uint8_t din = SPDR;     //don't read from this register multiple times if you can avoid it.
-                
-                switch(_mSPIData.key.intv)  //choose sensor to write data for based on JSON key.
-                {
-                    case MtVnkey:
-                                                
-                        if(_mtvn.backhead() > 0)//_mtvn.intbuf - _mtvn.back<16)//_mtvn.backhead() >0 )            //if something is in the back buffer, keep going until we get non-numerical char.
-                        {
-                            //Serial.print(*(_mtvn.back-1));
-                            //Serial.print((int)_mtvn.backhead());
-                            if((_mtvn.backhead() < 8) && (din <':'))
-                                *(_mtvn.back++)=din;        //write bytes to back buffers. They should be ATOI'd when necessary.
-                            else
-                            {
-                                *(_mtvn.back)='\0';     //TODO: flip the buffer for read. We wrote only to the back.
-                                _mtvn.flip();           //Flip the buffer  
-                                _mSPIData.key.byte0=0;//quit if we filled the buffer.
-                            }
-                        }
-                        else if((din>'/')&&(din<':'))       //look for the first numerical byte.
-                        {
-                            *(_mtvn.back++)=din;
-                        }           //If you find the first numerical byte, move on in the buffer.
-                        break;
-                    case PkIPkey:
-                        SPDR='@';
-                        _mSPIData.key.byte0=0;//quit
-                        break;
-                    case PCO2key:
-                        SPDR='^';
-                        _mSPIData.key.byte0=0;//quit
-                        break;
-                    default:
-                        _mSPIData.key.intv>>=8;      //TODO: profile this.
-                        _mSPIData.key.byte3=SPDR;
-                                                
-                        if(SPDR == '\0')//end of command
-                            {
-                                _mSPIData = SPIdata();_mSPIData.bufptr=0-SPILATENCY;
-                                
-                                Serial.print("_mtvn: \n");
-                                Serial.println(_mtvn.front);
-                                Serial.print('\n');
-                                if(_mtvn.backhead()==0) 
-                                    Serial.print("ok! 0 \n");
-                                else
-                                    Serial.print("bum 0\n");
-                                //test writint to back again.
-                                if(_mtvn.back[0]== '\0')
-                                    Serial.print("ok! 1 \n");
-                                *(_mtvn.back++) = 'b';
-                                if(_mtvn.backhead()==1) 
-                                    Serial.print("ok! 2 \n");
-                                else
-                                {
-                                    Serial.print("failed to check back head\n");
-                                    Serial.print((int)_mtvn.backhead());
-                                    Serial.print('\n');
-                                    //Manual check
-                                    Serial.print("manual check: ");
-                                    Serial.print((int)(_mtvn.intbuf-_mtvn.back));
-                                    Serial.print('\n');
-                                }
-                                *(_mtvn.back++) = 'k';
-                                *(_mtvn.back++) = '1';
-                                *(_mtvn.back++) = '\0';
-                                
-
-
-                                Serial.print("not flipped yet");
-                                Serial.println(_mtvn.front);
-                                Serial.print('\n');
-                                _mtvn.flip();                                
-                                Serial.print("flipped again");
-                                Serial.println(_mtvn.front);
-                                Serial.print('\n');
-                                
-                                
-                            }
-                        else
-                            SPDR='s';//TODO: make this whitespace or something? null?        
-                }
-
-                /*else
-                {
-                    if(_mSPIData.key.intv==MtVnkey)
-                        SPDR='!';
-                    _mSPIData.key.intv>>=8;      //TODO: profile this.
-                    _mSPIData.key.byte3=SPDR;
-
-                    else
-                        SPDR='s'; //if this == EOT, then bomb out.
-                }*/
-                //take in ventilator data to our ventilator registers
-                //_mSPIData.bufptr++; Probably not needed, you are just filling buffers up.
-                //use an int to look for the keys you want.
-                
-                //Now check for the actual command register to write.
-                //"MtVn"
-                //"PkIP"
-                //"PCO2"
-                //switch()
-            }
-            if(_mSPIData.cmd== RDKNBS)  //Flow to send control knob values to the bus master.
-            {
-                //return ventilator knob settings to the bus master.
-                switch(_mSPIData.bufptr)    //TODO: don't switch on a loop counter. you can switch on an int. then these don't need to be in order.
-                {
-                    case RRRT :
-                        SPDR=*(_mrrrt.front++);     //print the first char in front buffer.                            
-                        if(*(_mrrrt.front)=='\0')   //TODO: this needs to be a range...
-                            _mSPIData.bufptr+=2;    //TODO: reset the front ptr? 
-                        break;
-                    case TLVM :
-                        SPDR=*(_mtlvm.front++); //print the first char in front buffer.                                                                    
-                        if(*(_mtlvm.front)=='\0')
-                            _mSPIData.bufptr+=2;    //TODO: reset the front.
-                        break;
-                    case MMIP :
-                        SPDR=*(_mmmip.front++);
-                        if(*(_mmmip.front)=='\0')
-                            _mSPIData.bufptr+=2;    //TODO: reset the front.
-                        break;
-                    case PKEP :
-                        SPDR=*(_mpkep.front++);
-                        if(*(_mpkep.front)=='\0')
-                            _mSPIData.bufptr+=2;    //TODO: reset the front.                                        
-                        break;
-                    case ITET :
-                        SPDR=*(_mitet.front++);
-                        if(*(_mitet.front)=='\0')
-                            _mSPIData.bufptr+=2;    //TODO: reset the front.                                        
-                        break;                    
-                    case FIO2 :
-                        SPDR=*(_mfio2.front++);
-                        if(*(_mfio2.front)=='\0')
-                            _mSPIData.bufptr+=2;    //TODO: reset the front.                                                            
-                        break;                    
-                    default:
-                        SPDR=*(ReportKnobs+_mSPIData.bufptr);
-                        if(*(ReportKnobs+_mSPIData.bufptr)=='\0')//end of command
-                            {_mSPIData.cmd=NOSPICMD;_mSPIData.bufptr=0-SPILATENCY;}
-                        else
-                            _mSPIData.bufptr++;
-                        
-                }
-            }
-            //Note, the SPIData.bufptr will not auto increment.
-                
-    }
- 
-}
-
-//BUS MAINTAINENCE UTILITY FUNCTIONS
+//POLLING BUS MAINTAINENCE UTILITY FUNCTIONS
 
 //pollBusStatus()
 //  1: Maintain a data channel between the ventilator and a remote control. 
@@ -778,4 +583,168 @@ void AudioIO::pollBusStatus()
     
     
 }
+
+//ISR BUS MAINTAINENCE UTILITY FUNCTIONS
+
+//inline member to insert a char into a "number" buffer.
+//return false when buffer is full (fit no more in)
+bool AudioIO::InsertJSONInNumbrBuf(doublebuf& targetbuff, uint8_t& newdata)
+{
+    if(targetbuff.backhead() > 0)         //if something is in the back buffer, keep going until we get non-numerical char.
+    {
+        if((targetbuff.backhead() < 7) && (newdata <':'))
+        {
+            *(targetbuff.back++)=newdata;        //write bytes to back buffers. They should be ATOI'd when necessary.
+        }
+        else
+        {
+            *(targetbuff.back)='\0';     
+            targetbuff.flip();           //Flip the buffer  
+            return false;               //TELL CALLER TO STOP.
+        }
+    }
+    else if((newdata>'/')&&(newdata<':'))       //look for the first numerical byte.
+        *(targetbuff.back++)=newdata;           //If you find the first numerical byte, move on in the buffer.    
+    
+    return true;                        //can still fit more data in this buffer.
+}
+
+//SLAVE MODE HANDLER FOR SPI BUS
+//TODO: currently an ISR. move to an ARTe polled loop?
+//Probably not an option given the speed of UNO. All logic has to be done here too.
+void AudioIO::SPIBusMaintainence()
+{   
+        
+    //State machine to modify SPDR.
+    //just start chucking out a generic JSON response. once you get to char 4, pick the correct
+    //output string to use and the right string buffers also. We use these as the IO ctrlr has to
+    //do at least some basic validation of the numbers both way (don't just tx and rx generic strings).
+    switch(_mSPIData.bufptr)
+    {
+        case 0-SPILATENCY:
+            SPDR=' ';
+            if(SPDR=='{')
+            {
+                //begin to output a response and reset all front pointers we may access
+                _mSPIData.bufptr++;
+                //Reset control knob read buffers (need to start looking at the front again.
+                _mrrrt.rstfront();_mtlvm.rstfront();_mmmip.rstfront();_mpkep.rstfront();_mitet.rstfront();_mfio2.rstfront();
+                //Reset monitor readout buffers.
+                _mmtvn.rstback(); _mpkip.rstback(); _mpco2.rstback();
+            }
+            break;
+        case 1-SPILATENCY:
+        case 2-SPILATENCY:
+        case 3-SPILATENCY:
+            _mSPIData.key.intv>>=8;      //TODO: profile this.
+            _mSPIData.key.byte3=SPDR;
+            _mSPIData.bufptr++;
+            break;
+        
+        //CHECK BUS MASTER SENT KEY AGAINST SUPPORTED COMMANDS, THEN MOVE TO PROCESS THEM IF WE UNDERSTAND THE KEY
+        case 4-SPILATENCY:
+            _mSPIData.key.intv>>=8;      //TODO: profile this.
+            _mSPIData.key.byte3=SPDR;   //now checking for a 4 char sequence. better than single letter.
+            
+
+            if(_mSPIData.key.intv == writeReadoutsKey)
+                {SPDR=ACK;_mSPIData.cmd = WRRDTS;_mSPIData.bufptr++;  break;}
+            
+            if(_mSPIData.key.intv== readKnobsKey)
+                {SPDR=ACK;_mSPIData.cmd = RDKNBS;_mSPIData.bufptr++;  break;}
+            
+            {SPDR='\0';_mSPIData = SPIdata();_mSPIData.bufptr=0-SPILATENCY;}   //default, reset the state machine if command was not understood.
+            break;
+        case BUFFERSIZE-SPILATENCY:
+            {SPDR='\0';_mSPIData = SPIdata();_mSPIData.bufptr=0-SPILATENCY;} //-ve number used so as to access strings after reading cmd character 4.
+            break;
+        
+        //PROCESS COMMANDS IF WE UNDERSTAND THE KEY
+        default:        
+            uint8_t din = SPDR;     //don't read from this register multiple times if you can avoid it.
+            
+            //bomb out if we read null.
+            if(din=='\0')
+                {SPDR='\0';_mSPIData = SPIdata();_mSPIData.bufptr=0-SPILATENCY;}
+            
+            //EXAMPLE OF HOW TO READ INTO THIS IOCONTROLLER'S DOUBLE BUFFER REGISTERS FROM A SENDING SPI MASTER
+            //deal with the command read in
+            if(_mSPIData.cmd== WRRDTS)
+            {                
+                switch(_mSPIData.key.intv)  //choose sensor to write data for based on JSON key.
+                {
+                    case MtVnkey:
+                        if(!InsertJSONInNumbrBuf(_mmtvn, din))  //Try to add to the tlvm buffer.
+                            _mSPIData.key.byte0=0;              //quit, its full.
+                        break;
+                        
+                    case PkIPkey:
+                        if(!InsertJSONInNumbrBuf(_mpkip, din))  //Try to add to the _mkip buffer.
+                            _mSPIData.key.byte0=0;              //quit, its full.
+                        break;
+                        
+                    case PCO2key:
+                        if(!InsertJSONInNumbrBuf(_mpco2, din))  //Try to add to the _mkip buffer.
+                            _mSPIData.key.byte0=0;              //quit, its full.
+                        break;
+                        
+                    default:                        //keep reading in the command.
+                        _mSPIData.key.intv>>=8;      //TODO: profile this.
+                        _mSPIData.key.byte3=SPDR;
+                                                    
+                }
+
+            }
+            //EXAMPLE OF HOW TO SEND OUT THIS IOCONTROLLER'S DOUBLE BUFFER REGISTERS TO A READING SPI MASTER
+            if(_mSPIData.cmd== RDKNBS)  //Flow to send control knob values to the bus master.
+            {
+                //return ventilator knob settings to the bus master.
+                switch(_mSPIData.bufptr)    //TODO: don't switch on a loop counter. you can switch on an int. then these don't need to be in order.
+                {
+                    case RRRT :
+                        SPDR=*(_mrrrt.front++);     //print the char in front buffer.                            
+                        if(*(_mrrrt.front)=='\0')   //if the next char is null, move along in the string.
+                            _mSPIData.bufptr+=2;    
+                        break;
+                    case TLVM :
+                        SPDR=*(_mtlvm.front++); //print the first char in front buffer.                                                                    
+                        if(*(_mtlvm.front)=='\0')
+                            _mSPIData.bufptr+=2;    
+                        break;
+                    case MMIP :
+                        SPDR=*(_mmmip.front++);
+                        if(*(_mmmip.front)=='\0')
+                            _mSPIData.bufptr+=2;    
+                        break;
+                    case PKEP :
+                        SPDR=*(_mpkep.front++);
+                        if(*(_mpkep.front)=='\0')
+                            _mSPIData.bufptr+=2;                                            
+                        break;
+                    case ITET :
+                        SPDR=*(_mitet.front++);
+                        if(*(_mitet.front)=='\0')
+                            _mSPIData.bufptr+=2;                                            
+                        break;                    
+                    case FIO2 :
+                        SPDR=*(_mfio2.front++);
+                        if(*(_mfio2.front)=='\0')
+                            _mSPIData.bufptr+=2;                                                                
+                        break;                    
+                    default:
+                        SPDR=*(ReportKnobs+_mSPIData.bufptr);
+                        if(*(ReportKnobs+_mSPIData.bufptr)=='\0')//end of command
+                            {_mSPIData.cmd=NOSPICMD;_mSPIData.bufptr=0-SPILATENCY;}
+                        else
+                            _mSPIData.bufptr++;
+                        
+                }
+            }
+            //Note, the SPIData.bufptr will not auto increment.
+                
+    }
+ 
+}
+
+
 
