@@ -60,7 +60,7 @@ void setup() {
   myThread.setInterval(POLLBUSMS);//works every 100ms POLLBUSMS);     //call more frequently to poll the serial data
 
   //DEBUG TO CHECK SPI IO
-  *(io._mrrrt.front)=0x33;
+/*  *(io._mrrrt.front)=0x33;
   *(io._mrrrt.front+1)=0x30;//0x39;
     *(io._mrrrt.front+2)=0x33;//0x39;
       *(io._mrrrt.front+3)=0x31;//0x39;
@@ -79,7 +79,21 @@ void setup() {
   *(io._mitet.front+1)='\0';
 
   *(io._mfio2.front)=0x38;
-  *(io._mfio2.front+1)='\0';
+  *(io._mfio2.front+1)='\0';*/
+                  /*
+                //see all buffers to verify their content.
+                
+                Serial.print("_mrrrt.front");Serial.println(_mrrrt.front);Serial.print('\n');
+                
+                Serial.print("_mtlvm.front");Serial.println(_mtlvm.front);Serial.print('\n');
+                Serial.print("_mmmip.front");Serial.println(_mmmip.front);Serial.print('\n');
+                Serial.print("_mpkep.front");Serial.println(_mpkep.front);Serial.print('\n');
+                Serial.print("_mitet.front");Serial.println(_mitet.front);Serial.print('\n');
+                
+                Serial.print("_mmtvn.front");Serial.println(_mmtvn.front);Serial.print('\n');
+                Serial.print("_mpkip.front");Serial.println(_mpkip.front);Serial.print('\n');
+                Serial.print("_mpco2.front");Serial.println(_mpco2.front);Serial.print('\n');
+                */
 }
 
 
