@@ -161,7 +161,8 @@ typedef struct _DOUBLEBUF
     }
     //reset front pointer when you have finished reading/writing
     void rstfront(){front<back ? front=intbuf : front=intbuf+8;}
-    
+    //get the head character offset in the back buffer.
+    uint8_t backhead(){return( ((uint8_t)(back-intbuf)) &0x07  );}
     _DOUBLEBUF(){front=intbuf;back=intbuf+8;front[0]='\0';back[0]='\0';}
 }doublebuf;
 
@@ -176,12 +177,18 @@ typedef struct _audioIOdata
 }audioIOdata;
 
 //SPI bus data structure
+union intbytes{
+    uint32_t intv;
+    struct{uint8_t byte0,byte1,byte2,byte3;};
+};
+
 //Just keep pace with input
 typedef struct _SPIdata
 {
     char bufptr;
     char cmd;
-    _SPIdata(){bufptr=0-SPILATENCY;cmd=NOSPICMD;}
+    intbytes key;   //union lets arbitrary bytes be set.
+    _SPIdata(){bufptr=0-SPILATENCY;cmd=NOSPICMD;key.intv=0;}
 }SPIdata;
 
 /*===========================================================================*\
@@ -226,7 +233,10 @@ class AudioIO
     void SPIBusMaintainence();     //monitor and respond to SPI bus commands
     
     //TODO: Make private accessed by internal things only
-    doublebuf _mrrrt, _mtlvm, _mmmip, _mpkep, _mitet, _mfio2;
+    //Double buffers are needed for asynchronous transfer. The IO controller is a slave to display and ventilator which use two asynchronous busses.
+    doublebuf _mrrrt, _mtlvm, _mmmip, _mpkep, _mitet, _mfio2; //character double buffers for JSON values of ventilator knobs.
+    //TODO: Make private accessed by internal things only
+    doublebuf _mtvn, _pkip, _pco2;  //character double buffers for JSON values of ventilator readouts.
     
   // library-accessible "private" interface
   private:
@@ -254,6 +264,7 @@ class AudioIO
 	//CONTROL
 	//Data buffers
 	//doublebuf _mrrrt, _mtlvm, _mmmip, _mpkep, _mitet, _mfio2;
+	//doublebuf _mtvn, _pkip, _pco2;
 	
 	//READOUT
 };
