@@ -238,7 +238,7 @@ void AudioIO::setVentilatorKnobs()
     //pull data out of the buffer at specific offsets, convert to ascii and be done with it.
     //Start at first known offset.
     short i = FIRSTJSONVAL-6;
-    int key;
+    //int key;
 
     while(i<BUFFERSIZE)                         //Go through entire JSON string to try and pull out the data
     {
@@ -585,24 +585,124 @@ void AudioIO::SPIBusMaintainence()
         case 3-SPILATENCY:
             //change the output buffer depending on cmd. only get knobs and set readouts supported.
             if(SPDR=='s')
-                {SPDR=ACK;_mSPIData.cmd = WRSNSRS;_mSPIData.bufptr++;}
+                {SPDR=ACK;_mSPIData.cmd = WRSNSRS;_mSPIData.bufptr++;break;}
             if(SPDR=='k')
-                {SPDR=ACK;_mSPIData.cmd = RDKNBS;_mSPIData.bufptr++;}
+                {SPDR=ACK;_mSPIData.cmd = RDKNBS;_mSPIData.bufptr++;break;}
+            {SPDR='\0';_mSPIData = SPIdata();_mSPIData.bufptr=0-SPILATENCY;}   //default, reset the state machine if command was not understood.
             break;
-        case 80-SPILATENCY://BUFFERSIZE-SPILATENCY:
-            {SPDR='\0';_mSPIData.cmd=NOSPICMD;_mSPIData.bufptr=0-SPILATENCY;} //TODO use a -ve number so as to access strings after reading cmd character 4.
+        case BUFFERSIZE-SPILATENCY:
+            {SPDR='\0';_mSPIData = SPIdata();_mSPIData.bufptr=0-SPILATENCY;} //TODO use a -ve number so as to access strings after reading cmd character 4.
             break;
         default:        //Respond to the command if it is read knobs, else just take in date
             if(_mSPIData.cmd== WRSNSRS)
             {
-                SPDR='s';
+                uint8_t din = SPDR;     //don't read from this register multiple times if you can avoid it.
+                
+                switch(_mSPIData.key.intv)  //choose sensor to write data for based on JSON key.
+                {
+                    case MtVnkey:
+                                                
+                        if(_mtvn.backhead() > 0)//_mtvn.intbuf - _mtvn.back<16)//_mtvn.backhead() >0 )            //if something is in the back buffer, keep going until we get non-numerical char.
+                        {
+                            //Serial.print(*(_mtvn.back-1));
+                            //Serial.print((int)_mtvn.backhead());
+                            if((_mtvn.backhead() < 8) && (din <':'))
+                                *(_mtvn.back++)=din;        //write bytes to back buffers. They should be ATOI'd when necessary.
+                            else
+                            {
+                                *(_mtvn.back)='\0';     //TODO: flip the buffer for read. We wrote only to the back.
+                                _mtvn.flip();           //Flip the buffer  
+                                _mSPIData.key.byte0=0;//quit if we filled the buffer.
+                            }
+                        }
+                        else if((din>'/')&&(din<':'))       //look for the first numerical byte.
+                        {
+                            *(_mtvn.back++)=din;
+                        }           //If you find the first numerical byte, move on in the buffer.
+                        break;
+                    case PkIPkey:
+                        SPDR='@';
+                        _mSPIData.key.byte0=0;//quit
+                        break;
+                    case PCO2key:
+                        SPDR='^';
+                        _mSPIData.key.byte0=0;//quit
+                        break;
+                    default:
+                        _mSPIData.key.intv>>=8;      //TODO: profile this.
+                        _mSPIData.key.byte3=SPDR;
+                                                
+                        if(SPDR == '\0')//end of command
+                            {
+                                _mSPIData = SPIdata();_mSPIData.bufptr=0-SPILATENCY;
+                                
+                                Serial.print("_mtvn: \n");
+                                Serial.println(_mtvn.front);
+                                Serial.print('\n');
+                                if(_mtvn.backhead()==0) 
+                                    Serial.print("ok! 0 \n");
+                                else
+                                    Serial.print("bum 0\n");
+                                //test writint to back again.
+                                if(_mtvn.back[0]== '\0')
+                                    Serial.print("ok! 1 \n");
+                                *(_mtvn.back++) = 'b';
+                                if(_mtvn.backhead()==1) 
+                                    Serial.print("ok! 2 \n");
+                                else
+                                {
+                                    Serial.print("failed to check back head\n");
+                                    Serial.print((int)_mtvn.backhead());
+                                    Serial.print('\n');
+                                    //Manual check
+                                    Serial.print("manual check: ");
+                                    Serial.print((int)(_mtvn.intbuf-_mtvn.back));
+                                    Serial.print('\n');
+                                }
+                                *(_mtvn.back++) = 'k';
+                                *(_mtvn.back++) = '1';
+                                *(_mtvn.back++) = '\0';
+                                
+
+
+                                Serial.print("not flipped yet");
+                                Serial.println(_mtvn.front);
+                                Serial.print('\n');
+                                _mtvn.flip();                                
+                                Serial.print("flipped again");
+                                Serial.println(_mtvn.front);
+                                Serial.print('\n');
+                                
+                                
+                            }
+                        else
+                            SPDR='s';//TODO: make this whitespace or something? null?        
+                }
+
+                /*else
+                {
+                    if(_mSPIData.key.intv==MtVnkey)
+                        SPDR='!';
+                    _mSPIData.key.intv>>=8;      //TODO: profile this.
+                    _mSPIData.key.byte3=SPDR;
+
+                    else
+                        SPDR='s'; //if this == EOT, then bomb out.
+                }*/
                 //take in ventilator data to our ventilator registers
                 //_mSPIData.bufptr++; Probably not needed, you are just filling buffers up.
+                //use an int to look for the keys you want.
+                
+                //Now check for the actual command register to write.
+                //"MtVn"
+                //"PkIP"
+                //"PCO2"
+                //switch()
             }
             if(_mSPIData.cmd== RDKNBS)  //Flow to send control knob values to the bus master.
             {
                 //return ventilator knob settings to the bus master.
-                switch(_mSPIData.bufptr)
+                switch(_mSPIData.bufptr)    //TODO: don't switch on a loop counter. you can switch on an int. then these don't need to be in order.
                 {
                     case RRRT :
                         SPDR=*(_mrrrt.front++);     //print the first char in front buffer.                            
