@@ -3,7 +3,7 @@ import { FormControl } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { ActivatedRoute, Router } from '@angular/router';
-import { PatientService, PatientModel, PhysicianModel, CarerPatientRouteDataModel } from 'projects/shared/src/public-api';
+import { PatientService, PatientModel, PhysicianModel, ChangeShiftRouteDataModel } from 'projects/shared/src/public-api';
 
 export interface Caregiver {
   name: string;
@@ -25,7 +25,7 @@ export class ChangeShiftComponent implements OnInit {
   constructor(private route: ActivatedRoute, private patientService: PatientService, private router: Router) { }
 
   ngOnInit(): void {
-    this.route.data.subscribe((data: { model: CarerPatientRouteDataModel }) => {
+    this.route.data.subscribe((data: { model: ChangeShiftRouteDataModel }) => {
       this.patient = data.model.patient;
       this.options = data.model.careTeam;
     });
