@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { PatientModel, PhysicianModel, PatientService, CaregiverRouteDataModel, HierarchyLevel } from 'projects/shared/src/public-api';
+import { PatientModel, PhysicianModel, PatientService, CaregiverRouteDataModel, HierarchyLevel, PhysicianService } from 'projects/shared/src/public-api';
+import { ToolbarService } from 'src/app/toolbar.service';
 
 @Component({
   selector: 'app-physician-heirachy',
@@ -15,7 +16,7 @@ export class PhysicianHeirachyComponent implements OnInit {
   scanPhysicianQr: boolean
   isSupervisor: boolean
   private id: string
-  constructor(private route: ActivatedRoute, private patientService: PatientService) { }
+  constructor(private route: ActivatedRoute, private patientService: PatientService, private physicianService: PhysicianService, private toolbarService: ToolbarService) { }
 
   ngOnInit(): void {
     this.route.data
@@ -24,6 +25,7 @@ export class PhysicianHeirachyComponent implements OnInit {
         this.id = data.model.physician.id;
         this.isSupervisor = data.model.physician.hierarchy === HierarchyLevel.SecondLine;
         this.careTeam = data.model.careTeam
+        this.toolbarService.setToolbarData({back: false, menu: [], title: data.model.physician.name})
       });
   }
 
@@ -36,10 +38,14 @@ export class PhysicianHeirachyComponent implements OnInit {
         } 
       )
   }
-  addPhysician(patientId: string): void {
+  addPhysician(physicianId: string): void {
     this.scanPhysicianQr = false
-    // todo update physician report
-    console.log('scanned id')
+    this.physicianService.getPhysician(physicianId).subscribe(
+      p => {
+        p.supervisorId = this.id
+        this.physicianService.updatePhysician(p).subscribe(p => this.careTeam.push(p))
+      }
+    )
   }
 
 }

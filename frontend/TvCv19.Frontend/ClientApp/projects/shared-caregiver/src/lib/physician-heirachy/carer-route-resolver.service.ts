@@ -56,6 +56,6 @@ export class CarerRouteResolverService {
 
   private setToolbar(routeName: string) {
     if(routeName === 'patients')
-    this.toolbarService.setToolbarData({menu: undefined, title: 'Patient List', back: false})
+    this.toolbarService.setToolbarData({menu: [{link: '', title: 'Shift change'}], title: 'Patient List', back: false})
   }
 }

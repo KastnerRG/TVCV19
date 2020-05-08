@@ -17,8 +17,9 @@ export class ChangeShiftRouteResolverService {
   constructor(private patientService: PatientService, private physicianService: PhysicianService, private toolbarService: ToolbarService, private router: Router) { }
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<ChangeShiftRouteDataModel> | Observable<never> {
-      const id = route.parent.parent.params["id"];
-      const patientId = route.parent.params["id"];
+    const isGrandChild: boolean = route.data['isGrandChild']  
+    const id = isGrandChild ? route.parent.parent.params["id"] : route.parent.params["id"];
+    const patientId = route.parent.params["id"];
        return this.physicianService.getPhysician(id).pipe(
          mergeMap(carer => {
            if(carer) {
@@ -26,11 +27,12 @@ export class ChangeShiftRouteResolverService {
              return this.physicianService.getPhysicians().pipe(
                mergeMap( physicians => {
                  const careTeam = physicians.filter(p => p.id !== id && p.hierarchy === hierarchy)
-                 return this.patientService.getPatient(patientId).pipe(
+                 return this.patientService.getPatientsByPhysicianId(id).pipe(
                    mergeMap(
-                     patient => {
+                     ps => {
+                       const patients = isGrandChild ? [ps.find(p => p.id === patientId)] : ps 
                        this.toolbarService.setToolbarData({title: '', back: true, menu: undefined})
-                       return of({careTeam, patient})
+                       return of({careTeam, patients})
                      }
                    )
                  )
