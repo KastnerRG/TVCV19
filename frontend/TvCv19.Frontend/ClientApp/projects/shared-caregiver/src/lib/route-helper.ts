@@ -24,7 +24,12 @@ export function getCaregiverRoute(rootComponent: Type<any>, caregiverRootCompone
               path: 'patients', component: PatientListComponent,
               resolve: {
                 model: CarerRouteResolverService
-            }  
+            }
+            },
+            { path: 'change-shift', component: ChangeShiftComponent,
+              resolve: {
+                model: ChangeShiftRouteResolverService
+            }
             },
             { path: 'patient/:id', component: caregiverRootComponent, children: [
                 { path: '', component: PatientDetailComponent, resolve: {
@@ -38,7 +43,8 @@ export function getCaregiverRoute(rootComponent: Type<any>, caregiverRootCompone
                 { path: 'change-shift', component: ChangeShiftComponent,
                   resolve: {
                     model: ChangeShiftRouteResolverService 
-                  }
+                  },
+                  data: {isGrandChild: true}
                 }
             ]}
         ]}

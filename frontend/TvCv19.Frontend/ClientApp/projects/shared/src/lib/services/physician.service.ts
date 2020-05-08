@@ -43,9 +43,9 @@ export class PhysicianService {
       .pipe(catchError(this.handleError));
   }
 
-  updatePhysician(physician: PhysicianModel): Observable<any> {
+  updatePhysician(physician: PhysicianModel): Observable<PhysicianModel> {
     return this.http
-      .put(`api/physician/${physician.id}`, physician)
+      .put<PhysicianModel>(`api/physician/${physician.id}`, physician)
       .pipe(catchError(this.handleError));
   }
 
