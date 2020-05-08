@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
-import { PhysicianModel, PhysicianService } from 'projects/shared/src/public-api';
+import { PhysicianModel, PhysicianService, HierarchyLevel } from 'projects/shared/src/public-api';
 
 @Component({
   selector: 'lib-phyiscian-admin',
@@ -13,7 +13,7 @@ export class PhysicianAdminComponent implements OnInit {
   physicians: Array<PhysicianModel> = []
   constructor(private formBuilder: FormBuilder, private service: PhysicianService, private router: Router) {
     
-    service.getPhysicians().subscribe(physicians => this.physicians = physicians);
+    service.getPhysicians().subscribe(physicians => this.physicians = physicians.filter(p => p.hierarchy === HierarchyLevel.SecondLine));
     
     this.caregiverRegistrationForm = this.formBuilder.group({
       name: '',

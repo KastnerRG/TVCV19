@@ -11,6 +11,7 @@ namespace TvCv19.Frontend.Domain.Repositories
         Task<Physician> AddPhysicianAsync(Physician physician);
         Task DeletePhysicianAsync(string id);
         Task<IEnumerable<Physician>> GetPhysiciansAsync();
+        Task<IEnumerable<Physician>> GetPhysicianTeam(string id);
         Task<Physician> GetPhysicianAsync(string id);
         Task UpdatePhysicianAsync(Physician physician);
     }
@@ -33,6 +34,7 @@ namespace TvCv19.Frontend.Domain.Repositories
             var physicianToDelete = await GetPhysicianAsync(id);
             _physicians.Remove(physicianToDelete);
         }
+        public async Task<IEnumerable<Physician>> GetPhysicianTeam(string id) => (await GetPhysiciansAsync()).Where(p => p.SupervisorId == id);
 
         public Task<IEnumerable<Physician>> GetPhysiciansAsync() => Task.FromResult((IEnumerable<Physician>)_physicians);
 

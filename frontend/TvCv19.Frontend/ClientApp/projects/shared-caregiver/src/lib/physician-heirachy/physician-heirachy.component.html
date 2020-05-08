@@ -1,4 +1,5 @@
-<mat-grid-list cols="2" rowHeight="2:1">
+<div *ngIf="isSupervisor">
+  <mat-grid-list cols="2" rowHeight="2:1">
     <mat-toolbar color="secondary">
       <span>You have {{careTeam.length}} team member(s)</span>
     </mat-toolbar>  
@@ -9,6 +10,7 @@
   </mat-grid-list>
   <button color="primary" mat-raised-button (click)="scanPhysicianQr = !scanPhysicianQr">Add Team Member</button>
   <qr-scanner *ngIf="scanPhysicianQr" (scannedId)="addPhysician($event)"></qr-scanner>
+</div>
 <mat-grid-list cols="2" rowHeight="2:1">
   <mat-toolbar color="secondary">
     <span>You have {{patients.length}} Patient(s)</span>

@@ -10,7 +10,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { SharedModule } from 'projects/shared/src/public-api';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
-import { FlexModule, FlexLayoutModule } from '@angular/flex-layout';
+import { FlexModule } from '@angular/flex-layout';
+import { CommonModule } from '@angular/common';
 
 
 @NgModule({
@@ -31,6 +32,7 @@ import { FlexModule, FlexLayoutModule } from '@angular/flex-layout';
     MatInputModule,
     MatIconModule,
     FlexModule,
+    CommonModule,
     SharedModule
   ],
   exports: [

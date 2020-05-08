@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { PatientModel, PhysicianModel, CaregiverRouteDataModel } from 'projects/shared/src/public-api';
+import { PatientModel, PhysicianModel, CaregiverRouteDataModel, HierarchyLevel } from 'projects/shared/src/public-api';
 
 @Component({
   selector: 'lib-patient-list',
@@ -9,8 +9,8 @@ import { PatientModel, PhysicianModel, CaregiverRouteDataModel } from 'projects/
 })
 export class PatientListComponent implements OnInit {
   patients: Array<PatientModel>;
-  id: string;
   careTeam: Array<PhysicianModel> = [];
+  isFirstLine: boolean
 
   constructor(private route: ActivatedRoute) {}
 
@@ -18,7 +18,7 @@ export class PatientListComponent implements OnInit {
     this.route.data.subscribe(
       (data: { model: CaregiverRouteDataModel }) => {
         this.patients = data.model.patients || [];
-        this.id = data.model.id || '123';
+        this.isFirstLine = data.model.physician.hierarchy === HierarchyLevel.FirstLine;
         this.careTeam = data.model.careTeam;
       }
     );
