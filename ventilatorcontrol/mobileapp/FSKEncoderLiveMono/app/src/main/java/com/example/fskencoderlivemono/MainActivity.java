@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
     public String DECODER_DATA_BUF = "\0";
     //public Boolean setFSKChar = false;
     public Boolean FSKinProg = false;
-    public String MODE = "PCM";
+    public static String MODE = "PCM";
 
     protected FSKConfig mConfig;
     protected FSKEncoder mEncoder;
