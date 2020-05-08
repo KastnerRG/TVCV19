@@ -22,7 +22,7 @@
           <option value="commander">Commander</option>
         </select>
     </mat-form-field>
-    <mat-form-field fxFlexAlign="center" *ngIf="physicians && caregiverRegistrationForm.get('hierarchy').value === 'FirstLine'">
+    <mat-form-field fxFlexAlign="center" *ngIf="physicians && caregiverRegistrationForm.get('hierarchy').value === 'firstLine'">
         <mat-label>Supervisor</mat-label>
         <select matNativeControl formControlName="supervisorId" >
           <option *ngFor="let physician of physicians;" value="{{physician.id}}" >{{physician.name}}</option>

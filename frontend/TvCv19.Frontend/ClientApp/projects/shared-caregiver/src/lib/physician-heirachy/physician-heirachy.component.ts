@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { PatientModel, PhysicianModel, PatientService, CaregiverRouteDataModel } from 'projects/shared/src/public-api';
+import { PatientModel, PhysicianModel, PatientService, CaregiverRouteDataModel, HierarchyLevel } from 'projects/shared/src/public-api';
 
 @Component({
   selector: 'app-physician-heirachy',
@@ -13,6 +13,7 @@ export class PhysicianHeirachyComponent implements OnInit {
   careTeam: Array<PhysicianModel>
   scanPatientQr: boolean
   scanPhysicianQr: boolean
+  isSupervisor: boolean
   private id: string
   constructor(private route: ActivatedRoute, private patientService: PatientService) { }
 
@@ -20,7 +21,8 @@ export class PhysicianHeirachyComponent implements OnInit {
     this.route.data
       .subscribe((data: { model: CaregiverRouteDataModel }) => {
         this.patients = data.model.patients || [];
-        this.id = data.model.id || "123"
+        this.id = data.model.physician.id;
+        this.isSupervisor = data.model.physician.hierarchy === HierarchyLevel.SecondLine;
         this.careTeam = data.model.careTeam
       });
   }
