@@ -13,12 +13,12 @@ namespace TvCv19.Frontend.Domain.Repositories
         Task<IEnumerable<Physician>> GetPhysiciansAsync();
         Task<IEnumerable<Physician>> GetPhysicianTeam(string id);
         Task<Physician> GetPhysicianAsync(string id);
-        Task UpdatePhysicianAsync(Physician physician);
+        Task<Physician> UpdatePhysicianAsync(Physician physician);
     }
 
     public class PocPhyscianRepository : IPhysicianRepository
     {
-        private static HashSet<Physician> _physicians = new HashSet<Physician>();
+        private static List<Physician> _physicians = new List<Physician>();
         private static int count;
 
         public Task<Physician> AddPhysicianAsync(Physician physician)
@@ -40,10 +40,9 @@ namespace TvCv19.Frontend.Domain.Repositories
 
         public Task<Physician> GetPhysicianAsync(string id) => Task.FromResult(_physicians.FirstOrDefault(x => x.Id == id));
 
-        public async Task UpdatePhysicianAsync(Physician physician)
+        public Task<Physician> UpdatePhysicianAsync(Physician physician)
         {
-            await DeletePhysicianAsync(physician.Id);
-            await AddPhysicianAsync(physician);
+            return Task.FromResult(_physicians[_physicians.FindIndex(p => p.Id == physician.Id)] = physician);
         }
     }
 }
