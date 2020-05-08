@@ -38,10 +38,11 @@ export class CarerRouteResolverService {
           return this.physicianService.getPhysicians().pipe(
             mergeMap((physicians) => {
               const careTeam = physicians.filter((p) => p.supervisorId === id);
+              const physician = physicians.find(x => x.id === id)
               return of({
                 patients,
                 careTeam,
-                id,
+                physician
               });
             })
           );
