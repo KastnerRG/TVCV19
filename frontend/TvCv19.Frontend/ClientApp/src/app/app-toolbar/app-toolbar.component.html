@@ -1,0 +1,11 @@
+<mat-toolbar color="primary">
+  <mat-toolbar-row>
+    <button *ngIf="data.menu" mat-icon-button>
+      <mat-icon>menu</mat-icon>
+    </button>
+    <button (click)="back()" *ngIf="data.back" mat-icon-button>
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <span class="title">{{data.title}}</span>
+  </mat-toolbar-row>
+</mat-toolbar>

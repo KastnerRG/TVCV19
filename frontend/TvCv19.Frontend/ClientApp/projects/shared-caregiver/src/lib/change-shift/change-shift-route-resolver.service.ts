@@ -6,16 +6,17 @@ import {
 }                                 from '@angular/router';
 import { Observable, of, EMPTY }  from 'rxjs';
 import { mergeMap }         from 'rxjs/operators';
-import { PatientService, PhysicianService, CarerPatientRouteDataModel } from 'projects/shared/src/public-api';
+import { PatientService, PhysicianService, ChangeShiftRouteDataModel } from 'projects/shared/src/public-api';
+import { ToolbarService } from 'src/app/toolbar.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class CarerPatientRouteResolverService {
+export class ChangeShiftRouteResolverService {
 
-  constructor(private patientService: PatientService, private physicianService: PhysicianService, private router: Router) { }
+  constructor(private patientService: PatientService, private physicianService: PhysicianService, private toolbarService: ToolbarService, private router: Router) { }
 
-  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<CarerPatientRouteDataModel> | Observable<never> {
+  resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<ChangeShiftRouteDataModel> | Observable<never> {
       const id = route.parent.parent.params["id"];
       const patientId = route.parent.params["id"];
        return this.physicianService.getPhysician(id).pipe(
@@ -28,6 +29,7 @@ export class CarerPatientRouteResolverService {
                  return this.patientService.getPatient(patientId).pipe(
                    mergeMap(
                      patient => {
+                       this.toolbarService.setToolbarData({title: '', back: true, menu: undefined})
                        return of({careTeam, patient})
                      }
                    )

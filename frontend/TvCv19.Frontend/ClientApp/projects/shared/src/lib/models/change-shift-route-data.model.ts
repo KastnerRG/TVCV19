@@ -1,6 +1,6 @@
 import { PhysicianModel, PatientModel } from '../../public-api';
 
-export interface CarerPatientRouteDataModel {
+export interface ChangeShiftRouteDataModel {
     careTeam: Array<PhysicianModel>;
     patient: PatientModel
   }

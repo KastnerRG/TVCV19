@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { PatientModel, PhysicianModel, CaregiverRouteDataModel } from 'projects/shared/src/public-api';
 
 @Component({
@@ -12,7 +12,7 @@ export class PatientListComponent implements OnInit {
   id: string;
   careTeam: Array<PhysicianModel> = [];
 
-  constructor(private route: ActivatedRoute, private router: Router) {}
+  constructor(private route: ActivatedRoute) {}
 
   ngOnInit(): void {
     this.route.data.subscribe(
