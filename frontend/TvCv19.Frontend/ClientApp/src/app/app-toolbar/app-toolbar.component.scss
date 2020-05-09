@@ -1,13 +1,13 @@
 mat-toolbar {
+  background-color: #c9c9c9;
+  height: 7vh;
+  min-height: 6vh;
+
+  mat-toolbar-row {
     background-color: #c9c9c9;
     height: 7vh;
     min-height: 6vh;
-    .title {
-       padding-left: 20px;; 
-    }
-    mat-toolbar-row {
-        background-color: #c9c9c9;
-        height: 7vh;
-        min-height: 6vh;
-    }
+    display: flex;
+    justify-content: space-between;
+  }
 }

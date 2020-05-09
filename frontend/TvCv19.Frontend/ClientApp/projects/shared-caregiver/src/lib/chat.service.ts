@@ -22,17 +22,8 @@ export class ChatService {
       .configureLogging(LogLevel.Information)
       .build();
 
-    this.connection.on('ReceiveMessage', (message: string, name: string, date: Date, id: string, isCareInstruction: boolean, isAudio: boolean, isImage: boolean, stats: StatsData) => {
-      this.messagesSubject.next({
-        name,
-        message,
-        date,
-        id,
-        isCareInstruction,
-        isAudio,
-        isImage,
-        stats
-      });
+    this.connection.on('ReceiveMessage', (message: MessageModel) => {
+      this.messagesSubject.next(message);
     });
   }
 

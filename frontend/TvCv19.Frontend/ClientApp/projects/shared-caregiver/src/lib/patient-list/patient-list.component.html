@@ -1,8 +1,9 @@
 <div *ngIf="isFirstLine" class="bedside">
-  <div class="bedside__patient-list__patient" routerLink="../patient/{{patient.id}}" *ngFor="let patient of patients">
-    <div fxLayout="row" fxLayoutAlign="center">
-      <span class="patient-name">{{ patient.name }}</span>
-      <img src="/assets/img/message-bubble.png" />
+  <div class="bedside__patient-list__patient" (click)="onClick(patient)" *ngFor="let patient of patients">
+    <div class="bedside__patient-list__patient__row" fxLayout="row">
+      <span class="bedside__patient-list__patient__name">{{ patient.name }}</span>
+      <img *ngIf="!patient.alert" src="/assets/img/message-bubble.png" />
+      <img *ngIf="patient.alert" src="/assets/img/message-bubble-alert.png" />
     </div>
     <div>
       <qrcode
@@ -14,9 +15,10 @@
   </div>
 </div>
 <div *ngIf="!isFirstLine" class="physician">
-  <div class="physician__patient-list__patient" routerLink="../patient/{{patient.id}}" *ngFor="let patient of patients">
+  <div class="physician__patient-list__patient" (click)="onClick(patient)" *ngFor="let patient of patients">
     <div fxLayout="row">
-      <img class="physician__patient-list__patient__avatar" src="/assets/img/avatar.png" >
+      <img *ngIf="!patient.alert" class="physician__patient-list__patient__avatar" src="/assets/img/avatar.png" >
+      <img *ngIf="patient.alert" class="physician__patient-list__patient__avatar" src="/assets/img/avatar-alert.png" >
       <span class="physician__patient-list__patient__name">{{ patient.name }}</span>
     </div>
   </div>

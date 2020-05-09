@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ToolbarService, ToolBarData } from '../toolbar.service';
 import { Location } from '@angular/common';
+import { Notification, NotificationService } from 'projects/shared-caregiver/src/lib/notification.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-toolbar',
@@ -9,15 +11,49 @@ import { Location } from '@angular/common';
 })
 export class AppToolbarComponent implements OnInit {
   data: ToolBarData;
-  constructor(private toolbarService: ToolbarService, private location: Location) {
-    this.toolbarService.toolBarData.subscribe((d) => (this.data = d));
+  notifications: Array<Notification> = [];
+  constructor(private toolbarService: ToolbarService, private location: Location, private router: Router, private notificationService: NotificationService) {
+    this.toolbarService.toolBarData.subscribe((d) => {
+      this.data = d
+    });
+
+    this.toolbarService.deleteNotification.subscribe(notification => {
+      if(notification) {
+        this.removeNotification(notification);
+      }
+    })
+    
+    notificationService.notifications.subscribe(async notification => {
+      if(notification) {
+        // dont add a notification if in the same page as link
+        //dont add any notifications with the same link twice  
+        if(this.location.path() !== notification.link && this.notifications.filter(x => x.link === notification.link).length === 0) {
+           this.notifications.push(notification)
+        } else {
+           await this.notificationService.delete(notification.id).toPromise()
+        }
+      }
+    })
   }
+  
+  ngOnInit(): void { }
 
   back() {
     this.location.back();
   }
 
-  ngOnInit(): void {
-    
+  noticationClick() {
+    if(this.notifications.length > 0){
+      const notification = this.notifications[this.notifications.length - 1]
+      this.toolbarService.deleteNotification.next(notification)
+      this.notificationService.delete(notification.id).toPromise()
+      this.router.navigateByUrl(notification.link)
+    }
   }
+
+  private removeNotification(notification: Notification){
+    this.notifications.splice(this.notifications.indexOf(notification), 1)
+  }
+
+
 }
