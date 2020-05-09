@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import { Type } from '@angular/core';
-import { PhysicianHeirachyComponent } from './physician-heirachy/physician-heirachy.component';
-import { CarerRouteResolverService } from './physician-heirachy/carer-route-resolver.service';
+import { PhysicianHierarchyComponent } from './physician-hierarchy/physician-hierarchy.component';
+import { CarerRouteResolverService } from './physician-hierarchy/carer-route-resolver.service';
 import { PatientDetailComponent } from './patient-detail/patient-detail.component';
 import { ChatComponent } from './chat/chat.component';
 import { ChangeShiftComponent } from './change-shift/change-shift.component';
@@ -15,7 +15,7 @@ export function getCaregiverRoute(rootComponent: Type<any>, caregiverRootCompone
         { path: '', component: rootComponent }, 
         { path: ':id', component: caregiverRootComponent, children: [
             { path: '',
-                component: PhysicianHeirachyComponent,
+                component: PhysicianHierarchyComponent,
                 resolve: {
                     model: CarerRouteResolverService
                 }

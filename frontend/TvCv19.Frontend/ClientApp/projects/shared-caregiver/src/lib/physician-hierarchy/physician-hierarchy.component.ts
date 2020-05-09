@@ -4,14 +4,15 @@ import { PatientModel, PhysicianModel, PatientService, CaregiverRouteDataModel, 
 import { ToolbarService } from 'src/app/toolbar.service';
 
 @Component({
-  selector: 'app-physician-heirachy',
-  templateUrl: './physician-heirachy.component.html',
-  styleUrls: ['./physician-heirachy.component.scss']
+  selector: 'app-physician-hierarchy',
+  templateUrl: './physician-hierarchy.component.html',
+  styleUrls: ['./physician-hierarchy.component.scss']
 })
 
-export class PhysicianHeirachyComponent implements OnInit {
+export class PhysicianHierarchyComponent implements OnInit {
   patients: Array<PatientModel>
   careTeam: Array<PhysicianModel>
+  supervisor: PhysicianModel;
   scanPatientQr: boolean
   scanPhysicianQr: boolean
   isSupervisor: boolean
@@ -20,12 +21,13 @@ export class PhysicianHeirachyComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.data
-      .subscribe((data: { model: CaregiverRouteDataModel }) => {
+      .subscribe(async (data: { model: CaregiverRouteDataModel }) => {
         this.patients = data.model.patients || [];
         this.id = data.model.physician.id;
         this.isSupervisor = data.model.physician.hierarchy === HierarchyLevel.SecondLine;
         this.careTeam = data.model.careTeam
         this.toolbarService.setToolbarData({back: false, menu: [], title: data.model.physician.name})
+        this.supervisor = await this.physicianService.getPhysician(data.model.physician.supervisorId).toPromise()
       });
   }
 

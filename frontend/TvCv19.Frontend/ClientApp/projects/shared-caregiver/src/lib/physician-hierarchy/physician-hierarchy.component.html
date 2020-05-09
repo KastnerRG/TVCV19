@@ -1,3 +1,12 @@
+  <mat-grid-list class="supervisor" cols="2" rowHeight="2:1">
+    <mat-toolbar color="secondary">
+      <span>Supervisor</span>
+    </mat-toolbar>  
+    <mat-grid-tile>
+        {{supervisor.name}}
+        <mat-icon matSuffix>sentiment_very_satisfied</mat-icon>
+      </mat-grid-tile>
+  </mat-grid-list>
 <div *ngIf="isSupervisor">
   <mat-grid-list cols="2" rowHeight="2:1">
     <mat-toolbar color="secondary">
