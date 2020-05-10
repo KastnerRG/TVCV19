@@ -11,7 +11,6 @@ import {
   PhysicianService,
   CaregiverRouteDataModel,
 } from 'projects/shared/src/public-api';
-import { ToolbarService } from 'src/app/toolbar.service';
 
 @Injectable({
   providedIn: 'root',
@@ -20,7 +19,6 @@ export class CarerRouteResolverService {
   constructor(
     private patientService: PatientService,
     private physicianService: PhysicianService,
-    private toolbarService: ToolbarService,
     private router: Router
   ) {}
 
@@ -30,7 +28,6 @@ export class CarerRouteResolverService {
   ): Observable<CaregiverRouteDataModel> | Observable<never> {
     const id = route.parent.params['id'];
     const routeName = route.url.length > 0 ? route.url[0].path : '';
-    this.setToolbar(routeName);
 
     return this.patientService.getPatientsByPhysicianId(id).pipe(
       mergeMap((patients) => {
@@ -54,8 +51,5 @@ export class CarerRouteResolverService {
     );
   }
 
-  private setToolbar(routeName: string) {
-    if(routeName === 'patients')
-    this.toolbarService.setToolbarData({menu: [{link: '', title: 'Shift change'}], title: 'Patient List', back: false})
-  }
+
 }

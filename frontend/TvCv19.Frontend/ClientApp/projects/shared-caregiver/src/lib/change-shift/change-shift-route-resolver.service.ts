@@ -31,7 +31,7 @@ export class ChangeShiftRouteResolverService {
                    mergeMap(
                      ps => {
                        const patients = isGrandChild ? [ps.find(p => p.id === patientId)] : ps 
-                       this.toolbarService.setToolbarData({title: '', back: true, menu: undefined})
+                       this.toolbarService.setToolbarData({title: 'Change Shift', back: true})
                        return of({careTeam, patients})
                      }
                    )
