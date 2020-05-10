@@ -23,32 +23,23 @@ export function getCaregiverRoute(rootComponent: Type<any>, caregiverRootCompone
                 }
             },
             {
-              path: 'patients', component: PatientListComponent,
+              path: 'chat',
+              component: ChatComponent,
               resolve: {
-                model: CarerRouteResolverService
-            }
+                messages: ChatRouteResolverService,
+              },
             },
-            { path: 'change-shift', component: ChangeShiftComponent,
+            {
+              path: 'change-shift',
+              component: ChangeShiftComponent,
               resolve: {
-                model: ChangeShiftRouteResolverService
-            }
+                model: ChangeShiftRouteResolverService,
+              },
+              data: { isGrandChild: true },
             },
-            { path: 'patient/:id', component: caregiverRootComponent, children: [
-                { path: '', component: PatientDetailComponent, resolve: {
-                  model: PatientDetailRouteResolverService
-                } },
-                { path: 'chat', component: ChatComponent, 
-                  resolve: {
-                    messages: ChatRouteResolverService 
-                  } 
-                },
-                { path: 'change-shift', component: ChangeShiftComponent,
-                  resolve: {
-                    model: ChangeShiftRouteResolverService 
-                  },
-                  data: {isGrandChild: true}
-                }
-            ]}
-        ]}
-    ];
+          ],
+        },
+      ],
+    },
+  ];
 }

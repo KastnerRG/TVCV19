@@ -3,14 +3,9 @@ import { Component, OnInit } from '@angular/core';
 @Component({
   selector: 'lib-patient',
   template: `<router-outlet></router-outlet>`,
-  styles: [
-  ],
+  styles: [],
 })
 export class PatientComponent implements OnInit {
-
-  constructor() { }
-
-  ngOnInit(): void {
-  }
-
+  constructor() {}
+  ngOnInit(): void {}
 }

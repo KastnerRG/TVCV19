@@ -1,0 +1,45 @@
+<div class="main-menu-text"><p>Menu</p></div>
+
+<div class="menu">
+  <mat-action-list>
+    <div class="menu__item" mat-list-item routerLink="../patients">
+      <span class="menu__header">Patients</span>
+      <span>List of Patients</span>
+    </div>
+    <div class="menu__item" mat-list-item routerLink="./">
+      <span class="menu__header">Notifications</span>
+      <span>Escalated Cases</span>
+    </div>
+    <div class="menu__item" mat-list-item routerLink="../change-shift">
+      <span class="menu__header">Shift Change</span>
+      <span>Hand off Patients</span>
+    </div>
+    <div class="menu__item" mat-list-item (click)="toggleQr()">
+      <!-- routerLink="../../2/patients"> -->
+      <span class="menu__header">QR Code</span>
+      <span>Display the QR code</span>
+    </div>
+  </mat-action-list>
+</div>
+
+<div *ngIf="showQR" class="physician">
+  <div class="physician__qr" routerLink="../physician/{{ physician.id }}">
+    <div>
+      <qrcode
+        [qrdata]="physician.id"
+        [width]="256"
+        [errorCorrectionLevel]="'M'"
+      ></qrcode>
+    </div>
+  </div>
+</div>
+<div *ngIf="false" class="restart">
+  <button
+    routerLink="./"
+    class="restart__button"
+    mat-fab
+    aria-label="Restart Button"
+  >
+    <mat-icon>refresh</mat-icon>
+  </button>
+</div>

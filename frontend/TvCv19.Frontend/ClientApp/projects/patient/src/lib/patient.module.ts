@@ -23,8 +23,7 @@ import { CommonModule } from '@angular/common';
 import { PatientFeedComponent } from './patient-feed/patient-feed.component';
 import { FlexModule } from '@angular/flex-layout';
 import { PatientAuthorizationComponent } from './patient-authorization/patient-authorization.component';
-
-
+import { CarerMenuComponent } from 'projects/shared-caregiver/src/lib/carer-menu/carer-menu.component';
 
 @NgModule({
   declarations: [
@@ -35,13 +34,15 @@ import { PatientAuthorizationComponent } from './patient-authorization/patient-a
     RootComponent,
     PatientRegistrationRootComponent,
     PatientFeedComponent,
-    PatientAuthorizationComponent
+    PatientAuthorizationComponent,
+    CarerMenuComponent
   ],
   imports: [
     RouterModule.forChild([
       { path: '', component: RootComponent },
       { path: 'authorization', component: PatientAuthorizationComponent },
       { path: 'live/:id', component: PatientFeedComponent},
+      { path: ':id/menu', component: CarerMenuComponent, resolve: { model: AssignCareGiverRouteResolverService }},
       { path: 'registration', component: PatientRegistrationRootComponent, children: [
         { path: '', component: PatientRegistrationComponent },
         { path: 'assign-caregiver/:id', component: AssignCareGiverComponent, resolve: {
@@ -63,8 +64,8 @@ import { PatientAuthorizationComponent } from './patient-authorization/patient-a
     MatOptionModule,
     QRCodeModule,
     FlexModule,
-    SharedModule
+    SharedModule,
   ],
-  exports: []
+  exports: [],
 })
-export class PatientModule { }
+export class PatientModule {}

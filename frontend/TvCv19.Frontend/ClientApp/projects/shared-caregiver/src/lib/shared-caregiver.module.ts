@@ -24,6 +24,9 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { PatientStatsDialog } from './patient-stats/patient-stats.dialog';
 import { MatTreeModule } from '@angular/material/tree';
 import { HierarchyComponent } from './physician-hierarchy/hierarchy.component';
+import { NursesDoctorsMenuComponent } from './nurses-doctors-menu/nurses-doctors-menu.component';
+import { CarerMenuComponent } from './carer-menu/carer-menu.component';
+import { MatListModule } from '@angular/material/list';
 
 @NgModule({
   declarations: [
@@ -35,7 +38,9 @@ import { HierarchyComponent } from './physician-hierarchy/hierarchy.component';
     PhysicianHierarchyComponent,
     ChatComponent,
     PatientStatsDialog,
-    HierarchyComponent
+    HierarchyComponent,
+    NursesDoctorsMenuComponent,
+    CarerMenuComponent,
   ],
   imports: [
     CommonModule,
@@ -54,7 +59,8 @@ import { HierarchyComponent } from './physician-hierarchy/hierarchy.component';
     MatDialogModule,
     QRCodeModule,
     SharedModule,
-    MatChipsModule
+    MatChipsModule,
+    MatListModule
   ],
   exports: [SharedCaregiverComponent],
 })

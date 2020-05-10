@@ -1,0 +1,71 @@
+.menu {
+  padding-left: 42px;
+  &__item {
+    margin-bottom: 43px;
+  }
+  &__header {
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 25px;
+    line-height: 24px;
+    /* identical to box height, or 96% */
+
+    display: flex;
+    align-items: center;
+
+    color: rgba(0, 0, 0, 0.87);
+  }
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 20px;
+  /* identical to box height, or 143% */
+
+  display: flex;
+  align-items: center;
+
+  color: rgba(0, 0, 0, 0.54);
+}
+
+.main-menu-text {
+  padding-left: 42px;
+  padding-top: 85px;
+  margin-bottom: 35px;
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 36px;
+  line-height: 38px;
+  color: rgba(0, 0, 0, 0.55);
+}
+
+.restart {
+  position: fixed;
+  right: 19px;
+  bottom: 45px;
+  width: 68px;
+  height: 68px;
+  &__button {
+    position: absolute;
+
+    font-family: Merriweather;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 12px;
+    line-height: 32px;
+    text-transform: lowercase;
+    /* or 267% */
+    border-radius: 50%;
+    height: 68px;
+    width: 68px;
+    background: #fa9494;
+  }
+}
+
+.physician {
+  &__qr {
+    padding-bottom: 60px;
+  }
+}

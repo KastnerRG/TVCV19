@@ -9,5 +9,6 @@ export class PatientModel {
 }
 
 export enum AdmissionStatus {
-    Admitted,Discharged
+  Admitted,
+  Discharged,
 }

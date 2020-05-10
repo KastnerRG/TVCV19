@@ -55,4 +55,4 @@ import { TokenInterceptor } from 'projects/shared/src/public-api';
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {}
