@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { MatDialog } from '@angular/material/dialog';
@@ -22,7 +22,7 @@ export interface DownloadedImage {
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.scss'],
 })
-export class ChatComponent implements OnInit {
+export class ChatComponent implements OnInit, AfterViewChecked {
   private patientId: string;
   private physicianId: string;
   public messageToSend: string = '';
@@ -33,6 +33,7 @@ export class ChatComponent implements OnInit {
   private audioCache = {};
 
   @ViewChild('downloadImage') download: any;
+  @ViewChild('messages') private messageContainer: ElementRef;
 
   constructor(
     private chatService: ChatService,
@@ -43,7 +44,9 @@ export class ChatComponent implements OnInit {
     route: ActivatedRoute
   ) {
     chatService.messages.subscribe((m) => {
-      this.chatMessages.push(m);
+      if(m.patientId === this.patientId){
+        this.chatMessages.push(m);
+      }
     });
 
     route.parent.params.subscribe((p: any) => {
@@ -66,6 +69,10 @@ export class ChatComponent implements OnInit {
   }
 
   ngOnInit(): void {}
+
+  ngAfterViewChecked() {        
+    this.scrollToBottom();        
+} 
 
   async sendMessage(): Promise<void> {
     await this.chatService.sendMessageAsync(
@@ -195,4 +202,10 @@ export class ChatComponent implements OnInit {
     this.audioCache[fileName] = audio;
     audio.play();
   }
+
+  private scrollToBottom(): void {
+    try {
+        this.messageContainer.nativeElement.scrollTop = this.messageContainer.nativeElement.scrollHeight;
+    } catch(err) { }                 
+}
 }

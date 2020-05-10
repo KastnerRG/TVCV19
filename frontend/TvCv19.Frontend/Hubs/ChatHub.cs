@@ -26,8 +26,41 @@ namespace TvCv19.Frontend.Hubs
         {
             var date = DateTime.Now;
             var physician = await _physicianRepository.GetPhysicianAsync(physicianId);
-            var id = await _messageRepository.AddMessage(new Message(patientId, message, physician.Name, date, isCareInstruction, isAudio, isImage, stats));
-            await Clients.Group(patientId).SendAsync("ReceiveMessage", message, physician.Name, date, id, isCareInstruction, isAudio, isImage, stats);
+            Message dbMessage = new Message(patientId, message, physician.Name, date, isCareInstruction, isAudio, isImage, stats);
+            var id = await _messageRepository.AddMessage(dbMessage);
+            await Clients.Group(patientId).SendAsync("ReceiveMessage", dbMessage.ToMessageModel(id, physicianId));
         }
+    }
+
+    public static class MessageExtensions {
+        public static MessageModel ToMessageModel(this Message m, string id, string physicianId) {
+            return new MessageModel(id, m.GroupId, physicianId, m.IsImage, m.IsCareInstruction, m.IsAudio, m.Sender, m.Body, m.Stats, m.Date);
+        }
+    }
+
+    public class MessageModel {
+        public MessageModel(string id, string patientId, string physicianId, bool isImage, bool isCareInstruction, bool isAudio, string name, string message, Stats stats, DateTime date)
+        {
+            Id = id;
+            PatientId = patientId;
+            PhysicianId = physicianId;
+            IsImage = isImage;
+            IsCareInstruction = isCareInstruction;
+            IsAudio = isAudio;
+            Name = name;
+            Message = message;
+            Stats = stats;
+            Date = date;
+        }
+        public string PatientId { get; set; }
+        public string PhysicianId { get; }
+        public string Id { get; set; }
+        public bool IsImage { get; set; }
+        public bool IsCareInstruction { get; set; }
+        public bool IsAudio { get; set; }
+        public string Name { get; set; }
+        public string Message { get; set; }
+        public Stats Stats { get; set; }
+        public DateTime Date { get; set; }
     }
 }
