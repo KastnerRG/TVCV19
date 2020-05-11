@@ -4,6 +4,7 @@
 
 export const environment = {
   production: false
+  // need to parameterize a path for this build
 };
 
 /*
