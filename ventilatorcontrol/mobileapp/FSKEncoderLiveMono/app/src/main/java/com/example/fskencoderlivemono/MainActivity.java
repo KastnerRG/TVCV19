@@ -545,7 +545,7 @@ public class MainActivity extends AppCompatActivity {
                 DECODED_DATA+=text;
                 watchdogTimer = watchdogPeriod;
 
-                if (text.contains("\n")) {
+                if (text.contains("\0")) {
                     DECODER_DATA_BUF = DECODED_DATA;
                     DECODED_DATA = "\0";
 
