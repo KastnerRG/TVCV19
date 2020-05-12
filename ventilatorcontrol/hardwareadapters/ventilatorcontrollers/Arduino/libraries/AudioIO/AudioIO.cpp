@@ -35,7 +35,7 @@ void AudioIO::begin()
   Serial.println("AudioIO startup");
   modem.begin();
   delay(100);
-  modem.write('M');modem.write('B');modem.write(' ');modem.write('v');modem.write('1');modem.write('.');modem.write('1');modem.write('\n');
+  modem.write('M');modem.write('B');modem.write(' ');modem.write('v');modem.write('1');modem.write('.');modem.write('2');modem.write('\n');
 
   //init bus state
   _mPolicyState.comMode = PCM;
@@ -49,8 +49,6 @@ void AudioIO::begin()
   
   AudioIO::activeObject = this;
   
-  //_mThread.onRun(maintainAudioBus);  //Maintain the Bus status. 
-  //_mThread.setInterval(WATCHDOGPERIOD);//Task should be called as watchdog is about to time out.
 }
 
 //Route TWI Slave ISR to this class
@@ -302,15 +300,9 @@ void AudioIO::setVentilatorKnobs()
     //Send back an ACK (this just ack's the command, its not enough for verification).
     modem.write(ACK);
     
-    /*
-    //DEBUG show new control knob values (seem to all work perfectly
-    Serial.print(_mControlRegs.rrrt);Serial.print('\n');
-    Serial.print(_mControlRegs.tlvm);Serial.print('\n');
-    Serial.print(_mControlRegs.mmip);Serial.print('\n');
-    Serial.print(_mControlRegs.pkep);Serial.print('\n');
-    Serial.print(_mControlRegs.itet);Serial.print('\n');
-    Serial.print(_mControlRegs.fio2);Serial.print('\n');
-    */
+    //Load up SPI buffers so that the SPI bus master can interrogate latest ventilator control knobs.
+    fillControlKnobBuffers();
+
 }
 
 //Report Ventilator Knobs
@@ -566,9 +558,6 @@ void AudioIO::pollBusStatus()
     audioBusMaintainance(); //Phone side IO service
     
     //Done in ISR. Required to keep up with bus. SPIBusMaintainence();   //Ventilator side IO service
-    //TODO: do we need to do anything with SPI here?
-    //if(_mSPIData.available == true)
-    //    Serial.print(_mSPIData.buffer_cmd);
     
     //If the Audio bus is up, try to process audio commands.
     if(_mPolicyState.comMode = IO)
@@ -585,6 +574,44 @@ void AudioIO::pollBusStatus()
 }
 
 //ISR BUS MAINTAINENCE UTILITY FUNCTIONS
+
+//inline member to convert SPI readout data for use by audio IO bus.
+//Done after command to avoid failing to meet ISR timing.
+//TODO: the class members are only useful if you do actual ventilator logic. otherwise they could possibly be dropped for AudioIO?
+void AudioIO::drainReadoutBuffers()
+{
+
+    _mreadoutRegs.mtvn = atoi(_mmtvn.front); 
+    _mreadoutRegs.pkip = atoi(_mpkip.front); 
+    _mreadoutRegs.pco2 = atoi(_mpco2.front);
+        
+    Serial.print("SPI sets readout knobs\n");
+    Serial.print("mtvn: ");Serial.print(_mreadoutRegs.mtvn);Serial.print("\n");
+    Serial.print("pkip: ");Serial.print(_mreadoutRegs.pkip);Serial.print("\n");
+    Serial.print("pco2: ");Serial.print(_mreadoutRegs.pco2);Serial.print("\n");
+}
+
+//inline member to fill SPI control knob data from member variables
+void AudioIO::fillControlKnobBuffers()
+{
+    itoa(_mControlRegs.rrrt,_mrrrt.back,10); _mrrrt.flip();
+    itoa(_mControlRegs.tlvm,_mtlvm.back,10); _mtlvm.flip();
+    itoa(_mControlRegs.mmip,_mmmip.back,10); _mmmip.flip();
+    itoa(_mControlRegs.pkep,_mpkep.back,10); _mpkep.flip();
+    itoa(_mControlRegs.itet,_mitet.back,10); _mitet.flip();
+    itoa(_mControlRegs.fio2,_mfio2.back,10); _mfio2.flip();
+    
+    
+/*could use with some extra debug
+     Serial.print("Audio sets ctl knobs\n");
+    Serial.print("rrrt: ");Serial.println(_mmtvn.front);Serial.print("\n");
+    Serial.print("tlvm: ");Serial.println(_mpkip.front);Serial.print("\n");
+    Serial.print("mmip: ");Serial.println(_mpco2.front);Serial.print("\n");
+    Serial.print("pkep: ");Serial.println(_mmtvn.front);Serial.print("\n");
+    Serial.print("itet: ");Serial.println(_mpkip.front);Serial.print("\n");    */
+    
+}
+
 
 //inline member to insert a char into a "number" buffer.
 //return false when buffer is full (fit no more in)
@@ -609,9 +636,13 @@ bool AudioIO::InsertJSONInNumbrBuf(doublebuf& targetbuff, uint8_t& newdata)
     return true;                        //can still fit more data in this buffer.
 }
 
-//SLAVE MODE HANDLER FOR SPI BUS
-//TODO: currently an ISR. move to an ARTe polled loop?
-//Probably not an option given the speed of UNO. All logic has to be done here too.
+//SLAVE MODE HANDLER FOR SPI BUS (a state machine)
+//1: look for json start character
+//2-4: read in command key
+//5... process the command. Two processing patterns are defined
+//      type A: write to the IO controller
+//      type B: read from the IO controller
+//      examples for type A and B using double buffers to support a second async audioIO bus are shown
 void AudioIO::SPIBusMaintainence()
 {   
         
@@ -665,7 +696,10 @@ void AudioIO::SPIBusMaintainence()
             
             //bomb out if we read null.
             if(din=='\0')
-                {SPDR='\0';_mSPIData = SPIdata();_mSPIData.bufptr=0-SPILATENCY;}
+                {
+                    SPDR='\0';_mSPIData = SPIdata();_mSPIData.bufptr=0-SPILATENCY;  //reset state machine
+                    drainReadoutBuffers();                                          //parse characters to native representations.
+                }
             
             //EXAMPLE OF HOW TO READ INTO THIS IOCONTROLLER'S DOUBLE BUFFER REGISTERS FROM A SENDING SPI MASTER
             //deal with the command read in
