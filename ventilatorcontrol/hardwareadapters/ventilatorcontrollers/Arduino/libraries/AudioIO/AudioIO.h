@@ -239,11 +239,6 @@ class AudioIO
     static AudioIO *activeObject;
     void SPIBusMaintainence();     //monitor and respond to SPI bus commands
     
-    //TODO: Make private accessed by internal things only
-    //Double buffers are needed for asynchronous transfer. The IO controller is a slave to display and ventilator which use two asynchronous busses.
-    doublebuf _mrrrt, _mtlvm, _mmmip, _mpkep, _mitet, _mfio2; //character double buffers for JSON values of ventilator knobs.
-    //TODO: Make private accessed by internal things only
-    doublebuf _mmtvn, _mpkip, _mpco2;  //character double buffers for JSON values of ventilator readouts.
     
   // library-accessible "private" interface
   private:
@@ -268,11 +263,14 @@ class AudioIO
 	SPIdata _mSPIData;
 	//CONTROL
 	//Data buffers
-	//doublebuf _mrrrt, _mtlvm, _mmmip, _mpkep, _mitet, _mfio2;
-	//doublebuf _mmtvn, _pkip, _pco2;
+    //Double buffers are needed for asynchronous transfer. The IO controller is a slave to display and ventilator which use two asynchronous busses.
+    doublebuf _mrrrt, _mtlvm, _mmmip, _mpkep, _mitet, _mfio2; //character double buffers for JSON values of ventilator knobs.
+    doublebuf _mmtvn, _mpkip, _mpco2;  //character double buffers for JSON values of ventilator readouts.
 	
 	//Utility
 	inline bool InsertJSONInNumbrBuf(doublebuf& targetbuff, uint8_t& newdata);    //stuff JSON number into a buffer.
+	inline void drainReadoutBuffers();      //run itoa and populate class members used in audio bus.
+	inline void fillControlKnobBuffers();   //TODO: refresh SPI command buffers if they have been set by the audioIO bus.
 };
 
 #endif
