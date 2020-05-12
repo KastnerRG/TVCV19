@@ -71,9 +71,10 @@ public class MainActivity extends AppCompatActivity {
 
     public String ENCODER_DATA_BUF = "\0";
     public String DECODER_DATA_BUF = "\0";
+    public String DECODED_DATA = "\0";
     //public Boolean setFSKChar = false;
     public Boolean FSKinProg = false;
-    public String MODE = "PCM";
+    public static String MODE = "PCM";
 
     protected FSKConfig mConfig;
     protected FSKEncoder mEncoder;
@@ -541,28 +542,34 @@ public class MainActivity extends AppCompatActivity {
             public void decoded(byte[] newData) {
 
                 final String text = new String(newData);
-                DECODER_DATA_BUF = text;
+                DECODED_DATA+=text;
                 watchdogTimer = watchdogPeriod;
 
-                //Update control knobs if we should
-                if(DECODER_DATA_BUF.contains("rk"))
-                    parseControlKnobs(DECODER_DATA_BUF);
-                //Update readouts if we should
-                if(DECODER_DATA_BUF.contains("rd"))
-                    parseVentReadout(DECODER_DATA_BUF);
+                if (text.contains("\n")) {
+                    DECODER_DATA_BUF = DECODED_DATA;
+                    DECODED_DATA = "\0";
 
-                //DEBUG display
-                runOnUiThread(new Runnable() {
-                    public void run() {
+                    //Update control knobs if we should
+                    if(DECODER_DATA_BUF.contains("rk"))
+                        parseControlKnobs(DECODER_DATA_BUF);
+                    //Update readouts if we should
+                    if(DECODER_DATA_BUF.contains("rd"))
+                        parseVentReadout(DECODER_DATA_BUF);
 
-                        //Always do this
-                        view1.setText(text);
+                    //DEBUG display
+                    runOnUiThread(new Runnable() {
+                        public void run() {
 
-                        //Decode.
+                            //Always do this
+                            DECODER_DATA_BUF = DECODER_DATA_BUF.replaceAll("#","");
+                            view1.setText(DECODER_DATA_BUF);
+
+                            //Decode.
 
 
-                    }
-                });
+                        }
+                    });
+                }
             }
         });
 
