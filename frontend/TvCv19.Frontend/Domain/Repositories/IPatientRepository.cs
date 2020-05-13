@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TvCv19.Frontend.Domain.Repositories;
 
 namespace TvCv19.Frontend.Domain
 {
@@ -19,7 +20,12 @@ namespace TvCv19.Frontend.Domain
     {
         private static List<Patient> _admittedPatients = new List<Patient>();
         private static int _count;
+        private readonly IPhysicianRepository _physicianRepository;
 
+        public PocPatientRepository(IPhysicianRepository physicianRepository)
+        {
+            _physicianRepository = physicianRepository;
+        }
 
         public Task<string> AdmitPatient(Patient patient)
         {
@@ -46,9 +52,19 @@ namespace TvCv19.Frontend.Domain
             return Task.FromResult((IEnumerable<Patient>)_admittedPatients);
         }
 
-        public Task<IEnumerable<Patient>> GetPatientsByPhysician(string id)
+        public async Task<IEnumerable<Patient>> GetPatientsByPhysician(string id)
         {
-            return Task.FromResult(_admittedPatients.Where(x => x.CaregiverId == id));
+            var patients = new List<Patient>();
+            var careTeam =  await _physicianRepository.GetPhysicianTeam(id);
+            if (careTeam.Any())
+            {
+                foreach (var item in careTeam)
+                {
+                    patients.AddRange(_admittedPatients.Where(x => x.CaregiverId == item.Id));
+                }
+            }
+            patients.AddRange(_admittedPatients.Where(x => x.CaregiverId == id));
+            return patients;
         }
 
         public Task<Patient> UpdatePatient(Patient patientModel)

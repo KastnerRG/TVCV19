@@ -7,7 +7,10 @@ import {
 import { Observable, of, EMPTY } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
 import { AssignCareGiverModel } from './assign-caregiver-route-model';
-import { PhysicianService } from 'projects/shared/src/public-api';
+import {
+  PhysicianService,
+  HierarchyLevel,
+} from 'projects/shared/src/public-api';
 import { PatientService } from 'projects/shared/src/public-api';
 
 @Injectable({
@@ -29,9 +32,13 @@ export class AssignCareGiverRouteResolverService {
     return this.patientService.getPatient(id).pipe(
       mergeMap((patient) => {
         if (patient) {
-          return this.physicianService.getPhysicians()
-          .pipe(
-            mergeMap((caregivers) =>  of({ patient, caregivers }))
+          return this.physicianService.getPhysicians().pipe(
+            mergeMap((physicians) => {
+              const caregivers = physicians.filter(
+                (p) => p.hierarchy === HierarchyLevel.FirstLine
+              );
+              return of({ patient, caregivers });
+            })
           );
         } else {
           this.router.navigate(['/patient']);

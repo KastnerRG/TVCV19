@@ -20,6 +20,7 @@ class PCMRun implements Runnable {
         AndroidAudioDevice device = new AndroidAudioDevice();
         float samples[] = new float[1024];
         while (true) {
+            if (MainActivity.MODE.equals("FSK")) { continue; }
             //Frequency range is [0-100] corresponding to frequencies 0 - ~4KHz
             /*float increment = (float) (2 * Math.PI) * this.freq_level * 215 / 44100;
             for (int i = 0; i < samples.length; i++) {

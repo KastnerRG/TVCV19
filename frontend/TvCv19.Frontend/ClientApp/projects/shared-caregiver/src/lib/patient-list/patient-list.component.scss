@@ -1,15 +1,34 @@
-.patient-list {
+.bedside {
   font-weight: bold;
   font-size: 24px;
-
-  &__patient {
-    padding-top: 20px;
-  }
-  .patient-name {
-    margin-right: 12px;
+  &__patient-list {
+    &__patient {
+      padding-top: 20px;
+      &__row {
+        padding: 0 30px;
+      }
+      &__name {
+        margin-right: 12px;
+        padding-top: 12px;
+      }
+    }
   }
 }
 qrcode {
   display: flex;
   justify-content: center;
+}
+
+.physician {
+  padding: 30px 10px;
+  &__patient-list {
+    &__patient {
+      padding: 0 25px;
+      font-size: 16px;
+      margin-top: 25px;
+      &__avatar {
+         padding-right: 15px;
+      }
+    }
+  }
 }

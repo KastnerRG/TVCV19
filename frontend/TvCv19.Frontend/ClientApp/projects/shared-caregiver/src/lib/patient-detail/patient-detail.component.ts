@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute} from '@angular/router';
 
 @Component({
   selector: 'lib-patient-detail',
@@ -9,7 +9,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 export class PatientDetailComponent implements OnInit {
   room: any;
 
-  constructor(route: ActivatedRoute, private router: Router) {
+  constructor(route: ActivatedRoute) {
     route.params.subscribe((p) => {
       this.room = `patient-${p['id']}`;
     });
