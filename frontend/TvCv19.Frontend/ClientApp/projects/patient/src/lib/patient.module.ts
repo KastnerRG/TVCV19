@@ -21,6 +21,7 @@ import { AssignCareGiverRouteResolverService } from './patient/patient-registrat
 import { MatOptionModule } from '@angular/material/core';
 import { CommonModule } from '@angular/common';
 import { PatientFeedComponent } from './patient-feed/patient-feed.component';
+import { FlexModule } from '@angular/flex-layout';
 
 
 
@@ -58,6 +59,7 @@ import { PatientFeedComponent } from './patient-feed/patient-feed.component';
     MatInputModule,
     MatOptionModule,
     QRCodeModule,
+    FlexModule,
     SharedModule
   ],
   exports: []

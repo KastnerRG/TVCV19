@@ -7,11 +7,15 @@ import { RootComponent } from './root/root.component';
 import { MatListModule } from '@angular/material/list';
 import { MatButtonModule } from '@angular/material/button';
 import { HttpClientModule } from '@angular/common/http';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { AppToolbarComponent } from './app-toolbar/app-toolbar.component';
+import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
   declarations: [
     AppComponent,
-    RootComponent
+    RootComponent,
+    AppToolbarComponent
   ],
   imports: [
     BrowserModule,
@@ -19,7 +23,9 @@ import { HttpClientModule } from '@angular/common/http';
     HttpClientModule,
     AppRoutingModule,
     MatListModule,
-    MatButtonModule
+    MatButtonModule,
+    MatToolbarModule,
+    MatIconModule
   ],
   providers: [],
   bootstrap: [AppComponent]

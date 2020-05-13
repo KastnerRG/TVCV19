@@ -38,10 +38,10 @@ namespace TvCv19.Frontend.Controllers
         public async Task<IActionResult> GetPhysicianAsync(string id) => Ok(await _physicianRepository.GetPhysicianAsync(id));
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdatePhysicianAsync([FromBody] Physician physician)
+        public async Task<IActionResult> UpdatePhysicianAsync([FromBody] Physician physicianModel)
         {
-            await _physicianRepository.UpdatePhysicianAsync(physician);
-            return Ok();
+            var physician = await _physicianRepository.UpdatePhysicianAsync(physicianModel);
+            return Ok(physician);
         }
     }
 }

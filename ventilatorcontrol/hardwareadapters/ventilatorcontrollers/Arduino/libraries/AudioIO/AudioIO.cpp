@@ -35,7 +35,7 @@ void AudioIO::begin()
   Serial.println("AudioIO startup");
   modem.begin();
   delay(100);
-  modem.write('M');modem.write('B');modem.write(' ');modem.write('v');modem.write('1');modem.write('.');modem.write('2');modem.write('\n');
+  modem.write('M');modem.write('B');modem.write(' ');modem.write('v');modem.write('1');modem.write('.');modem.write('1');modem.write('\n');modem.write('\0');
 
   //init bus state
   _mPolicyState.comMode = PCM;

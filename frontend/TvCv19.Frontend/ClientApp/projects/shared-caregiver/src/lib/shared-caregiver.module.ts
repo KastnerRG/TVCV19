@@ -4,7 +4,7 @@ import { ChangeShiftComponent } from './change-shift/change-shift.component';
 import { LiveVideoComponent } from './live-video/live-video.component';
 import { PatientDetailComponent } from './patient-detail/patient-detail.component';
 import { PatientListComponent } from './patient-list/patient-list.component';
-import { PhysicianHeirachyComponent } from './physician-heirachy/physician-heirachy.component';
+import { PhysicianHierarchyComponent } from './physician-hierarchy/physician-hierarchy.component';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { SharedModule } from 'projects/shared/src/public-api';
 import { MatIconModule } from '@angular/material/icon';
@@ -29,7 +29,7 @@ import { PatientStatsDialog } from './patient-stats/patient-stats.dialog';
     LiveVideoComponent,
     PatientDetailComponent,
     PatientListComponent,
-    PhysicianHeirachyComponent,
+    PhysicianHierarchyComponent,
     ChatComponent,
     PatientStatsDialog,
   ],

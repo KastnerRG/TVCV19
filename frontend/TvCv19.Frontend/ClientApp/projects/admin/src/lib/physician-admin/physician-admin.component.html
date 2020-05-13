@@ -3,18 +3,18 @@
         <span>Caregiver Registration</span>
     </mat-toolbar-row>
 </mat-toolbar>
-<form [formGroup]="caregiverRegistrationForm" (ngSubmit)="onSubmit(caregiverRegistrationForm.value)">
-    <mat-form-field appearance="fill">
+<form fxLayout="column" [formGroup]="caregiverRegistrationForm" (ngSubmit)="onSubmit(caregiverRegistrationForm.value)">
+    <mat-form-field fxFlexAlign="center" appearance="fill">
         <mat-label>Physician Name</mat-label>
         <input id="name" formControlName="name" required matInput placeholder="Name" >
         <mat-icon matSuffix>mode_edit</mat-icon>
     </mat-form-field>
-    <mat-form-field appearance="fill">
+    <mat-form-field fxFlexAlign="center" appearance="fill">
         <mat-label>Location</mat-label>
         <input id="location" formControlName="location" matInput placeholder="Location" required>
         <mat-icon matSuffix>mode_edit</mat-icon>
     </mat-form-field>
-    <mat-form-field>
+    <mat-form-field fxFlexAlign="center">
         <mat-label>Care Type</mat-label>
         <select matNativeControl required formControlName="hierarchy">
           <option value="firstLine">Bedside Care</option>
@@ -22,7 +22,7 @@
           <option value="commander">Commander</option>
         </select>
     </mat-form-field>
-    <mat-form-field *ngIf="physicians && caregiverRegistrationForm.get('hierarchy').value === 'FirstLine'">
+    <mat-form-field fxFlexAlign="center" *ngIf="physicians && caregiverRegistrationForm.get('hierarchy').value === 'firstLine'">
         <mat-label>Supervisor</mat-label>
         <select matNativeControl formControlName="supervisorId" >
           <option *ngFor="let physician of physicians;" value="{{physician.id}}" >{{physician.name}}</option>

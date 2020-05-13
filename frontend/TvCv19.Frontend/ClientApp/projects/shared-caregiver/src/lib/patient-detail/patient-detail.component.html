@@ -5,14 +5,12 @@
     fxLayout="row"
     fxLayoutAlign="space-around center"
   >
-    <div fxLayout="column" fxFlexAlign="center" class="care-options__chat">
+    <div fxLayout="column" fxFlexAlign="center" class="care-options__message">
       <img
         routerLink="chat"
         fxFlexAlign="center"
         src="/assets/img/message.png"
       />
-      <span fxFlexAlign="center">Chat with</span>
-      <span fxFlexAlign="center">nurse</span>
     </div>
     <div
       fxLayout="column"
@@ -20,21 +18,27 @@
       class="care-options__instructions"
     >
       <img fxFlexAlign="center" src="/assets/img/instructions.png" />
-      <span>Patient care</span>
-      <span>instructions</span>
+    </div>
+    <div
+      fxLayout="column"
+      fxFlexAlign="center"
+      class="care-options__stats"
+    >
+      <img fxFlexAlign="center" src="/assets/img/stats.png" />
     </div>
   </div>
   <div
     class="care-options__row"
     fxLayout="row"
     fxLayoutAlign="space-around center">
-    <div fxLayout="column" fxFlexAlign="center" class="care-options__heirachy">
-      <img fxFlexAlign="center" src="/assets/img/heirachy.png" />
-      <span>Heirachy</span>
+    <div fxLayout="column" fxFlexAlign="center" class="care-options__hierarchy">
+      <img fxFlexAlign="center" src="/assets/img/hierarchy.png" />
     </div>
-    <div fxLayout="column" fxFlexAlign="center" class="care-options__shifts">
+    <div fxLayout="column" fxFlexAlign="center" class="care-options__shift">
       <img routerLink="change-shift" fxFlexAlign="center" src="/assets/img/shift-change.png" />
-      <span>Shift change</span>
+    </div>
+    <div fxLayout="column" fxFlexAlign="center" class="care-options__info">
+      <img routerLink="change-shift" fxFlexAlign="center" src="/assets/img/info.png" />
     </div>
   </div>
 </div>
