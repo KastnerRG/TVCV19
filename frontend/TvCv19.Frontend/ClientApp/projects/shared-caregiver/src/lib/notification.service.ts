@@ -1,24 +1,20 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { BehaviorSubject, throwError, Observable } from 'rxjs';
+import { Subject, throwError, Observable } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
 })
 export class NotificationService {
-  notifications: BehaviorSubject<Notification> = new BehaviorSubject<
-    Notification
-  >(undefined);
+  notifications = new Subject<Notification>();
   constructor(private http: HttpClient) {}
 
   async addNotification(notification: Notification) : Promise<void> {
-    
     notification = await this.http
       .post<Notification>('/api/notification', notification)
       .pipe(catchError(this.handleError)).toPromise();
-
-      this.notifications.next(notification);
+    this.notifications.next(notification);
   }
 
   async subscribeAsync(recieverId: string) : Promise<void> {
@@ -34,7 +30,7 @@ export class NotificationService {
       .pipe(catchError(this.handleError));
   }
 
-  delete(id: string):  Observable<any> {
+  delete(id: string): Observable<any> {
     return this.http
       .delete<string>(`/api/notification/${id}`)
       .pipe(catchError(this.handleError));
