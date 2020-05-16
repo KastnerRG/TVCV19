@@ -19,9 +19,9 @@ export interface MediaMessage {
 export class MediaService {
   constructor(private http: HttpClient) {}
 
-  getMedia(fileName: string) {
+  getMedia(fileId: string) {
     return this.http
-      .get(`api/media/${fileName}`, { responseType: 'blob' })
+      .get(`api/media/${fileId}`, { responseType: 'blob' })
       .pipe(catchError(this.handleError));
   }
 

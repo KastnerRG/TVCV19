@@ -1,8 +1,8 @@
-﻿using System;
+﻿using TvCv19.Frontend.Domain.Models;
 
 namespace TvCv19.Frontend.Domain
 {
-    public class Physician
+    public class Physician : IDbEntity
     {
         public string Id { get; set; }
         public string Name { get; set; }
@@ -11,5 +11,4 @@ namespace TvCv19.Frontend.Domain
         public string SupervisorId { get; set; }
     }
     public enum Hierarchy { FirstLine = 1, SecondLine = 2, Commander = 3 }
-
 }

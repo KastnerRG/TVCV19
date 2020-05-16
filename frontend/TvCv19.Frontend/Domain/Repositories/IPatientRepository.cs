@@ -11,7 +11,7 @@ namespace TvCv19.Frontend.Domain
         Task<string> AdmitPatient(Patient patient);
         Task<Patient> GetPatient(string id);
         Task<IEnumerable<Patient>> GetPatients();
-        string DischargePatient(string id);
+        Task<string> DischargePatient(string id);
         Task<IEnumerable<Patient>> GetPatientsByPhysician(string id);
         Task<Patient> UpdatePatient(Patient patientModel);
     }
@@ -30,14 +30,14 @@ namespace TvCv19.Frontend.Domain
         {
             patient.Id = Guid.NewGuid().ToString("N");
             _admittedPatients.Add(patient);
-            
+
             return Task.FromResult(patient.Id);
         }
 
-        public string DischargePatient(string id)
+        public Task<string> DischargePatient(string id)
         {
             _admittedPatients.Remove(_admittedPatients.FirstOrDefault(x => x.Id == id));
-            return id;
+            return Task.FromResult(id);
         }
 
         public Task<Patient> GetPatient(string id)
@@ -53,15 +53,17 @@ namespace TvCv19.Frontend.Domain
         public async Task<IEnumerable<Patient>> GetPatientsByPhysician(string id)
         {
             var patients = new List<Patient>();
-            var firstLevelTeam =  await _physicianRepository.GetPhysicianTeam(id);
+            var firstLevelTeam = await _physicianRepository.GetPhysicianTeam(id);
             if (firstLevelTeam.Any())
             {
                 foreach (var firstLevelTeamMemeber in firstLevelTeam)
                 {
                     var secondLevelTeam = await _physicianRepository.GetPhysicianTeam(firstLevelTeamMemeber.Id);
-                    if(secondLevelTeam.Any()){
-                        foreach (var secondLevelTeamMember in secondLevelTeam){
-                           patients.AddRange(_admittedPatients.Where(x => x.CaregiverId == secondLevelTeamMember.Id));
+                    if (secondLevelTeam.Any())
+                    {
+                        foreach (var secondLevelTeamMember in secondLevelTeam)
+                        {
+                            patients.AddRange(_admittedPatients.Where(x => x.CaregiverId == secondLevelTeamMember.Id));
                         }
                     }
                     patients.AddRange(_admittedPatients.Where(x => x.CaregiverId == firstLevelTeamMemeber.Id));

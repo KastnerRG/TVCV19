@@ -18,13 +18,13 @@ namespace TvCv19.Frontend.Controllers
 
         [HttpPost]
         public async Task<IActionResult> AddMedia(MediaMessage message) {
-             await _repository.AddMedia(message.ToMedia());
-            return Ok(new {message.FileName});
+            var id = await _repository.AddMedia(message.ToMedia());
+            return Ok(new {id});
         }
 
-        [HttpGet("{fileName}")]
-        public async Task<IActionResult> GetMedia(string fileName) {
-            var media = await _repository.GetMedia(fileName);
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetMedia(string id) {
+            var media = await _repository.GetMedia(id);
             return File(media.File, media.MimeType);
         }
     }

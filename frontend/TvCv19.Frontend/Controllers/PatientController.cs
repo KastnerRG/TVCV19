@@ -74,7 +74,7 @@ namespace TvCv19.Frontend.Controllers
         [HttpPost("discharge/{id}")]
         public async Task<IActionResult> DischargePatient(string id)
         {
-            var _id = _patientRepository.DischargePatient(id);
+            var _id = await _patientRepository.DischargePatient(id);
 
             await _roomClient.DeleteRoomAsync(_id);
 
