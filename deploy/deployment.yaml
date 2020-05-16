@@ -70,4 +70,3 @@ spec:
       app: medecc-web
     ports:
       - port: 80
-          
