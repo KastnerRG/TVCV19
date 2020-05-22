@@ -11,7 +11,7 @@ export class PatientDetailComponent implements OnInit {
 
   constructor(route: ActivatedRoute) {
     route.params.subscribe((p) => {
-      this.room = p['id]'];
+      this.room = p['id'];
     });
 
   }
