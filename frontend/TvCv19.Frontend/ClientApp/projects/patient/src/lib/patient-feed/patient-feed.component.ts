@@ -10,7 +10,7 @@ export class PatientFeedComponent implements OnInit {
   room: string;
   constructor(route: ActivatedRoute) {
     route.params.subscribe((p) => {
-      this.room = `patient-${p['id']}`;
+      this.room = p['id'];
     });
 
   }
