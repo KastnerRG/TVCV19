@@ -2,7 +2,6 @@ using System.Net.Http.Headers;
 using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -26,11 +25,11 @@ namespace TvCv19.Frontend
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddScoped<IPatientRepository, PocPatientRepository>();
-            services.AddScoped<IPhysicianRepository, PocPhyscianRepository>();
-            services.AddScoped<IMessageRepository, PocMessageRepository>();
-            services.AddScoped<IMediaRepository, PocMediaRepository>();
-            services.AddScoped<INotificationRepository, PocNotificationRepository>();
+            services.AddScoped<IPatientRepository, PatientRepository>();
+            services.AddScoped<IPhysicianRepository, PhyscianRepository>();
+            services.AddScoped<IMessageRepository, MessageRepository>();
+            services.AddScoped<IMediaRepository, MediaRepository>();
+            services.AddScoped<INotificationRepository, NotificationRepository>();
             services.AddControllersWithViews().AddNewtonsoftJson();
             services.AddSignalR();
             services.AddHttpClient<RoomClient>(c => c.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", DAILY_TOKEN));

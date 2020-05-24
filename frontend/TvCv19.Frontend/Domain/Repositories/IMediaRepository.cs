@@ -4,16 +4,18 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using TvCv19.Frontend.Controllers;
+using TvCv19.Frontend.Domain.Models;
 
 namespace TvCv19.Frontend.Domain.Repositories
 {
     public interface IMediaRepository
     {
         Task<string> AddMedia(Media message);
-        Task<Media> GetMedia(string fileName);
+        Task<Media> GetMedia(string id);
     }
 
-    public class Media {
+    public class Media : IDbEntity {
+        public string Id { get; set; }
         public string FileName { get; set; }
         public byte[] File { get; set; }
         public string MimeType { get; set; }
@@ -45,9 +47,9 @@ namespace TvCv19.Frontend.Domain.Repositories
             return Task.FromResult(media.FileName);
         }
 
-        public Task<Media> GetMedia(string fileName)
+        public Task<Media> GetMedia(string id)
         {
-            return Task.FromResult(_mediaList.FirstOrDefault(x => x.FileName == fileName));
+            return Task.FromResult(_mediaList.FirstOrDefault(x => x.FileName == id));
         }
     }
 }

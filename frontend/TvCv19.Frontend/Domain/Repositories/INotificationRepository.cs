@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TvCv19.Frontend.Domain.Models;
 using TvCv19.Frontend.Domain.Repositories;
 
 namespace TvCv19.Frontend.Domain
@@ -36,8 +37,8 @@ namespace TvCv19.Frontend.Domain
         }
     }
 
-    public class Notification {
-        public string Id { get; set; } = Guid.NewGuid().ToString();
+    public class Notification : IDbEntity {
+        public string Id { get; set; }
         public string SenderId { get; set; }
         public string RecieverId { get; set; }
         public string PatientId { get; set; }
