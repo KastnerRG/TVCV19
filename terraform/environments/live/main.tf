@@ -22,6 +22,6 @@ module "vpc" {
 
 module "eks" {
    private_subnets = ["${module.vpc.private_a_id}", "${module.vpc.private_b_id}"]
-   public_subnets = ["${module.vpc.public_a_id}"]
+   public_subnets = ["${module.vpc.public_a_id}", "${module.vpc.public_b_id}"]
    source = "../../modules/eks"
 }

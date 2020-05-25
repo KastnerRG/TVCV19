@@ -51,25 +51,6 @@ spec:
           periodSeconds: 5
           timeoutSeconds: 5
 ---
-kind: Service
-apiVersion: v1
-metadata:
-  name: medecc-web-service
-  annotations:
-    service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
-    # service.beta.kubernetes.io/aws-load-balancer-ssl-ports: https
-    # service.beta.kubernetes.io/aws-load-balancer-ssl-cert: {{SSL_CERT_ARN}}
-    service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: Name=medecc-web-service
-spec:
-  type: LoadBalancer
-  selector:
-    app: medecc-web
-  ports:
-  - protocol: TCP
-    port: 80
-    targetPort: 80
-    name: http
----
 apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:
@@ -80,3 +61,14 @@ spec:
     matchLabels:
       app: medecc-web
       colour: blue
+---
+  kind: Service
+  apiVersion: v1
+  metadata:
+    name: medecc-web-service
+  spec:
+    selector:
+      app: medecc-web
+    ports:
+      - port: 80
+          

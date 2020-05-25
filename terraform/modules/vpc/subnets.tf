@@ -14,6 +14,15 @@ resource "aws_subnet" "public_a" {
     "kubernetes.io/cluster/MedECC" = "shared"
   }
 }
+resource "aws_subnet" "public_b" {
+  vpc_id     = "${aws_vpc.main.id}"
+  cidr_block = "10.0.3.0/24"
+  availability_zone = "us-west-2b"
+  tags = {
+    Name = "public-b"
+    "kubernetes.io/cluster/MedECC" = "shared"
+  }
+}
 resource "aws_subnet" "private_a" {
   vpc_id     = "${aws_vpc.main.id}"
   cidr_block = "10.0.1.0/24"
