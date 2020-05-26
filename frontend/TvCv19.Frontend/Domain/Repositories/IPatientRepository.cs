@@ -19,7 +19,6 @@ namespace TvCv19.Frontend.Domain
     public class PocPatientRepository : IPatientRepository
     {
         private static List<Patient> _admittedPatients = new List<Patient>();
-        //private static int _count;
         private readonly IPhysicianRepository _physicianRepository;
 
         public PocPatientRepository(IPhysicianRepository physicianRepository)
@@ -29,7 +28,7 @@ namespace TvCv19.Frontend.Domain
 
         public Task<string> AdmitPatient(Patient patient)
         {
-            patient.Id = Guid.NewGuid().ToString("N").Substring(0,20);
+            patient.Id = Guid.NewGuid().ToString("N");
             _admittedPatients.Add(patient);
             
             return Task.FromResult(patient.Id);
