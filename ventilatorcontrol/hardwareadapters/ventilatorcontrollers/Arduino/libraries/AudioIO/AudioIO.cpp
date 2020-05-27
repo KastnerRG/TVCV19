@@ -40,23 +40,59 @@ void AudioIO::begin()
   //init bus state
   _mPolicyState.comMode = PCM;
   _mPolicyState.watchDogCtr = 0;
-  
-  //Set active object for ISR routing
-  //Initialize the I2C
+
+
+//SPI architecture 
+#ifdef ARDUINO_SAM_DUE
+  PMC->PMC_PCER0 |= PMC_PCER0_PID24;    // SPI0 power ON
+  PIOA->PIO_PDR = PIO_PDR_P25 | PIO_PDR_P26 | PIO_PDR_P27 | PIO_PDR_P28;
+  PIOA->PIO_ABSR &= ~(PIO_PA25A_SPI0_MISO | PIO_PA26A_SPI0_MOSI | PIO_PA27A_SPI0_SPCK | PIO_PA28A_SPI0_NPCS0);
+
+  // SPI Disable
+  SPI0->SPI_CR = SPI_CR_SPIDIS;// SPI is in slave mode after software reset !!
+  // Perform a SPI software reset twice, like SAM does.
+  SPI0->SPI_CR = SPI_CR_SWRST;
+  SPI0->SPI_CR = SPI_CR_SWRST;
+  delay(10);
+
+  REG_SPI0_MR = 0;   // Slave mode
+  // Receive Data Register Full Interrupt
+  SPI0->SPI_IER = SPI_IER_RDRF;
+  NVIC_EnableIRQ(SPI0_IRQn);
+
+  //Joke transfer SPI0->SPI_TDR = SPI0->SPI_TDR | (uint16_t) 0xcafe;
+  SPI0->SPI_CSR[0] = SPI_CSR_NCPHA|SPI_CSR_BITS_16_BIT; //16bit xfer mode
+
+  REG_SPI0_CR = 1;   // Enable SPI
+
+#else
+  //Set active object for ISR routing (SPI)
+  //Initialize the SPI
   pinMode(MISO, OUTPUT);    //Make SPI MISO an output
   SPCR |= _BV(SPE);         //Enable SPI
   SPCR |= _BV(SPIE);        //Enable interrupts
+#endif
   
   AudioIO::activeObject = this;
   
 }
 
-//Route TWI Slave ISR to this class
-//TODO: Would be much better to poll with ARTe loops for code approval.
+//Route SPI Slave ISR to this class
+//when a byte comes over on SPI, deal with it in ISR.
+
+//DUE ISR routing logic.
+#ifdef ARDUINO_SAM_DUE
+void SPI0_Handler()
+{
+    AudioIO::activeObject->SPIBusMaintainence();    
+}
+#else
+//UNO ISR routing logic.
 ISR (SPI_STC_vect)
 {
-    AudioIO::activeObject->SPIBusMaintainence();    //when a byte comes over on SPI, deal with it in ISR.
+    AudioIO::activeObject->SPIBusMaintainence();
 }
+#endif
 
 // Public Methods //////////////////////////////////////////////////////////////
 /*===========================================================================*\
@@ -326,9 +362,6 @@ void AudioIO::reportVentilatorKnobs()
             )
     {
         modem.write(*(ReportKnobs+i));
-#ifdef SERIALONLYDEBUG        
-        Serial.print(*(ReportKnobs+i));
-#endif
         i++;
         //Send out the struct data
         if(i==RRRT)
@@ -336,9 +369,6 @@ void AudioIO::reportVentilatorKnobs()
             j=0;
             while(rrrtstr[j])   //print out the ascii string for the register
             {
-#ifdef SERIALONLYDEBUG                  
-                Serial.print(rrrtstr[j]);
-#endif
                 modem.write(rrrtstr[j++]);
             }
             i+=2;
@@ -348,9 +378,6 @@ void AudioIO::reportVentilatorKnobs()
             j=0;
             while(tlvmstr[j])   //print out the ascii string for the register
             {
-#ifdef SERIALONLYDEBUG                  
-                Serial.print(tlvmstr[j]);
-#endif
                 modem.write(tlvmstr[j++]);
             }
             i+=2;
@@ -360,9 +387,6 @@ void AudioIO::reportVentilatorKnobs()
             j=0;
             while(mmipstr[j])   //print out the ascii string for the register
             {
-#ifdef SERIALONLYDEBUG                  
-                Serial.print(mmipstr[j]);
-#endif
                 modem.write(mmipstr[j++]);
             }
             i+=2;
@@ -372,9 +396,6 @@ void AudioIO::reportVentilatorKnobs()
             j=0;
             while(pkepstr[j])   //print out the ascii string for the register
             {
-#ifdef SERIALONLYDEBUG                  
-                Serial.print(pkepstr[j]);
-#endif
                 modem.write(pkepstr[j++]);
             }
             i+=2;
@@ -384,9 +405,6 @@ void AudioIO::reportVentilatorKnobs()
             j=0;
             while(itetstr[j])   //print out the ascii string for the register
             {
-#ifdef SERIALONLYDEBUG                  
-                Serial.print(itetstr[j]);
-#endif
                 modem.write(itetstr[j++]);
             }
             i+=2;
@@ -396,18 +414,12 @@ void AudioIO::reportVentilatorKnobs()
             j=0;
             while(fio2str[j])   //print out the ascii string for the register
             {
-#ifdef SERIALONLYDEBUG                  
-                Serial.print(fio2str[j]);
-#endif
                 modem.write(fio2str[j++]);
             }
             i+=2;
         }
 
     }
-#ifdef SERIALONLYDEBUG     
-    Serial.print('\n');
-#endif
     modem.write('\0');
 }
 
@@ -473,8 +485,8 @@ void AudioIO::audioBusMaintainance()
                 //Serial.write('\n');     
                 //{
                   //Respond with the same string 
-                  modem.write(busProtVer,LENBUSPROTVER);
-                  modem.write(busProtVer,LENBUSPROTVER);
+                  modem.write((const uint8_t*)busProtVer,LENBUSPROTVER);
+                  modem.write((const uint8_t*)busProtVer,LENBUSPROTVER);
                   modem.write('\0');
                   
                   Serial.write("IO\n");
@@ -643,6 +655,170 @@ bool AudioIO::InsertJSONInNumbrBuf(doublebuf& targetbuff, uint8_t& newdata)
 //      type A: write to the IO controller
 //      type B: read from the IO controller
 //      examples for type A and B using double buffers to support a second async audioIO bus are shown
+
+
+void AudioIO::SPIBusMaintainence()
+{  
+
+#ifdef ARDUINO_SAM_DUE  //DUE SPI ISR
+    //Deal with fact that this ISR works on 16 bit boundaries.
+    int16bytes OSPDR16,ISPDR16;
+    ISPDR16.intv = SPI0->SPI_RDR;  //Just for compilation later make this work well.
+    uint8_t SPDR;
+    
+    //do a loop. you can use this to support uno and due
+    for(int i=0; i<sizeof(uint16_t); i++)
+    {
+        SPDR = ISPDR16.bytes[i];
+    
+#endif
+        
+    //State machine to modify SPDR (a one byte SPI IO shift register).
+    //just start chucking out a generic JSON response. once you get to char 4, pick the correct
+    //output string to use and the right string buffers also. We use these as the IO ctrlr has to
+    //do at least some basic validation of the numbers both way (don't just tx and rx generic strings).
+    switch(_mSPIData.bufptr)
+    {
+        case 0-SPILATENCY:
+            if(SPDR=='{')
+            {
+                //begin to output a response and reset all front pointers we may access
+                _mSPIData.bufptr++;
+                //Reset control knob read buffers (need to start looking at the front again.
+                _mrrrt.rstfront();_mtlvm.rstfront();_mmmip.rstfront();_mpkep.rstfront();_mitet.rstfront();_mfio2.rstfront();
+                //Reset monitor readout buffers.
+                _mmtvn.rstback(); _mpkip.rstback(); _mpco2.rstback();
+            }
+            SPDR=' ';
+            break;
+        case 1-SPILATENCY:
+        case 2-SPILATENCY:
+        case 3-SPILATENCY:
+            _mSPIData.key.intv>>=8;      //TODO: profile this.
+            _mSPIData.key.byte3=SPDR;
+            _mSPIData.bufptr++;
+            break;
+        
+        //CHECK BUS MASTER SENT KEY AGAINST SUPPORTED COMMANDS, THEN MOVE TO PROCESS THEM IF WE UNDERSTAND THE KEY
+        case 4-SPILATENCY:
+            _mSPIData.key.intv>>=8;      //TODO: profile this.
+            _mSPIData.key.byte3=SPDR;   //now checking for a 4 char sequence. better than single letter.
+            
+
+            if(_mSPIData.key.intv == writeReadoutsKey)
+                {SPDR=ACK;_mSPIData.cmd = WRRDTS;_mSPIData.bufptr++;  break;}
+            
+            if(_mSPIData.key.intv== readKnobsKey)
+                {SPDR=ACK;_mSPIData.cmd = RDKNBS;_mSPIData.bufptr++;  break;}
+            
+            {SPDR='\0';_mSPIData = SPIdata();_mSPIData.bufptr=0-SPILATENCY;}   //default, reset the state machine if command was not understood.
+            break;
+        case BUFFERSIZE-SPILATENCY:
+            {SPDR='\0';_mSPIData = SPIdata();_mSPIData.bufptr=0-SPILATENCY;} //-ve number used so as to access strings after reading cmd character 4.
+            break;
+        
+        //PROCESS COMMANDS IF WE UNDERSTAND THE KEY
+        default:        
+            uint8_t din = SPDR;     //don't read from this register multiple times if you can avoid it.
+            
+            //bomb out if we read null.
+            if(din=='\0')
+                {
+                    SPDR='\0';_mSPIData = SPIdata();_mSPIData.bufptr=0-SPILATENCY;  //reset state machine
+                    drainReadoutBuffers();                                          //parse characters to native representations.
+                }
+            
+            //EXAMPLE OF HOW TO READ INTO THIS IOCONTROLLER'S DOUBLE BUFFER REGISTERS FROM A SENDING SPI MASTER
+            //deal with the command read in
+            if(_mSPIData.cmd== WRRDTS)
+            {                
+                switch(_mSPIData.key.intv)  //choose sensor to write data for based on JSON key.
+                {
+                    case MtVnkey:
+                        if(!InsertJSONInNumbrBuf(_mmtvn, din))  //Try to add to the tlvm buffer.
+                            _mSPIData.key.byte0=0;              //quit, its full.
+                        break;
+                        
+                    case PkIPkey:
+                        if(!InsertJSONInNumbrBuf(_mpkip, din))  //Try to add to the _mkip buffer.
+                            _mSPIData.key.byte0=0;              //quit, its full.
+                        break;
+                        
+                    case PCO2key:
+                        if(!InsertJSONInNumbrBuf(_mpco2, din))  //Try to add to the _mkip buffer.
+                            _mSPIData.key.byte0=0;              //quit, its full.
+                        break;
+                        
+                    default:                        //keep reading in the command.
+                        _mSPIData.key.intv>>=8;      //TODO: profile this.
+                        _mSPIData.key.byte3=SPDR;
+                                                    
+                }
+
+            }
+            //EXAMPLE OF HOW TO SEND OUT THIS IOCONTROLLER'S DOUBLE BUFFER REGISTERS TO A READING SPI MASTER
+            if(_mSPIData.cmd== RDKNBS)  //Flow to send control knob values to the bus master.
+            {
+                //return ventilator knob settings to the bus master.
+                switch(_mSPIData.bufptr)    //TODO: don't switch on a loop counter. you can switch on an int. then these don't need to be in order.
+                {
+                    case RRRT :
+                        SPDR=*(_mrrrt.front++);     //print the char in front buffer.                            
+                        if(*(_mrrrt.front)=='\0')   //if the next char is null, move along in the string.
+                            _mSPIData.bufptr+=2;    
+                        break;
+                    case TLVM :
+                        SPDR=*(_mtlvm.front++); //print the first char in front buffer.                                                                    
+                        if(*(_mtlvm.front)=='\0')
+                            _mSPIData.bufptr+=2;    
+                        break;
+                    case MMIP :
+                        SPDR=*(_mmmip.front++);
+                        if(*(_mmmip.front)=='\0')
+                            _mSPIData.bufptr+=2;    
+                        break;
+                    case PKEP :
+                        SPDR=*(_mpkep.front++);
+                        if(*(_mpkep.front)=='\0')
+                            _mSPIData.bufptr+=2;                                            
+                        break;
+                    case ITET :
+                        SPDR=*(_mitet.front++);
+                        if(*(_mitet.front)=='\0')
+                            _mSPIData.bufptr+=2;                                            
+                        break;                    
+                    case FIO2 :
+                        SPDR=*(_mfio2.front++);
+                        if(*(_mfio2.front)=='\0')
+                            _mSPIData.bufptr+=2;                                                                
+                        break;                    
+                    default:
+                        SPDR=*(ReportKnobs+_mSPIData.bufptr);
+                        if(*(ReportKnobs+_mSPIData.bufptr)=='\0')//end of command
+                            {_mSPIData.cmd=NOSPICMD;_mSPIData.bufptr=0-SPILATENCY;}
+                        else
+                            _mSPIData.bufptr++;
+                        
+                }
+            }
+            //Note, the SPIData.bufptr will not auto increment.
+                
+    }//End switch
+#ifdef ARDUINO_SAM_DUE  /*code path for due, which uses two 16bit SPI registers*/
+
+        OSPDR16.bytes[i] = SPDR;    //put SPDR byte into a 16bit shift register
+    }//End outer for
+    
+    SPI0->SPI_TDR = OSPDR16.intv;   //Transmit the SPI data to the bus master.
+    //DUE only end
+#else                  /*code path for uno, which uses one 8bit SPI register that has been set*/
+    }//End outer for
+#endif
+ 
+}
+
+/*
+
 void AudioIO::SPIBusMaintainence()
 {   
         
@@ -653,7 +829,6 @@ void AudioIO::SPIBusMaintainence()
     switch(_mSPIData.bufptr)
     {
         case 0-SPILATENCY:
-            SPDR=' ';
             if(SPDR=='{')
             {
                 //begin to output a response and reset all front pointers we may access
@@ -663,6 +838,7 @@ void AudioIO::SPIBusMaintainence()
                 //Reset monitor readout buffers.
                 _mmtvn.rstback(); _mpkip.rstback(); _mpco2.rstback();
             }
+            SPDR=' ';
             break;
         case 1-SPILATENCY:
         case 2-SPILATENCY:
@@ -780,5 +956,6 @@ void AudioIO::SPIBusMaintainence()
  
 }
 
+*/
 
 
