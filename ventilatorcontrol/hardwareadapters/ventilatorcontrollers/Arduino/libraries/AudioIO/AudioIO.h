@@ -183,10 +183,17 @@ typedef struct _audioIOdata
     _audioIOdata(){bufptr=0;available=false;}
 }audioIOdata;
 
-//SPI bus data structure
-union intbytes{
+//SPI bus data structures
+union int32bytes{
     uint32_t intv;
+    uint8_t bytes[4];
     struct{uint8_t byte0,byte1,byte2,byte3;};
+};
+
+union int16bytes{
+    uint16_t intv;
+    uint8_t bytes[2];
+    struct{uint8_t byte0,byte1;};
 };
 
 //Just keep pace with input
@@ -194,7 +201,7 @@ typedef struct _SPIdata
 {
     char bufptr;
     char cmd;
-    intbytes key;   //union lets arbitrary bytes be set.
+    int32bytes key;   //union lets arbitrary bytes be set.
     _SPIdata(){bufptr=0-SPILATENCY;cmd=NOSPICMD;key.intv=0;}
 }SPIdata;
 

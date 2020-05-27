@@ -5,8 +5,8 @@
 
 char const wj[] PROGMEM  = "{\"wr\":[{\"RrRt\":1986},{\"TlVm\":12},{\"MmIP\":1623},{\"PkEP\":14},{\"ITET\":12345},{\"FiO2\":0}]}"; //write knobs
 char const rj[] PROGMEM  = "{\"wk\":[{\"RrRt\":1},{\"TlVm\":12},{\"MmIP\":123},{\"PkEP\":1234},{\"ITET\":12345},{\"FiO2\":0}]}"; //read knobs.
-control c;
-readout r;
+//control c;
+//readout r;
 AudioIO io = AudioIO();
 
 //My simple Thread
@@ -46,7 +46,7 @@ void niceCallback()
 
 void setup() {
   Serial.begin(115200);
-  Serial.println("Booting with SPI support...");
+  Serial.println("Booting with SPI support... modified for Due\n");
   //delay(100);
   
   io.begin();
