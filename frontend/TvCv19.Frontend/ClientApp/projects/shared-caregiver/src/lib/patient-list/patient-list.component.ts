@@ -58,13 +58,13 @@ export class PatientListComponent implements OnInit {
     );
 
     this.chatService.messages
-      .subscribe(async (m: MessageModel) => {
-        if(m.physicianId !== this.id) {
-          this.addNotification({
-            link: `/caregiver/${this.id}/patient/${m.patientId}/chat`,
+      .subscribe((message: MessageModel) => {
+        if(message.physicianId !== this.id) {
+          this.notificationService.addNotification({
+            link: `/caregiver/${this.id}/patient/${message.patientId}/chat`,
             recieverId: this.id,
-            senderId: m.physicianId,
-            patientId: m.patientId
+            senderId: message.physicianId,
+            patientId: message.patientId
           })
         }
       });
@@ -74,15 +74,8 @@ export class PatientListComponent implements OnInit {
     if(patient.alert){
       await this.notificationService.delete(patient.notification.id).toPromise();
       this.toolbarService.deleteNotification.next(patient.notification);
-
     }
     this.router.navigateByUrl(patient.link);
-  }
-
-  private addNotification(notification: Notification) {
-    if (notification) {
-      this.notificationService.addNotification(notification);
-    }
   }
 
   private setToolbar() {
