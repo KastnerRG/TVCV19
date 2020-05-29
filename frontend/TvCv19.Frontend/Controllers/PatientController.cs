@@ -33,14 +33,14 @@ namespace TvCv19.Frontend.Controllers
         {
             patientModel.Id = await _patientRepository.AdmitPatient(patientModel);
 
-            // Cannot use a GUID as room name.
+            // Cannot use a GUID as room name - domain + GUID is too many characters for daily.co
             try
             {
                using (var roomClient = new RoomClient(DAILY_TOKEN))
                {
                  await roomClient.CreateRoomAsync(new Room
                  {
-                   Name = $"patient-{patientModel.Id}"
+                  Name = $"{patientModel.Id}"
                  });
                }
             }
