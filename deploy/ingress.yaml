@@ -1,0 +1,20 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: medecc-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  tls:
+  - hosts:
+    - www.tvcv19.com
+  rules:
+  - host: www.tvcv19.com
+    http:
+      paths:
+        - path: /
+          backend:
+            serviceName: medecc-web-service
+            servicePort: 80
