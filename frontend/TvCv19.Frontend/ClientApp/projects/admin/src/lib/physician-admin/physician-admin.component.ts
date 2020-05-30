@@ -11,9 +11,13 @@ import { PhysicianModel, PhysicianService, HierarchyLevel } from 'projects/share
 export class PhysicianAdminComponent implements OnInit {
   caregiverRegistrationForm;
   physicians: Array<PhysicianModel> = []
+  commanders: Array<PhysicianModel> = []
   constructor(private formBuilder: FormBuilder, private service: PhysicianService, private router: Router) {
     
-    service.getPhysicians().subscribe(physicians => this.physicians = physicians.filter(p => p.hierarchy === HierarchyLevel.SecondLine));
+    service.getPhysicians().subscribe(physicians => {
+      this.physicians = physicians.filter(p => p.hierarchy === HierarchyLevel.SecondLine)
+      this.commanders = physicians.filter(p => p.hierarchy === HierarchyLevel.Commander)
+    });
     
     this.caregiverRegistrationForm = this.formBuilder.group({
       name: '',
