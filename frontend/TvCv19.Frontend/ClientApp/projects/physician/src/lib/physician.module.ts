@@ -17,13 +17,15 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { PhysicianRootComponent } from './physician-root/physician-root.component';
 import { PatientDetailComponent, CarerRouteResolverService, PhysicianHierarchyComponent, SharedCaregiverModule, getCaregiverRoute } from 'projects/shared-caregiver/src/public-api';
+import { CommanderRootComponent } from './commander-root/commander-root.component';
 
 @NgModule({
   declarations: [
     PhysicianComponent,
     RootComponent,
     PatientNavigationComponent,
-    PhysicianRootComponent
+    PhysicianRootComponent,
+    CommanderRootComponent
   ],
   imports: [
     RouterModule.forChild(getCaregiverRoute(RootComponent, PhysicianRootComponent)),

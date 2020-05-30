@@ -4,7 +4,7 @@ import { PatientComponent } from 'projects/patient/src/public-api';
 import { RootComponent } from './root/root.component';
 import { AdminComponent } from 'projects/admin/src/public-api';
 import { BedsideComponent } from 'projects/bedside/src/public-api';
-import { PhysicianComponent } from 'projects/physician/src/public-api';
+import { PhysicianComponent, CommanderRootComponent } from 'projects/physician/src/public-api';
 
 const routes: Routes = [
   { path: '', component: RootComponent },
@@ -12,6 +12,7 @@ const routes: Routes = [
   { path: 'caregiver', component: BedsideComponent, loadChildren: 'projects/bedside/src/public-api#BedsideModule'  },
   { path: 'patient', component: PatientComponent, loadChildren: 'projects/patient/src/public-api#PatientModule' },
   { path: 'physician', component: PhysicianComponent, loadChildren: 'projects/physician/src/public-api#PhysicianModule' },
+  { path: 'commander', component: CommanderRootComponent },
 ];
 
 @NgModule({

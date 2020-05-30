@@ -12,7 +12,7 @@ export class RootComponent implements OnInit {
 
   constructor(physicianService: PhysicianService) {
     physicianService.getPhysicians()
-      .pipe(map(models => models.filter(p => p.hierarchy === HierarchyLevel.SecondLine || p.hierarchy == HierarchyLevel.Commander)))
+      .pipe(map(models => models.filter(p => p.hierarchy === HierarchyLevel.SecondLine)))
       .subscribe(p => this.physicians = p);
   }
 

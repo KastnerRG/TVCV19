@@ -28,6 +28,12 @@
           <option *ngFor="let physician of physicians;" value="{{physician.id}}" >{{physician.name}}</option>
         </select>
     </mat-form-field>
+    <mat-form-field fxFlexAlign="center" *ngIf="commanders && caregiverRegistrationForm.get('hierarchy').value === 'secondLine'">
+        <mat-label>Supervisor</mat-label>
+        <select matNativeControl formControlName="supervisorId" >
+          <option *ngFor="let physician of commanders;" value="{{physician.id}}" >{{physician.name}}</option>
+        </select>
+    </mat-form-field>
     <div mat-dialog-actions align="end">
         <button color="primary" mat-raised-button [disabled]="!caregiverRegistrationForm.valid" type="submit">Next</button>
     </div>
