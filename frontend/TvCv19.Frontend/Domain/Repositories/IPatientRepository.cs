@@ -53,12 +53,18 @@ namespace TvCv19.Frontend.Domain
         public async Task<IEnumerable<Patient>> GetPatientsByPhysician(string id)
         {
             var patients = new List<Patient>();
-            var careTeam =  await _physicianRepository.GetPhysicianTeam(id);
-            if (careTeam.Any())
+            var firstLevelTeam =  await _physicianRepository.GetPhysicianTeam(id);
+            if (firstLevelTeam.Any())
             {
-                foreach (var item in careTeam)
+                foreach (var firstLevelTeamMemeber in firstLevelTeam)
                 {
-                    patients.AddRange(_admittedPatients.Where(x => x.CaregiverId == item.Id));
+                    var secondLevelTeam = await _physicianRepository.GetPhysicianTeam(firstLevelTeamMemeber.Id);
+                    if(secondLevelTeam.Any()){
+                        foreach (var secondLevelTeamMember in secondLevelTeam){
+                           patients.AddRange(_admittedPatients.Where(x => x.CaregiverId == secondLevelTeamMember.Id));
+                        }
+                    }
+                    patients.AddRange(_admittedPatients.Where(x => x.CaregiverId == firstLevelTeamMemeber.Id));
                 }
             }
             patients.AddRange(_admittedPatients.Where(x => x.CaregiverId == id));
