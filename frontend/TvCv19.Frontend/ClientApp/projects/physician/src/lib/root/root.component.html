@@ -1,5 +1,12 @@
 <mat-list>
+  <div class="content">
     <mat-list-item *ngFor="let physician of physicians">
-        <a mat-raised-button color="primary" routerLink="{{physician.id}}/patients">{{physician.name}}</a>
+      <a
+        mat-raised-button
+        color="primary"
+        routerLink="{{ physician.id }}/patients"
+        >{{ physician.name }}</a
+      >
     </mat-list-item>
+  </div>
 </mat-list>
