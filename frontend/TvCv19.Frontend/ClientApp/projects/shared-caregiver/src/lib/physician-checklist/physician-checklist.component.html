@@ -1,0 +1,34 @@
+<div class="placeholder"></div>
+<mat-list class="checklist">
+  <ng-container *ngFor="let item of checkList">
+    <mat-list-item class="checklist__item" *ngIf="!item.deleted">
+      <mat-checkbox
+        class="checklist__item__checkbox"
+        [(ngModel)]="item.checked"
+      >
+        <p class="checklist__item__checkbox__label">
+          {{ item.id }}.{{ item.name }}
+        </p>
+        <button
+          class="checklist__item__checkbox__close"
+          mat-icon-button
+          (click)="itemRemoveClick(item)"
+        >
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-checkbox>
+    </mat-list-item>
+  </ng-container>
+</mat-list>
+
+<p class="uncheckedWarnText" *ngIf="uncheckedWarnText">
+  Please check all items before proceeding
+</p>
+<button
+  mat-raised-button
+  color="primary"
+  class="submitBtn"
+  (click)="onSubmit()"
+>
+  Submit
+</button>
