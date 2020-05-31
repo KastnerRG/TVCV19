@@ -60,7 +60,6 @@ spec:
   selector:
     matchLabels:
       app: medecc-web
-      colour: blue
 ---
   kind: Service
   apiVersion: v1
