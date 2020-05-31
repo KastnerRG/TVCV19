@@ -1,22 +1,23 @@
 mat-toolbar {
-    margin-top: 40px;
-    mat-toolbar-row {
-      height: 33px;
-      font-size: 30px;
+  mat-toolbar-row {
+    height: 33px;
+    font-size: 30px;
+    &:first-of-type {
+      margin-top: 60px;
     }
   }
-  
-  form {
-      margin-top: 50px;
-    
-      mat-form-field {
-        width: 90vw;
-        background-color: white;
-      
-      }
-    
-      button {
-        margin: 30px 10px 0 0;
-        width: 90px;
-      }
-    }
+}
+
+form {
+  margin-top: 50px;
+
+  mat-form-field {
+    width: 90vw;
+    background-color: white;
+  }
+
+  button {
+    margin: 30px 10px 0 0;
+    width: 90px;
+  }
+}
