@@ -11,6 +11,7 @@ import { Router } from '@angular/router';
 })
 export class AppToolbarComponent implements OnInit {
   data: ToolBarData;
+  
   notifications: Array<Notification> = [];
   constructor(private toolbarService: ToolbarService, private location: Location, private router: Router, private notificationService: NotificationService) {
     this.toolbarService.toolBarData.subscribe((d) => {
@@ -20,7 +21,7 @@ export class AppToolbarComponent implements OnInit {
     this.toolbarService.deleteNotification.subscribe(notification => this.removeNotification(notification))
     
     notificationService.notifications.subscribe(async notification => {
-      if(notification) {
+      if(notification && notification.recieverId === this.data.notificationReceiverId) {
         // dont add a notification if in the same page as link
         //dont add any notifications with the same link twice  
         if(this.location.path() !== notification.link && this.notifications.filter(x => x.link === notification.link).length === 0) {
@@ -31,10 +32,15 @@ export class AppToolbarComponent implements OnInit {
       }
     })
   }
+  
+  homeClick() {
+    this.toolbarService.setToolbarData({ title: ''})
+  }
 
   ngOnInit(): void { }
 
   back() {
+    this.toolbarService.setToolbarData({title: ''})
     this.location.back();
   }
 

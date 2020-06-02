@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Threading.Tasks;
+using TvCv19.Frontend.Domain;
 using TvCv19.Frontend.Domain.Models;
 using TvCv19.Frontend.Domain.Repositories;
 
@@ -9,11 +10,13 @@ namespace TvCv19.Frontend.Hubs
     public class ChatHub : Hub
     {
         private readonly IPhysicianRepository _physicianRepository;
+        private readonly IPatientRepository _patientRepository;
         private readonly IMessageRepository _messageRepository;
 
-        public ChatHub(IPhysicianRepository physicianRepository, IMessageRepository messageRepository)
+        public ChatHub(IPhysicianRepository physicianRepository, IPatientRepository patientRepository, IMessageRepository messageRepository)
         {
             _physicianRepository = physicianRepository;
+            _patientRepository = patientRepository;
             _messageRepository = messageRepository;
         }
         public Task SubscribeAsync(string patientId) =>
@@ -26,7 +29,9 @@ namespace TvCv19.Frontend.Hubs
         {
             var date = DateTime.Now;
             var physician = await _physicianRepository.GetPhysicianAsync(physicianId);
-            Message dbMessage = new Message(patientId, message, physician.Name, date, isCareInstruction, isAudio, isImage, stats);
+            //todo figure out how commander fits in
+            var recieverId = physician.Hierarchy == Hierarchy.FirstLine ? physician.SupervisorId : (await _patientRepository.GetPatient(patientId)).CaregiverId;
+            Message dbMessage = new Message(patientId, message, physician, date, isCareInstruction, isAudio, isImage, stats, recieverId);
             var id = await _messageRepository.AddMessage(dbMessage);
             await Clients.Group(patientId).SendAsync("ReceiveMessage", dbMessage.ToMessageModel(id, physicianId));
         }
@@ -34,26 +39,30 @@ namespace TvCv19.Frontend.Hubs
 
     public static class MessageExtensions {
         public static MessageModel ToMessageModel(this Message m, string id, string physicianId) {
-            return new MessageModel(id, m.GroupId, physicianId, m.IsImage, m.IsCareInstruction, m.IsAudio, m.Sender, m.Body, m.Stats, m.Date);
+            
+            return new MessageModel(m, id, physicianId);
         }
     }
 
     public class MessageModel {
-        public MessageModel(string id, string patientId, string physicianId, bool isImage, bool isCareInstruction, bool isAudio, string name, string message, Stats stats, DateTime date)
+        public MessageModel(Message m, string id, string physicianId)
         {
             Id = id;
-            PatientId = patientId;
+            PatientId = m.GroupId;
             PhysicianId = physicianId;
-            IsImage = isImage;
-            IsCareInstruction = isCareInstruction;
-            IsAudio = isAudio;
-            Name = name;
-            Message = message;
-            Stats = stats;
-            Date = date;
+            IsImage = m.IsImage;
+            IsCareInstruction = m.IsCareInstruction;
+            IsAudio = m.IsAudio;
+            Name = m.Sender;
+            Message = m.Body;
+            Stats = m.Stats;
+            Date = m.Date;
+            ReceiverId = m.ReceiverId;
         }
+   
         public string PatientId { get; set; }
         public string PhysicianId { get; }
+        public string ReceiverId { get; set; }
         public string Id { get; set; }
         public bool IsImage { get; set; }
         public bool IsCareInstruction { get; set; }

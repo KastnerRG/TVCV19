@@ -10,6 +10,6 @@ namespace TvCv19.Frontend.Domain
         public Hierarchy Hierarchy { get; set; }
         public string SupervisorId { get; set; }
     }
-    public enum Hierarchy { FirstLine, SecondLine, Commander }
+    public enum Hierarchy { FirstLine = 1, SecondLine = 2, Commander = 3 }
 
 }

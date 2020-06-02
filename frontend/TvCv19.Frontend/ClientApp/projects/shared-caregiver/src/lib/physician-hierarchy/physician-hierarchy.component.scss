@@ -2,15 +2,24 @@ mat-grid-tile {
     background: lightblue;
 }
 
-mat-form-field, button {
+mat-form-field, .mat-primary {
     width: 100%;
     margin: 10px 0;
 }
-
-mat-toolbar {
-    margin-bottom: 20px;
-}
-
-.supervisor {
-    margin-bottom: 10px;
+.content {
+    padding: 0 10px;
+    mat-toolbar {
+        margin-bottom: 20px;
+    }
+    
+    .supervisor {
+        position: absolute;
+        top: 70px;
+        margin-bottom: 10px;
+    }
+    
+    .mat-tree {
+        position: absolute;
+        top: 60px;
+    }
 }

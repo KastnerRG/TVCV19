@@ -1,6 +1,6 @@
 <mat-toolbar color="primary">
   <mat-toolbar-row>
-    <button *ngIf="data.menu" mat-icon-button>
+    <button *ngIf="data.menu" routerLink="/" (click)="homeClick()" mat-icon-button>
       <mat-icon>menu</mat-icon>
     </button>
     <button (click)="back()" *ngIf="data.back" mat-icon-button>

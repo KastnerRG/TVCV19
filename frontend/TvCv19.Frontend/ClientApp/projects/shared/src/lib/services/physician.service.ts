@@ -4,6 +4,7 @@ import { HttpHeaders } from '@angular/common/http';
 import { PhysicianModel } from '../models/physician.model';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { CarerNode } from 'projects/shared-caregiver/src/lib/physician-hierarchy/hierarchy.component';
 
 @Injectable({
   providedIn: 'root',
@@ -24,6 +25,16 @@ export class PhysicianService {
   getPhysicians(): Observable<Array<PhysicianModel>> {
     return this.http
       .get<Array<PhysicianModel>>('/api/physician', {
+        headers: new HttpHeaders({
+          Accept: 'application/json',
+        }),
+      })
+      .pipe(catchError(this.handleError));
+  }
+  ß
+  getHierarchy(id: string): Observable<CarerNode> {
+    return this.http
+      .get<CarerNode>(`/api/physician/hierarchy/${id}`, {
         headers: new HttpHeaders({
           Accept: 'application/json',
         }),
