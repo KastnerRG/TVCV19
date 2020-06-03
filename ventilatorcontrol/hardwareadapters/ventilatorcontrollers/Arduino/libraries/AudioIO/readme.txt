@@ -1,9 +1,3 @@
-#To rename files:
-find . -name 'Test*' -print0 | xargs -0 -n1 bash -c 'mv "$0" "${0/Test/AudioIO}"'
-
-This is an example C++ library for Arduino 0004+, based on one created by 
-Nicholas Zambetti for Wiring 0006+
-
 Installation
 --------------------------------------------------------------------------------
 

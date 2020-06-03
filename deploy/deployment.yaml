@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: medecc
+  labels:
+    app: medecc-web
+spec:
+  replicas: 1
+  revisionHistoryLimit: 5
+  progressDeadlineSeconds: 120
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 2
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: medecc-web
+  template:
+    metadata:
+      labels:
+        app: medecc-web
+    spec:
+      containers:
+      - name: medecc-web
+        image: 858209110661.dkr.ecr.us-west-2.amazonaws.com/medecc:master-1.0.1
+        ports:
+        - containerPort: 80
+        env:
+        - name: ASPNETCORE_ENVIRONMENT
+          value: "Production"
+        resources:
+          requests:
+            memory: "50Mi"
+            cpu: "0.1"
+          limits:
+            memory: "500Mi"
+            cpu: "1"
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 5
+---
+apiVersion: policy/v1beta1
+kind: PodDisruptionBudget
+metadata:
+  name: medecc-web-pdb
+spec:
+  maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: medecc-web
+---
+  kind: Service
+  apiVersion: v1
+  metadata:
+    name: medecc-web-service
+  spec:
+    selector:
+      app: medecc-web
+    ports:
+      - port: 80
+          

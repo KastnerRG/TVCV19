@@ -22,6 +22,11 @@
 
 //Constant control strings. Meet specification but do not require complex logic.
 
+//JSON command keys. You could define one for whatever command you wish.
+#define readKnobsKey                    0x226b7222
+#define writeReadoutsKey                0x22737722
+#define writeSensorsKey                 0x22737722
+
 //Ventilator Sensor Names
 //Control Knobs (CONTROL REGISTERS)
 #define RespiratoryRate                 "RrRt"
@@ -97,9 +102,18 @@ const char* const ReportKnobs PROGMEM =                 //Report back all contro
 {\"" PeakEndExpiratoryPressure "\":%i},\     
 {\"" InspiratoryTimeExpiratoryTime "\":%i},\     
 {\"" FiO2 "\":%i}\
-]}";                                            //94 chars (including null)
+]}\0";                                            //(74??) 94 chars (including null)
 
+//SPI IO Policy related
+#define NOSPICMD 0
+#define RDKNBS  NOSPICMD + 1
+#define WRRDTS  RDKNBS   + 1
+#define WRSNSRS WRRDTS   + 1
 
+/*use as an offest in any logic looking at commands from the master and responding with data*/
+#define SPILATENCY 6 
+
+//Audio IO Policy related
 //enum busMode{PCM=0,Handshake,IO};
 #define PCM 0
 #define Handshake PCM +1
@@ -140,14 +154,56 @@ typedef struct _STATUS
     _STATUS(){mtvn=0; pkip=0; pco2=0;}
 }readout;
 
-//Global data buffer.
-typedef struct _INCOMINGDATA
+//itoa short double buffer type. READ ONLY in an ISR.
+typedef struct _DOUBLEBUF
+{
+    char intbuf[16];    //store two copies of an itoa buffer TODO: better to just use two buffers and swap pointers?
+    char* front;
+    char* back;   //read from front, write to back.
+    void flip()         //flip buffer once you finish writing to the back.
+    {   
+        if(front<back) {back=intbuf;  front=intbuf+8; back[0]='\0';} 
+        else           {front=intbuf; back=intbuf+8;  back[0]='\0';}
+    }
+    //reset pointers when you have finished reading/writing the buffer.
+    void rstfront(){front<back ? front=intbuf : front=intbuf+8;}
+    void rstback(){front<back ? back=intbuf+8 : back=intbuf;}
+    //get the head character offset in the back buffer.
+    uint8_t backhead(){return( ((uint8_t)(back-intbuf)) &0x07  );}
+    _DOUBLEBUF(){front=intbuf;back=intbuf+8;memset(intbuf,0,16);}//front[0]='\0';back[0]='\0';}
+}doublebuf;             //TODO: Don't try to overfill this
+
+//AudioIO bus data structure.
+//keep incoming command buffered for processing at the end
+typedef struct _audioIOdata
 {
     char buffer_cmd[BUFFERSIZE];
     char bufptr;
     bool available;               //Set when new data is found.
-    _INCOMINGDATA(){bufptr=0;available=false;}
-}incomingdata;
+    _audioIOdata(){bufptr=0;available=false;}
+}audioIOdata;
+
+//SPI bus data structures
+union int32bytes{
+    uint32_t intv;
+    uint8_t bytes[4];
+    struct{uint8_t byte0,byte1,byte2,byte3;};
+};
+
+union int16bytes{
+    uint16_t intv;
+    uint8_t bytes[2];
+    struct{uint8_t byte0,byte1;};
+};
+
+//Just keep pace with input
+typedef struct _SPIdata
+{
+    char bufptr;
+    char cmd;
+    int32bytes key;   //union lets arbitrary bytes be set.
+    _SPIdata(){bufptr=0-SPILATENCY;cmd=NOSPICMD;key.intv=0;}
+}SPIdata;
 
 /*===========================================================================*\
 |				VENTILATOR CONTROL API FUNCTION SIGNATURES	  				  |
@@ -160,6 +216,7 @@ class AudioIO
   // user-accessible "public" interface
   public:
     AudioIO();
+    ~AudioIO();
     void begin();           //initialize comm channel
     
     //USER API METHODS. USE THESE TO READ AND WRITE REGISTERS VISIBLE TO THE REMOTE CONTROL
@@ -173,16 +230,23 @@ class AudioIO
     
     //INTERNAL LIBRARY METHODS
     //TODO: Make private and have ARTe loop start up in the     
-    void parseCommand();        //check _mMasterData and call the appropriate private control function
+    void parseCommand();        //check _mMODEMData and call the appropriate private control function
     
-    //TODO: Make private, accessed by the bus master only.
-    void reportVentilatorData();    //Send ventilator data to the bus master
-    void reportVentilatorKnobs();   //Set control register values using data from bus master
-    void setVentilatorKnobs();      //
+    //TODO: Make private, accessed by the Audio bus master only.
+    //void reportVentilatorData();    //Send ventilator data to the bus master
+    //void reportVentilatorKnobs();   //Set control register values using data from bus master
+    //void setVentilatorKnobs();      //
     
-    incomingdata    _mMasterData;   //Data from the bus master
+    audioIOdata    _mMODEMData;    //Data buffer from the audio MODEM bus master
+    //Not useful I think outgoingdata    _mSPIData;      //Data buffer from the 
 
     void pollBusStatus();          //If handshaking needs doing, do it. If its done, get data.    
+    
+    //For ISR routing (Arduino specific work around?)
+    static AudioIO *activeObject;
+    void SPIBusMaintainence();     //monitor and respond to SPI bus commands
+    
+    
   // library-accessible "private" interface
   private:
 
@@ -190,18 +254,30 @@ class AudioIO
     
     Thread _mThread;                //Use for scheduling bus maintainence
     
-    //void nonNullShortitoa(short s, char* a);   //very basic itoa that does not null terminate, instead has leading 0's
-    
+    //AUDIO IO MEMBERS
     SoftModem       modem;         //Used for IO
-    //incomingdata    _mMasterData;  //Data from the bus master
     policy          _mPolicyState; //bus policy state
     control         _mControlRegs; //appropriately mapped control registers
 	readout         _mreadoutRegs;  //appropriately mapped readout registers. Read to get ventilator info
 
-//	void reportVentilatorData();      //Send ventilator data to the bus master
-//	void reportVentilatorKnobs();    //Report control register values to bus master
-//    void setVentilatorKnobs();      //Set control register values using data from bus master
-	void AudioIO::busMaintainance();
+	void reportVentilatorData();      //Send ventilator data to the bus master
+	void reportVentilatorKnobs();    //Report control register values to bus master
+    void setVentilatorKnobs();      //Set control register values using data from bus master
+	void audioBusMaintainance();   //Monitor and respond to audio MODEM commands
+	
+	//SPI IO MEMBERS
+	//unsigned char SPIcmd;
+	SPIdata _mSPIData;
+	//CONTROL
+	//Data buffers
+    //Double buffers are needed for asynchronous transfer. The IO controller is a slave to display and ventilator which use two asynchronous busses.
+    doublebuf _mrrrt, _mtlvm, _mmmip, _mpkep, _mitet, _mfio2; //character double buffers for JSON values of ventilator knobs.
+    doublebuf _mmtvn, _mpkip, _mpco2;  //character double buffers for JSON values of ventilator readouts.
+	
+	//Utility
+	inline bool InsertJSONInNumbrBuf(doublebuf& targetbuff, uint8_t& newdata);    //stuff JSON number into a buffer.
+	inline void drainReadoutBuffers();      //run itoa and populate class members used in audio bus.
+	inline void fillControlKnobBuffers();   //TODO: refresh SPI command buffers if they have been set by the audioIO bus.
 };
 
 #endif

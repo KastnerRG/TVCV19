@@ -10,10 +10,18 @@
 #include "HardwareSerial.h"
 
 
+AudioIO *AudioIO::activeObject = 0; 
+
+
 // Constructor /////////////////////////////////////////////////////////////////
 // Function that handles the creation and setup of instances
 
-AudioIO::AudioIO(){}	//Don't do anything. follow the pattern of SoftModem();
+AudioIO::AudioIO(){}
+
+AudioIO::~AudioIO()
+{
+    AudioIO::activeObject = 0; 
+}
 
 void AudioIO::begin()
 {
@@ -32,10 +40,59 @@ void AudioIO::begin()
   //init bus state
   _mPolicyState.comMode = PCM;
   _mPolicyState.watchDogCtr = 0;
+
+
+//SPI architecture 
+#ifdef ARDUINO_SAM_DUE
+  PMC->PMC_PCER0 |= PMC_PCER0_PID24;    // SPI0 power ON
+  PIOA->PIO_PDR = PIO_PDR_P25 | PIO_PDR_P26 | PIO_PDR_P27 | PIO_PDR_P28;
+  PIOA->PIO_ABSR &= ~(PIO_PA25A_SPI0_MISO | PIO_PA26A_SPI0_MOSI | PIO_PA27A_SPI0_SPCK | PIO_PA28A_SPI0_NPCS0);
+
+  // SPI Disable
+  SPI0->SPI_CR = SPI_CR_SPIDIS;// SPI is in slave mode after software reset !!
+  // Perform a SPI software reset twice, like SAM does.
+  SPI0->SPI_CR = SPI_CR_SWRST;
+  SPI0->SPI_CR = SPI_CR_SWRST;
+  delay(10);
+
+  REG_SPI0_MR = 0;   // Slave mode
+  // Receive Data Register Full Interrupt
+  SPI0->SPI_IER = SPI_IER_RDRF;
+  NVIC_EnableIRQ(SPI0_IRQn);
+
+  //Joke transfer SPI0->SPI_TDR = SPI0->SPI_TDR | (uint16_t) 0xcafe;
+  SPI0->SPI_CSR[0] = SPI_CSR_NCPHA|SPI_CSR_BITS_16_BIT; //16bit xfer mode
+
+  REG_SPI0_CR = 1;   // Enable SPI
+
+#else
+  //Set active object for ISR routing (SPI)
+  //Initialize the SPI
+  pinMode(MISO, OUTPUT);    //Make SPI MISO an output
+  SPCR |= _BV(SPE);         //Enable SPI
+  SPCR |= _BV(SPIE);        //Enable interrupts
+#endif
   
-  //_mThread.onRun(maintainAudioBus);  //Maintain the Bus status. 
-  //_mThread.setInterval(WATCHDOGPERIOD);//Task should be called as watchdog is about to time out.
+  AudioIO::activeObject = this;
+  
 }
+
+//Route SPI Slave ISR to this class
+//when a byte comes over on SPI, deal with it in ISR.
+
+//DUE ISR routing logic.
+#ifdef ARDUINO_SAM_DUE
+void SPI0_Handler()
+{
+    AudioIO::activeObject->SPIBusMaintainence();    
+}
+#else
+//UNO ISR routing logic.
+ISR (SPI_STC_vect)
+{
+    AudioIO::activeObject->SPIBusMaintainence();
+}
+#endif
 
 // Public Methods //////////////////////////////////////////////////////////////
 /*===========================================================================*\
@@ -107,20 +164,20 @@ void AudioIO::setVentilatorReadings(readout* readouts)
 }
 
 
-//Function to parse a command that lives in the _mMasterData member
+//Function to parse a command that lives in the _mMODEMData member
 //TODO make this private and make it only exist in a library instantiated loop.
 void AudioIO::parseCommand()
 {
-    char cmd = *(_mMasterData.buffer_cmd+3);
+    char cmd = *(_mMODEMData.buffer_cmd+3);
     //Serial.println("Parsing");
 
-    if(_mMasterData.available)
+    if(_mMODEMData.available)
     {
         //Clear command regardless.
-        _mMasterData.available = false;
+        _mMODEMData.available = false;
         
         //Process command. Very basic. Only consider the 4th character in the buffer.
-        switch(_mMasterData.buffer_cmd[3])
+        switch(_mMODEMData.buffer_cmd[3])
         {
             case 'd':   //Assume master wants to read ventilator data (rd) string
                 reportVentilatorData();
@@ -138,7 +195,7 @@ void AudioIO::parseCommand()
                 
             default: 
                 Serial.println("Bad CMD!:");//We don't handle this command (maybe we should)
-                Serial.println(_mMasterData.buffer_cmd);
+                Serial.println(_mMODEMData.buffer_cmd);
                 break;
         }
     }
@@ -152,7 +209,6 @@ void AudioIO::reportVentilatorData()
 {
     char val[8];    //will be the ascii string of ventilator control variables
         
-    //DEBUG ONLY, WRITE A GENERIC STRING TO THE UART
     //Return the internal copies of class struct
     unsigned char j,i = 0;
     
@@ -216,51 +272,51 @@ void AudioIO::setVentilatorKnobs()
     //pull data out of the buffer at specific offsets, convert to ascii and be done with it.
     //Start at first known offset.
     short i = FIRSTJSONVAL-6;
-    int key;
+    //int key;
 
     while(i<BUFFERSIZE)                         //Go through entire JSON string to try and pull out the data
     {
-        switch(*((long*)(_mMasterData.buffer_cmd+i)))
+        switch(*((long*)(_mMODEMData.buffer_cmd+i)))
         {
             case RrRtkey: //"reverse(RrRt)";
                 i+=6;
-                _mControlRegs.rrrt = atoi(_mMasterData.buffer_cmd+i);   //will work. Need to keep incrementing i until you get '}'
-                while(_mMasterData.buffer_cmd[i++]!='}' && i<BUFFERSIZE){}     //Just need to increment i until you get }
+                _mControlRegs.rrrt = atoi(_mMODEMData.buffer_cmd+i);   //will work. Need to keep incrementing i until you get '}'
+                while(_mMODEMData.buffer_cmd[i++]!='}' && i<BUFFERSIZE){}     //Just need to increment i until you get }
                 i+=3;
                 break;
                 
             case TlVmkey: //"TlVm"
                 i+=6;
-                _mControlRegs.tlvm = atoi(_mMasterData.buffer_cmd+i);
-                while(_mMasterData.buffer_cmd[i++]!='}' && i<BUFFERSIZE){}
+                _mControlRegs.tlvm = atoi(_mMODEMData.buffer_cmd+i);
+                while(_mMODEMData.buffer_cmd[i++]!='}' && i<BUFFERSIZE){}
                 i+=3;
                 break;
                 
             case MmIPkey: //"MmIP"
                 i+=6;
-                _mControlRegs.mmip = atoi(_mMasterData.buffer_cmd+i);
-                while(_mMasterData.buffer_cmd[i++]!='}' && i<BUFFERSIZE){}
+                _mControlRegs.mmip = atoi(_mMODEMData.buffer_cmd+i);
+                while(_mMODEMData.buffer_cmd[i++]!='}' && i<BUFFERSIZE){}
                 i+=3;
                 break;
                 
             case PkEPkey: //"PkEP"
                 i+=6;
-                _mControlRegs.pkep = atoi(_mMasterData.buffer_cmd+i);
-                while(_mMasterData.buffer_cmd[i++]!='}' && i<BUFFERSIZE){}
+                _mControlRegs.pkep = atoi(_mMODEMData.buffer_cmd+i);
+                while(_mMODEMData.buffer_cmd[i++]!='}' && i<BUFFERSIZE){}
                 i+=3;
                 break;
                 
             case ITETkey: //"ITET"
                 i+=6;
-                _mControlRegs.itet = atoi(_mMasterData.buffer_cmd+i);
-                while(_mMasterData.buffer_cmd[i++]!='}' && i<BUFFERSIZE){}
+                _mControlRegs.itet = atoi(_mMODEMData.buffer_cmd+i);
+                while(_mMODEMData.buffer_cmd[i++]!='}' && i<BUFFERSIZE){}
                 i+=3;
                 break;
                 
             case FiO2key: //"FiO2"
                 i+=6;
-                _mControlRegs.fio2 = atoi(_mMasterData.buffer_cmd+i);
-                while(_mMasterData.buffer_cmd[i++]!='}' && i<BUFFERSIZE){}
+                _mControlRegs.fio2 = atoi(_mMODEMData.buffer_cmd+i);
+                while(_mMODEMData.buffer_cmd[i++]!='}' && i<BUFFERSIZE){}
                 i+=3;
                 break;
             
@@ -270,7 +326,7 @@ void AudioIO::setVentilatorKnobs()
                 Serial.println("Warning! Unrecognized key!");
                 Serial.print(RrRtkey,HEX);
                 Serial.print('\n');
-                long a = *((long*)(_mMasterData.buffer_cmd+i));
+                long a = *((long*)(_mMODEMData.buffer_cmd+i));
                 Serial.print(a,HEX);
                 Serial.print('\n');*/
                 break;
@@ -280,15 +336,9 @@ void AudioIO::setVentilatorKnobs()
     //Send back an ACK (this just ack's the command, its not enough for verification).
     modem.write(ACK);
     
-    /*
-    //DEBUG show new control knob values (seem to all work perfectly
-    Serial.print(_mControlRegs.rrrt);Serial.print('\n');
-    Serial.print(_mControlRegs.tlvm);Serial.print('\n');
-    Serial.print(_mControlRegs.mmip);Serial.print('\n');
-    Serial.print(_mControlRegs.pkep);Serial.print('\n');
-    Serial.print(_mControlRegs.itet);Serial.print('\n');
-    Serial.print(_mControlRegs.fio2);Serial.print('\n');
-    */
+    //Load up SPI buffers so that the SPI bus master can interrogate latest ventilator control knobs.
+    fillControlKnobBuffers();
+
 }
 
 //Report Ventilator Knobs
@@ -312,9 +362,6 @@ void AudioIO::reportVentilatorKnobs()
             )
     {
         modem.write(*(ReportKnobs+i));
-#ifdef SERIALONLYDEBUG        
-        Serial.print(*(ReportKnobs+i));
-#endif
         i++;
         //Send out the struct data
         if(i==RRRT)
@@ -322,9 +369,6 @@ void AudioIO::reportVentilatorKnobs()
             j=0;
             while(rrrtstr[j])   //print out the ascii string for the register
             {
-#ifdef SERIALONLYDEBUG                  
-                Serial.print(rrrtstr[j]);
-#endif
                 modem.write(rrrtstr[j++]);
             }
             i+=2;
@@ -334,9 +378,6 @@ void AudioIO::reportVentilatorKnobs()
             j=0;
             while(tlvmstr[j])   //print out the ascii string for the register
             {
-#ifdef SERIALONLYDEBUG                  
-                Serial.print(tlvmstr[j]);
-#endif
                 modem.write(tlvmstr[j++]);
             }
             i+=2;
@@ -346,9 +387,6 @@ void AudioIO::reportVentilatorKnobs()
             j=0;
             while(mmipstr[j])   //print out the ascii string for the register
             {
-#ifdef SERIALONLYDEBUG                  
-                Serial.print(mmipstr[j]);
-#endif
                 modem.write(mmipstr[j++]);
             }
             i+=2;
@@ -358,9 +396,6 @@ void AudioIO::reportVentilatorKnobs()
             j=0;
             while(pkepstr[j])   //print out the ascii string for the register
             {
-#ifdef SERIALONLYDEBUG                  
-                Serial.print(pkepstr[j]);
-#endif
                 modem.write(pkepstr[j++]);
             }
             i+=2;
@@ -370,9 +405,6 @@ void AudioIO::reportVentilatorKnobs()
             j=0;
             while(itetstr[j])   //print out the ascii string for the register
             {
-#ifdef SERIALONLYDEBUG                  
-                Serial.print(itetstr[j]);
-#endif
                 modem.write(itetstr[j++]);
             }
             i+=2;
@@ -382,31 +414,25 @@ void AudioIO::reportVentilatorKnobs()
             j=0;
             while(fio2str[j])   //print out the ascii string for the register
             {
-#ifdef SERIALONLYDEBUG                  
-                Serial.print(fio2str[j]);
-#endif
                 modem.write(fio2str[j++]);
             }
             i+=2;
         }
 
     }
-#ifdef SERIALONLYDEBUG     
-    Serial.print('\n');
-#endif
     modem.write('\0');
 }
 
-//HANDSHAKING AND WATCHDOG
+//HANDSHAKING AND WATCHDOG FOR AUDIO BUS
 //TODO: needs validation.
 //Function should 
 //  0: sniff for ENQ and respond with ACK
 //  1: perform handshake
-//  2: Maintain a buffer of commands (_mMasterData.buffer_cmd[BUFFERSIZE])
+//  2: Maintain a buffer of commands (_mMODEMData.buffer_cmd[BUFFERSIZE])
 //  3: timeout watchdog if nothing comes through from the master by WATCHDOGPERIOD
 //It should also be responsive.
 //Please DEBUG THIS FIRST!
-void AudioIO::busMaintainance()
+void AudioIO::audioBusMaintainance()
 {
     char c; //Data character.
     
@@ -459,13 +485,13 @@ void AudioIO::busMaintainance()
                 //Serial.write('\n');     
                 //{
                   //Respond with the same string 
-                  modem.write(busProtVer,LENBUSPROTVER);
-                  modem.write(busProtVer,LENBUSPROTVER);
+                  modem.write((const uint8_t*)busProtVer,LENBUSPROTVER);
+                  modem.write((const uint8_t*)busProtVer,LENBUSPROTVER);
                   modem.write('\0');
                   
                   Serial.write("IO\n");
-                  _mMasterData.bufptr = 0;              //start reading in commands at buffer position 0
-                  _mMasterData.buffer_cmd[0] = '\0';    //trash any old command
+                  _mMODEMData.bufptr = 0;              //start reading in commands at buffer position 0
+                  _mMODEMData.buffer_cmd[0] = '\0';    //trash any old command
                   _mPolicyState.comMode = IO;           //we are in IO mode. cool!
                   hsctr = 0;
                 //}
@@ -490,20 +516,20 @@ void AudioIO::busMaintainance()
             {modem.write(PNG); break;}  
 
           //bufer the data for message decoding.
-          _mMasterData.buffer_cmd[_mMasterData.bufptr]=c;
+          _mMODEMData.buffer_cmd[_mMODEMData.bufptr]=c;
           //Only accept JSON dictionaries (they start with '{'.
-          if(_mMasterData.buffer_cmd[0]=='{')
+          if(_mMODEMData.buffer_cmd[0]=='{')
           {
-              _mMasterData.bufptr++;
+              _mMODEMData.bufptr++;
               //check if message is complete.
-              if((c == '\r') || (_mMasterData.bufptr >= BUFFERSIZE))  //TODO rather not terminate strings on carriage return, but null is not picked up / sent from phone.
+              if((c == '\r') || (_mMODEMData.bufptr >= BUFFERSIZE))  //TODO rather not terminate strings on carriage return, but null is not picked up / sent from phone.
               {
-                  //Serial.write(_mMasterData.buffer_cmd,_mMasterData.bufptr);
+                  //Serial.write(_mMODEMData.buffer_cmd,_mMODEMData.bufptr);
                   //Serial.write("\n");
                   //Serial.write("\n");
-                  _mMasterData.buffer_cmd[_mMasterData.bufptr] = '\0';  //Null terminate.
-                  _mMasterData.bufptr = 0;      //Will overwrite next time
-                  _mMasterData.available = true;//Give someone a chance to process this data.
+                  _mMODEMData.buffer_cmd[_mMODEMData.bufptr] = '\0';  //Null terminate.
+                  _mMODEMData.bufptr = 0;      //Will overwrite next time
+                  _mMODEMData.available = true;//Give someone a chance to process this data.
     
                   //DEBUG write out the command
                   //Serial.write("Got command\n");    
@@ -532,7 +558,7 @@ void AudioIO::busMaintainance()
     }
 }
 
-//BUS MAINTAINENCE UTILITY FUNCTIONS
+//POLLING BUS MAINTAINENCE UTILITY FUNCTIONS
 
 //pollBusStatus()
 //  1: Maintain a data channel between the ventilator and a remote control. 
@@ -541,9 +567,11 @@ void AudioIO::busMaintainance()
 void AudioIO::pollBusStatus()
 {
     //TODO: Handshaking and buffer maintainance.
-    busMaintainance();
+    audioBusMaintainance(); //Phone side IO service
     
-    //If the bus is running, try to process commands.
+    //Done in ISR. Required to keep up with bus. SPIBusMaintainence();   //Ventilator side IO service
+    
+    //If the Audio bus is up, try to process audio commands.
     if(_mPolicyState.comMode = IO)
     {   
         //Serial.println("Poll Bus\n");
@@ -552,5 +580,382 @@ void AudioIO::pollBusStatus()
         parseCommand(); //Check the command buffer to see if any action needs taking.
     }
     
+    //If the ventilator has issued a command, service it.
+    
+    
 }
+
+//ISR BUS MAINTAINENCE UTILITY FUNCTIONS
+
+//inline member to convert SPI readout data for use by audio IO bus.
+//Done after command to avoid failing to meet ISR timing.
+//TODO: the class members are only useful if you do actual ventilator logic. otherwise they could possibly be dropped for AudioIO?
+void AudioIO::drainReadoutBuffers()
+{
+
+    _mreadoutRegs.mtvn = atoi(_mmtvn.front); 
+    _mreadoutRegs.pkip = atoi(_mpkip.front); 
+    _mreadoutRegs.pco2 = atoi(_mpco2.front);
+        
+    Serial.print("SPI sets readout knobs\n");
+    Serial.print("mtvn: ");Serial.print(_mreadoutRegs.mtvn);Serial.print("\n");
+    Serial.print("pkip: ");Serial.print(_mreadoutRegs.pkip);Serial.print("\n");
+    Serial.print("pco2: ");Serial.print(_mreadoutRegs.pco2);Serial.print("\n");
+}
+
+//inline member to fill SPI control knob data from member variables
+void AudioIO::fillControlKnobBuffers()
+{
+    itoa(_mControlRegs.rrrt,_mrrrt.back,10); _mrrrt.flip();
+    itoa(_mControlRegs.tlvm,_mtlvm.back,10); _mtlvm.flip();
+    itoa(_mControlRegs.mmip,_mmmip.back,10); _mmmip.flip();
+    itoa(_mControlRegs.pkep,_mpkep.back,10); _mpkep.flip();
+    itoa(_mControlRegs.itet,_mitet.back,10); _mitet.flip();
+    itoa(_mControlRegs.fio2,_mfio2.back,10); _mfio2.flip();
+    
+    
+/*could use with some extra debug
+     Serial.print("Audio sets ctl knobs\n");
+    Serial.print("rrrt: ");Serial.println(_mmtvn.front);Serial.print("\n");
+    Serial.print("tlvm: ");Serial.println(_mpkip.front);Serial.print("\n");
+    Serial.print("mmip: ");Serial.println(_mpco2.front);Serial.print("\n");
+    Serial.print("pkep: ");Serial.println(_mmtvn.front);Serial.print("\n");
+    Serial.print("itet: ");Serial.println(_mpkip.front);Serial.print("\n");    */
+    
+}
+
+
+//inline member to insert a char into a "number" buffer.
+//return false when buffer is full (fit no more in)
+bool AudioIO::InsertJSONInNumbrBuf(doublebuf& targetbuff, uint8_t& newdata)
+{
+    if(targetbuff.backhead() > 0)         //if something is in the back buffer, keep going until we get non-numerical char.
+    {
+        if((targetbuff.backhead() < 7) && (newdata <':'))
+        {
+            *(targetbuff.back++)=newdata;        //write bytes to back buffers. They should be ATOI'd when necessary.
+        }
+        else
+        {
+            *(targetbuff.back)='\0';     
+            targetbuff.flip();           //Flip the buffer  
+            return false;               //TELL CALLER TO STOP.
+        }
+    }
+    else if((newdata>'/')&&(newdata<':'))       //look for the first numerical byte.
+        *(targetbuff.back++)=newdata;           //If you find the first numerical byte, move on in the buffer.    
+    
+    return true;                        //can still fit more data in this buffer.
+}
+
+//SLAVE MODE HANDLER FOR SPI BUS (a state machine)
+//1: look for json start character
+//2-4: read in command key
+//5... process the command. Two processing patterns are defined
+//      type A: write to the IO controller
+//      type B: read from the IO controller
+//      examples for type A and B using double buffers to support a second async audioIO bus are shown
+
+
+void AudioIO::SPIBusMaintainence()
+{  
+
+#ifdef ARDUINO_SAM_DUE  //DUE SPI ISR
+    //Deal with fact that this ISR works on 16 bit boundaries.
+    int16bytes OSPDR16,ISPDR16;
+    ISPDR16.intv = SPI0->SPI_RDR;  //Just for compilation later make this work well.
+    uint8_t SPDR;
+    
+    //do a loop. you can use this to support uno and due
+    for(int i=0; i<sizeof(uint16_t); i++)
+    {
+        SPDR = ISPDR16.bytes[i];
+    
+#endif
+        
+    //State machine to modify SPDR (a one byte SPI IO shift register).
+    //just start chucking out a generic JSON response. once you get to char 4, pick the correct
+    //output string to use and the right string buffers also. We use these as the IO ctrlr has to
+    //do at least some basic validation of the numbers both way (don't just tx and rx generic strings).
+    switch(_mSPIData.bufptr)
+    {
+        case 0-SPILATENCY:
+            if(SPDR=='{')
+            {
+                //begin to output a response and reset all front pointers we may access
+                _mSPIData.bufptr++;
+                //Reset control knob read buffers (need to start looking at the front again.
+                _mrrrt.rstfront();_mtlvm.rstfront();_mmmip.rstfront();_mpkep.rstfront();_mitet.rstfront();_mfio2.rstfront();
+                //Reset monitor readout buffers.
+                _mmtvn.rstback(); _mpkip.rstback(); _mpco2.rstback();
+            }
+            SPDR=' ';
+            break;
+        case 1-SPILATENCY:
+        case 2-SPILATENCY:
+        case 3-SPILATENCY:
+            _mSPIData.key.intv>>=8;      //TODO: profile this.
+            _mSPIData.key.byte3=SPDR;
+            _mSPIData.bufptr++;
+            break;
+        
+        //CHECK BUS MASTER SENT KEY AGAINST SUPPORTED COMMANDS, THEN MOVE TO PROCESS THEM IF WE UNDERSTAND THE KEY
+        case 4-SPILATENCY:
+            _mSPIData.key.intv>>=8;      //TODO: profile this.
+            _mSPIData.key.byte3=SPDR;   //now checking for a 4 char sequence. better than single letter.
+            
+
+            if(_mSPIData.key.intv == writeReadoutsKey)
+                {SPDR=ACK;_mSPIData.cmd = WRRDTS;_mSPIData.bufptr++;  break;}
+            
+            if(_mSPIData.key.intv== readKnobsKey)
+                {SPDR=ACK;_mSPIData.cmd = RDKNBS;_mSPIData.bufptr++;  break;}
+            
+            {SPDR='\0';_mSPIData = SPIdata();_mSPIData.bufptr=0-SPILATENCY;}   //default, reset the state machine if command was not understood.
+            break;
+        case BUFFERSIZE-SPILATENCY:
+            {SPDR='\0';_mSPIData = SPIdata();_mSPIData.bufptr=0-SPILATENCY;} //-ve number used so as to access strings after reading cmd character 4.
+            break;
+        
+        //PROCESS COMMANDS IF WE UNDERSTAND THE KEY
+        default:        
+            uint8_t din = SPDR;     //don't read from this register multiple times if you can avoid it.
+            
+            //bomb out if we read null.
+            if(din=='\0')
+                {
+                    SPDR='\0';_mSPIData = SPIdata();_mSPIData.bufptr=0-SPILATENCY;  //reset state machine
+                    drainReadoutBuffers();                                          //parse characters to native representations.
+                }
+            
+            //EXAMPLE OF HOW TO READ INTO THIS IOCONTROLLER'S DOUBLE BUFFER REGISTERS FROM A SENDING SPI MASTER
+            //deal with the command read in
+            if(_mSPIData.cmd== WRRDTS)
+            {                
+                switch(_mSPIData.key.intv)  //choose sensor to write data for based on JSON key.
+                {
+                    case MtVnkey:
+                        if(!InsertJSONInNumbrBuf(_mmtvn, din))  //Try to add to the tlvm buffer.
+                            _mSPIData.key.byte0=0;              //quit, its full.
+                        break;
+                        
+                    case PkIPkey:
+                        if(!InsertJSONInNumbrBuf(_mpkip, din))  //Try to add to the _mkip buffer.
+                            _mSPIData.key.byte0=0;              //quit, its full.
+                        break;
+                        
+                    case PCO2key:
+                        if(!InsertJSONInNumbrBuf(_mpco2, din))  //Try to add to the _mkip buffer.
+                            _mSPIData.key.byte0=0;              //quit, its full.
+                        break;
+                        
+                    default:                        //keep reading in the command.
+                        _mSPIData.key.intv>>=8;      //TODO: profile this.
+                        _mSPIData.key.byte3=SPDR;
+                                                    
+                }
+
+            }
+            //EXAMPLE OF HOW TO SEND OUT THIS IOCONTROLLER'S DOUBLE BUFFER REGISTERS TO A READING SPI MASTER
+            if(_mSPIData.cmd== RDKNBS)  //Flow to send control knob values to the bus master.
+            {
+                //return ventilator knob settings to the bus master.
+                switch(_mSPIData.bufptr)    //TODO: don't switch on a loop counter. you can switch on an int. then these don't need to be in order.
+                {
+                    case RRRT :
+                        SPDR=*(_mrrrt.front++);     //print the char in front buffer.                            
+                        if(*(_mrrrt.front)=='\0')   //if the next char is null, move along in the string.
+                            _mSPIData.bufptr+=2;    
+                        break;
+                    case TLVM :
+                        SPDR=*(_mtlvm.front++); //print the first char in front buffer.                                                                    
+                        if(*(_mtlvm.front)=='\0')
+                            _mSPIData.bufptr+=2;    
+                        break;
+                    case MMIP :
+                        SPDR=*(_mmmip.front++);
+                        if(*(_mmmip.front)=='\0')
+                            _mSPIData.bufptr+=2;    
+                        break;
+                    case PKEP :
+                        SPDR=*(_mpkep.front++);
+                        if(*(_mpkep.front)=='\0')
+                            _mSPIData.bufptr+=2;                                            
+                        break;
+                    case ITET :
+                        SPDR=*(_mitet.front++);
+                        if(*(_mitet.front)=='\0')
+                            _mSPIData.bufptr+=2;                                            
+                        break;                    
+                    case FIO2 :
+                        SPDR=*(_mfio2.front++);
+                        if(*(_mfio2.front)=='\0')
+                            _mSPIData.bufptr+=2;                                                                
+                        break;                    
+                    default:
+                        SPDR=*(ReportKnobs+_mSPIData.bufptr);
+                        if(*(ReportKnobs+_mSPIData.bufptr)=='\0')//end of command
+                            {_mSPIData.cmd=NOSPICMD;_mSPIData.bufptr=0-SPILATENCY;}
+                        else
+                            _mSPIData.bufptr++;
+                        
+                }
+            }
+            //Note, the SPIData.bufptr will not auto increment.
+                
+    }//End switch
+#ifdef ARDUINO_SAM_DUE  /*code path for due, which uses two 16bit SPI registers*/
+
+        OSPDR16.bytes[i] = SPDR;    //put SPDR byte into a 16bit shift register
+    }//End outer for
+    
+    SPI0->SPI_TDR = OSPDR16.intv;   //Transmit the SPI data to the bus master.
+    //DUE only end
+#else                  /*code path for uno, which uses one 8bit SPI register that has been set*/
+    }//End outer for
+#endif
+ 
+}
+
+/*
+
+void AudioIO::SPIBusMaintainence()
+{   
+        
+    //State machine to modify SPDR.
+    //just start chucking out a generic JSON response. once you get to char 4, pick the correct
+    //output string to use and the right string buffers also. We use these as the IO ctrlr has to
+    //do at least some basic validation of the numbers both way (don't just tx and rx generic strings).
+    switch(_mSPIData.bufptr)
+    {
+        case 0-SPILATENCY:
+            if(SPDR=='{')
+            {
+                //begin to output a response and reset all front pointers we may access
+                _mSPIData.bufptr++;
+                //Reset control knob read buffers (need to start looking at the front again.
+                _mrrrt.rstfront();_mtlvm.rstfront();_mmmip.rstfront();_mpkep.rstfront();_mitet.rstfront();_mfio2.rstfront();
+                //Reset monitor readout buffers.
+                _mmtvn.rstback(); _mpkip.rstback(); _mpco2.rstback();
+            }
+            SPDR=' ';
+            break;
+        case 1-SPILATENCY:
+        case 2-SPILATENCY:
+        case 3-SPILATENCY:
+            _mSPIData.key.intv>>=8;      //TODO: profile this.
+            _mSPIData.key.byte3=SPDR;
+            _mSPIData.bufptr++;
+            break;
+        
+        //CHECK BUS MASTER SENT KEY AGAINST SUPPORTED COMMANDS, THEN MOVE TO PROCESS THEM IF WE UNDERSTAND THE KEY
+        case 4-SPILATENCY:
+            _mSPIData.key.intv>>=8;      //TODO: profile this.
+            _mSPIData.key.byte3=SPDR;   //now checking for a 4 char sequence. better than single letter.
+            
+
+            if(_mSPIData.key.intv == writeReadoutsKey)
+                {SPDR=ACK;_mSPIData.cmd = WRRDTS;_mSPIData.bufptr++;  break;}
+            
+            if(_mSPIData.key.intv== readKnobsKey)
+                {SPDR=ACK;_mSPIData.cmd = RDKNBS;_mSPIData.bufptr++;  break;}
+            
+            {SPDR='\0';_mSPIData = SPIdata();_mSPIData.bufptr=0-SPILATENCY;}   //default, reset the state machine if command was not understood.
+            break;
+        case BUFFERSIZE-SPILATENCY:
+            {SPDR='\0';_mSPIData = SPIdata();_mSPIData.bufptr=0-SPILATENCY;} //-ve number used so as to access strings after reading cmd character 4.
+            break;
+        
+        //PROCESS COMMANDS IF WE UNDERSTAND THE KEY
+        default:        
+            uint8_t din = SPDR;     //don't read from this register multiple times if you can avoid it.
+            
+            //bomb out if we read null.
+            if(din=='\0')
+                {
+                    SPDR='\0';_mSPIData = SPIdata();_mSPIData.bufptr=0-SPILATENCY;  //reset state machine
+                    drainReadoutBuffers();                                          //parse characters to native representations.
+                }
+            
+            //EXAMPLE OF HOW TO READ INTO THIS IOCONTROLLER'S DOUBLE BUFFER REGISTERS FROM A SENDING SPI MASTER
+            //deal with the command read in
+            if(_mSPIData.cmd== WRRDTS)
+            {                
+                switch(_mSPIData.key.intv)  //choose sensor to write data for based on JSON key.
+                {
+                    case MtVnkey:
+                        if(!InsertJSONInNumbrBuf(_mmtvn, din))  //Try to add to the tlvm buffer.
+                            _mSPIData.key.byte0=0;              //quit, its full.
+                        break;
+                        
+                    case PkIPkey:
+                        if(!InsertJSONInNumbrBuf(_mpkip, din))  //Try to add to the _mkip buffer.
+                            _mSPIData.key.byte0=0;              //quit, its full.
+                        break;
+                        
+                    case PCO2key:
+                        if(!InsertJSONInNumbrBuf(_mpco2, din))  //Try to add to the _mkip buffer.
+                            _mSPIData.key.byte0=0;              //quit, its full.
+                        break;
+                        
+                    default:                        //keep reading in the command.
+                        _mSPIData.key.intv>>=8;      //TODO: profile this.
+                        _mSPIData.key.byte3=SPDR;
+                                                    
+                }
+
+            }
+            //EXAMPLE OF HOW TO SEND OUT THIS IOCONTROLLER'S DOUBLE BUFFER REGISTERS TO A READING SPI MASTER
+            if(_mSPIData.cmd== RDKNBS)  //Flow to send control knob values to the bus master.
+            {
+                //return ventilator knob settings to the bus master.
+                switch(_mSPIData.bufptr)    //TODO: don't switch on a loop counter. you can switch on an int. then these don't need to be in order.
+                {
+                    case RRRT :
+                        SPDR=*(_mrrrt.front++);     //print the char in front buffer.                            
+                        if(*(_mrrrt.front)=='\0')   //if the next char is null, move along in the string.
+                            _mSPIData.bufptr+=2;    
+                        break;
+                    case TLVM :
+                        SPDR=*(_mtlvm.front++); //print the first char in front buffer.                                                                    
+                        if(*(_mtlvm.front)=='\0')
+                            _mSPIData.bufptr+=2;    
+                        break;
+                    case MMIP :
+                        SPDR=*(_mmmip.front++);
+                        if(*(_mmmip.front)=='\0')
+                            _mSPIData.bufptr+=2;    
+                        break;
+                    case PKEP :
+                        SPDR=*(_mpkep.front++);
+                        if(*(_mpkep.front)=='\0')
+                            _mSPIData.bufptr+=2;                                            
+                        break;
+                    case ITET :
+                        SPDR=*(_mitet.front++);
+                        if(*(_mitet.front)=='\0')
+                            _mSPIData.bufptr+=2;                                            
+                        break;                    
+                    case FIO2 :
+                        SPDR=*(_mfio2.front++);
+                        if(*(_mfio2.front)=='\0')
+                            _mSPIData.bufptr+=2;                                                                
+                        break;                    
+                    default:
+                        SPDR=*(ReportKnobs+_mSPIData.bufptr);
+                        if(*(ReportKnobs+_mSPIData.bufptr)=='\0')//end of command
+                            {_mSPIData.cmd=NOSPICMD;_mSPIData.bufptr=0-SPILATENCY;}
+                        else
+                            _mSPIData.bufptr++;
+                        
+                }
+            }
+            //Note, the SPIData.bufptr will not auto increment.
+                
+    }
+ 
+}
+
+*/
+
 

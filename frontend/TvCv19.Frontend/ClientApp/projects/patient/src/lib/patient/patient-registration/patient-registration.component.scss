@@ -1,8 +1,10 @@
 mat-toolbar {
-  margin-top: 40px;
   mat-toolbar-row {
     height: 33px;
     font-size: 30px;
+    &:first-of-type {
+      margin-top: 60px;
+    }
   }
 }
 

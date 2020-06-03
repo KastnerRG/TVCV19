@@ -17,11 +17,7 @@ export class AppToolbarComponent implements OnInit {
       this.data = d
     });
 
-    this.toolbarService.deleteNotification.subscribe(notification => {
-      if(notification) {
-        this.removeNotification(notification);
-      }
-    })
+    this.toolbarService.deleteNotification.subscribe(notification => this.removeNotification(notification))
     
     notificationService.notifications.subscribe(async notification => {
       if(notification) {
@@ -35,24 +31,26 @@ export class AppToolbarComponent implements OnInit {
       }
     })
   }
-  
+
   ngOnInit(): void { }
 
   back() {
     this.location.back();
   }
 
-  noticationClick() {
+  async noticationClick() {
     if(this.notifications.length > 0){
       const notification = this.notifications[this.notifications.length - 1]
+      await this.notificationService.delete(notification.id).toPromise()
       this.toolbarService.deleteNotification.next(notification)
-      this.notificationService.delete(notification.id).toPromise()
       this.router.navigateByUrl(notification.link)
     }
   }
 
   private removeNotification(notification: Notification){
-    this.notifications.splice(this.notifications.indexOf(notification), 1)
+    if(notification) {
+      this.notifications.splice(this.notifications.indexOf(notification), 1)
+    }
   }
 
 

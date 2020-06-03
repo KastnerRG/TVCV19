@@ -19,7 +19,6 @@ namespace TvCv19.Frontend.Domain
     public class PocPatientRepository : IPatientRepository
     {
         private static List<Patient> _admittedPatients = new List<Patient>();
-        private static int _count;
         private readonly IPhysicianRepository _physicianRepository;
 
         public PocPatientRepository(IPhysicianRepository physicianRepository)
@@ -29,8 +28,7 @@ namespace TvCv19.Frontend.Domain
 
         public Task<string> AdmitPatient(Patient patient)
         {
-            _count++;
-            patient.Id = $"{_count}";
+            patient.Id = Guid.NewGuid().ToString("N");
             _admittedPatients.Add(patient);
             
             return Task.FromResult(patient.Id);
@@ -55,12 +53,18 @@ namespace TvCv19.Frontend.Domain
         public async Task<IEnumerable<Patient>> GetPatientsByPhysician(string id)
         {
             var patients = new List<Patient>();
-            var careTeam =  await _physicianRepository.GetPhysicianTeam(id);
-            if (careTeam.Any())
+            var firstLevelTeam =  await _physicianRepository.GetPhysicianTeam(id);
+            if (firstLevelTeam.Any())
             {
-                foreach (var item in careTeam)
+                foreach (var firstLevelTeamMemeber in firstLevelTeam)
                 {
-                    patients.AddRange(_admittedPatients.Where(x => x.CaregiverId == item.Id));
+                    var secondLevelTeam = await _physicianRepository.GetPhysicianTeam(firstLevelTeamMemeber.Id);
+                    if(secondLevelTeam.Any()){
+                        foreach (var secondLevelTeamMember in secondLevelTeam){
+                           patients.AddRange(_admittedPatients.Where(x => x.CaregiverId == secondLevelTeamMember.Id));
+                        }
+                    }
+                    patients.AddRange(_admittedPatients.Where(x => x.CaregiverId == firstLevelTeamMemeber.Id));
                 }
             }
             patients.AddRange(_admittedPatients.Where(x => x.CaregiverId == id));
