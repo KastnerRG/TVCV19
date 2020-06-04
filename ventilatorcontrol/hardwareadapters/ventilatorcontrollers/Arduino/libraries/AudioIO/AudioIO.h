@@ -11,7 +11,7 @@
 // include types & constants of Wiring core API
 #include <Arduino.h>
 #include <SoftModem.h>
-#include <Thread.h>//TODO replace this? It is also possible to use "secret"  https://forum.arduino.cc/index.php?topic=530280.0
+//#include <Thread.h>//TODO replace this? It is also possible to use "secret"  https://forum.arduino.cc/index.php?topic=530280.0
 
 /*===========================================================================*\
 |	CONTROL STRINGS FOR COMPLIANCE WITH VENTILATOR API SPECIFICATION Ver 1	  |
@@ -111,7 +111,7 @@ const char* const ReportKnobs PROGMEM =                 //Report back all contro
 #define WRSNSRS WRRDTS   + 1
 
 /*use as an offest in any logic looking at commands from the master and responding with data*/
-#define SPILATENCY 6 
+#define SPILATENCY 5/*6 now this is weird, with 6 I see -1 offset.*/ 
 
 //Audio IO Policy related
 //enum busMode{PCM=0,Handshake,IO};
@@ -178,7 +178,7 @@ typedef struct _DOUBLEBUF
 typedef struct _audioIOdata
 {
     char buffer_cmd[BUFFERSIZE];
-    char bufptr;
+    int bufptr;
     bool available;               //Set when new data is found.
     _audioIOdata(){bufptr=0;available=false;}
 }audioIOdata;
@@ -199,7 +199,7 @@ union int16bytes{
 //Just keep pace with input
 typedef struct _SPIdata
 {
-    char bufptr;
+    int bufptr;
     char cmd;
     int32bytes key;   //union lets arbitrary bytes be set.
     _SPIdata(){bufptr=0-SPILATENCY;cmd=NOSPICMD;key.intv=0;}
@@ -252,7 +252,7 @@ class AudioIO
 
     void handshake();
     
-    Thread _mThread;                //Use for scheduling bus maintainence
+    //Should not be a thread. should be done by ARTe Thread _mThread;                //Use for scheduling bus maintainence
     
     //AUDIO IO MEMBERS
     SoftModem       modem;         //Used for IO
