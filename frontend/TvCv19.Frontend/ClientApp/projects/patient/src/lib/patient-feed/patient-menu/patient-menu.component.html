@@ -1,0 +1,10 @@
+<div class=menu_container *ngIf="showMenu">
+    <img src="/assets/img/avatar.png">
+    <span class=patient-menu-name>{{ patient.name }}, <!--{{ patient.age }}--></span>
+    <br>
+    <span class="patient-menu-id">{{ patient.id }}</span>
+    <div class="patient-menu">Live Feed</div>
+    <div class="patient-menu" routerLink="">Chat</div>
+    <div class="patient-menu" routerLink="">Care Instructions</div>
+    <div class="patient-menu" routerLink="/patient/patient-qr/{{ patient.id }}">QR Code</div>
+</div>
