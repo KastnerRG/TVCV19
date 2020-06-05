@@ -22,6 +22,8 @@ import { MatOptionModule } from '@angular/material/core';
 import { CommonModule } from '@angular/common';
 import { PatientFeedComponent } from './patient-feed/patient-feed.component';
 import { FlexModule } from '@angular/flex-layout';
+import { PatientMenuComponent } from './patient-feed/patient-menu/patient-menu.component';
+import { PatientQrComponent } from './patient-qr/patient-qr.component';
 
 
 
@@ -33,11 +35,14 @@ import { FlexModule } from '@angular/flex-layout';
     CameraSetupComponent,
     RootComponent,
     PatientRegistrationRootComponent,
-    PatientFeedComponent
+    PatientFeedComponent,
+    PatientMenuComponent,
+    PatientQrComponent
   ],
   imports: [
     RouterModule.forChild([
       { path: '', component: RootComponent },
+      { path: 'patient-qr/:id', component:PatientQrComponent },
       { path: 'live/:id', component: PatientFeedComponent},
       { path: 'registration', component: PatientRegistrationRootComponent, children: [
         { path: '', component: PatientRegistrationComponent },
