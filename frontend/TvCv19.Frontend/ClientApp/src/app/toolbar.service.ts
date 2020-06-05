@@ -9,13 +9,18 @@ import {
   providedIn: 'root',
 })
 export class ToolbarService {
+  visible: boolean;
+
+  constructor() { this.visible = true; }
+
+  hide() { this.visible = false; }
+  show() { this.visible = true; }
+
   toolBarData = new BehaviorSubject<ToolBarData>({
     title: ''
   });
 
   deleteNotification: Subject<Notification> = new Subject<Notification>();
-
-  constructor() { }
  
   setToolbarData(data: ToolBarData): void {
     this.toolBarData.next(data);

@@ -12,7 +12,7 @@ import { Router } from '@angular/router';
 export class AppToolbarComponent implements OnInit {
   data: ToolBarData;
   notifications: Array<Notification> = [];
-  constructor(private toolbarService: ToolbarService, private location: Location, private router: Router, private notificationService: NotificationService) {
+  constructor(public toolbarService: ToolbarService, private location: Location, private router: Router, private notificationService: NotificationService) {
     this.toolbarService.toolBarData.subscribe((d) => {
       this.data = d
     });

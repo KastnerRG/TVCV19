@@ -1,4 +1,4 @@
-<mat-toolbar color="primary">
+<mat-toolbar color="primary" *ngIf="toolbarService.visible">
   <mat-toolbar-row>
     <button *ngIf="data.menu" mat-icon-button>
       <mat-icon>menu</mat-icon>
