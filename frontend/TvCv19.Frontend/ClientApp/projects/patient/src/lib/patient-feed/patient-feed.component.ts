@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { ToolbarService } from 'src/app/toolbar.service';
 
 @Component({
   selector: 'lib-patient-feed',
@@ -8,14 +9,20 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class PatientFeedComponent implements OnInit {
   room: string;
-  constructor(route: ActivatedRoute) {
+
+  constructor(route: ActivatedRoute, private toolbar: ToolbarService) {
     route.params.subscribe((p) => {
       this.room = p['id'];
     });
+  }
 
+  showMenu: boolean = false;
+  toggleMenu(){
+    this.showMenu = !this.showMenu;
   }
 
   ngOnInit(): void {
+    this.toolbar.hide();
   }
 
 }
