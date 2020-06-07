@@ -9,6 +9,7 @@ export interface MessageModel {
     id: string;
     patientId: string;
     physicianId: string;
+    receiverId: string;
     isCareInstruction: boolean;
     isAudio: boolean;
   }

@@ -6,7 +6,9 @@
       padding-top: 20px;
       &__row {
         padding: 0 30px;
-        margin-top: 60px;
+        &:first-of-type {
+          margin-top: 60px;
+        }
       }
       &__name {
         margin-right: 12px;
@@ -26,7 +28,10 @@ qrcode {
     &__patient {
       padding: 0 25px;
       font-size: 16px;
-      margin-top: 85px;
+      margin-top: 20px;
+      &:first-of-type {
+        margin-top: 60px;
+      }
       &__avatar {
          padding-right: 15px;
       }

@@ -1,5 +1,12 @@
 <mat-list>
+  <div class="content">
     <mat-list-item *ngFor="let bedsideCaregiver of bedsideCaregivers">
-        <a mat-raised-button color="primary" routerLink="{{bedsideCaregiver.id}}/patients">{{bedsideCaregiver.name}}</a>
+      <a
+        mat-raised-button
+        color="primary"
+        routerLink="{{ bedsideCaregiver.id }}/patients"
+        >{{ bedsideCaregiver.name }}</a
+      >
     </mat-list-item>
+  </div>
 </mat-list>

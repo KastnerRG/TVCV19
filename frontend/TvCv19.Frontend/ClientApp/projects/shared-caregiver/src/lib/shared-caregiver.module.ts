@@ -11,6 +11,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { RouterModule } from '@angular/router';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatChipsModule } from '@angular/material/chips';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { QRCodeModule } from 'angularx-qrcode';
@@ -21,6 +22,8 @@ import { ChatComponent } from './chat/chat.component';
 import { MatInputModule } from '@angular/material/input';
 import { MatDialogModule } from '@angular/material/dialog';
 import { PatientStatsDialog } from './patient-stats/patient-stats.dialog';
+import { MatTreeModule } from '@angular/material/tree';
+import { HierarchyComponent } from './physician-hierarchy/hierarchy.component';
 
 @NgModule({
   declarations: [
@@ -32,6 +35,7 @@ import { PatientStatsDialog } from './patient-stats/patient-stats.dialog';
     PhysicianHierarchyComponent,
     ChatComponent,
     PatientStatsDialog,
+    HierarchyComponent
   ],
   imports: [
     CommonModule,
@@ -41,6 +45,7 @@ import { PatientStatsDialog } from './patient-stats/patient-stats.dialog';
     FlexModule,
     MatAutocompleteModule,
     MatIconModule,
+    MatTreeModule,
     MatGridListModule,
     MatToolbarModule,
     MatFormFieldModule,
@@ -49,6 +54,7 @@ import { PatientStatsDialog } from './patient-stats/patient-stats.dialog';
     MatDialogModule,
     QRCodeModule,
     SharedModule,
+    MatChipsModule
   ],
   exports: [SharedCaregiverComponent],
 })

@@ -33,6 +33,8 @@ namespace TvCv19.Frontend.Controllers
 
         [HttpGet]
         public async Task<IActionResult> GetPhysiciansAsync() => Ok(await _physicianRepository.GetPhysiciansAsync());
+        [HttpGet("hierarchy/{id}")]
+        public async Task<IActionResult> GetPhysicianHierarchy(string id) => Ok(await _physicianRepository.GetHeirarchyTree(id));
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetPhysicianAsync(string id) => Ok(await _physicianRepository.GetPhysicianAsync(id));

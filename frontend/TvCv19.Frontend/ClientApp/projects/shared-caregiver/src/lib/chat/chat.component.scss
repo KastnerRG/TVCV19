@@ -1,6 +1,6 @@
 .messages {
   flex: 1 0 auto;
-  height: 80vh;
+  height: 60vh;
   overflow-y: auto;
   font-size: 10px;
   margin-top: 30px;
@@ -49,6 +49,7 @@
   position: fixed;
   bottom: 0;
   width: 100%;
+  font-size: 16px;
 
   .message-toolbar {
     div {
