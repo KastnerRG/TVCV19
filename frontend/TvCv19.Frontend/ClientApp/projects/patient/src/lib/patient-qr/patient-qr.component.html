@@ -1,1 +1,11 @@
-<p>patient-qr works!</p>
+<div class="container">
+    <div id="patient-qr-name">{{ patient.name }}</div>
+    <div id="patient-qr-container">
+        <div class="patient-qr-text">Scan to register as caregiver</div>
+        <qrcode
+            [qrdata]="patient.id"
+            [width]="256"
+            [errorCorrectionLevel]="'M'"
+        ></qrcode>
+    </div>
+</div>
