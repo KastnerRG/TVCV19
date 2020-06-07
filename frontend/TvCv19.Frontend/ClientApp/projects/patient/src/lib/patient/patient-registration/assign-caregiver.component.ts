@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { map, startWith } from 'rxjs/operators';
 import { AssignCareGiverModel } from './assign-caregiver-route-model';
 import { PatientModel, PatientService } from 'projects/shared/src/public-api';
+import { ToolbarService } from 'src/app/toolbar.service';
 
 export interface Caregiver {
   name: string;
@@ -22,9 +23,10 @@ export class AssignCareGiverComponent implements OnInit {
   options: Caregiver[];
   filteredOptions: Observable<Caregiver[]>;
 
-  constructor(private route: ActivatedRoute, private patientService: PatientService, private router: Router) { }
+  constructor(private route: ActivatedRoute, private patientService: PatientService, private toolbarService: ToolbarService, private router: Router) { }
 
   ngOnInit(): void {
+    this.toolbarService.setToolbarData({menu:[]})
     this.route.data.subscribe((data: { model: AssignCareGiverModel }) => {
       this.patient = data.model.patient;
       this.options = data.model.caregivers;

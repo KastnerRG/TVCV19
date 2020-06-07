@@ -7,5 +7,5 @@ export class PhysicianModel {
 }
 
 export enum HierarchyLevel {
-    FirstLine, SecondLine, Commander
+    FirstLine = 1, SecondLine = 2 , Commander = 3
 }

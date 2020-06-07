@@ -29,7 +29,6 @@ export class PatientListComponent implements OnInit {
     private toolbarService: ToolbarService,
     private notificationService: NotificationService
   ) {
-    this.setToolbar();
     this.notificationService.notifications.subscribe(notification => {
       if(notification) {
         this.patients.map((patient) => (patient.id === notification.patientId ? (this.onNotification(patient, notification)) : patient.link = `/caregiver/${this.id}/patient/${patient.id}`));
@@ -46,6 +45,8 @@ export class PatientListComponent implements OnInit {
       async (data: { model: CaregiverRouteDataModel }) => {
         this.patients = data.model.patients || [];
         this.id = data.model.physician.id;
+        this.setToolbar();
+
         this.patients.map(patient => patient.link = `/caregiver/${this.id}/patient/${patient.id}`)
         this.isFirstLine =
           data.model.physician.hierarchy === HierarchyLevel.FirstLine;
@@ -59,10 +60,10 @@ export class PatientListComponent implements OnInit {
 
     this.chatService.messages
       .subscribe((message: MessageModel) => {
-        if(message.physicianId !== this.id) {
+        if(message.receiverId) {
           this.notificationService.addNotification({
-            link: `/caregiver/${this.id}/patient/${message.patientId}/chat`,
-            recieverId: this.id,
+            link: `/caregiver/${message.receiverId}/patient/${message.patientId}/chat`,
+            recieverId: message.receiverId,
             senderId: message.physicianId,
             patientId: message.patientId
           })
@@ -81,7 +82,8 @@ export class PatientListComponent implements OnInit {
   private setToolbar() {
     this.toolbarService.setToolbarData({
       menu: [{ link: '', title: 'Shift change' }],
-      title: 'Patient List'
+      title: 'Patient List',
+      notificationReceiverId: this.id
     });
   }
 

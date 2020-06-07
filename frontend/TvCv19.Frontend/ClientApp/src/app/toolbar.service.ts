@@ -26,6 +26,7 @@ export interface ToolBarData {
   title?: string;
   menu?: Array<MenuLinks>;
   back?: boolean;
+  notificationReceiverId?: string;
 
 }
 export interface MenuLinks {
