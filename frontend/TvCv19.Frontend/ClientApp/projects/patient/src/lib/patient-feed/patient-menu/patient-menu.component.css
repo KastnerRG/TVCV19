@@ -1,0 +1,27 @@
+#patient-menu-avatar {
+    padding-top: 40px;
+    padding-left: 16px;
+    width: 64px;
+    height: 64px; 
+}
+
+#patient-menu-name-id {
+    float: right;
+    padding-top: 60px;
+    padding-left: 5px;
+    padding-right: 10px;
+}
+
+#patient-menu-name {
+    font-size: 20px;
+}
+
+.patient-menu-item {
+    padding-left: 46px;
+    padding-top: 20px;
+    font-size: 14px;
+}
+
+#patient-menu-live-feed {
+    color: #4285F4;
+}

@@ -1,9 +1,9 @@
 <div id="container">
     <lib-video-receiver [room]="room" [isBroadcaster]="true"></lib-video-receiver>
-    <button class="temp-button" mat-icon-button (click)="toggleMenu()">
+    <button id="menu-button" mat-icon-button (click)="toggleMenu()">
         <mat-icon >menu</mat-icon>
     </button>
-    <lib-patient-menu [showMenu]="showMenu" [patientID]="room"></lib-patient-menu>
+    <lib-patient-menu [menuVisible]="showMenu" [patientID]="room"></lib-patient-menu>
     
 </div>
 

@@ -1,10 +1,9 @@
-<div class=menu_container *ngIf="showMenu">
-    <img src="/assets/img/avatar.png">
-    <span class=patient-menu-name>{{ patient.name }}, <!--{{ patient.age }}--></span>
-    <br>
-    <span class="patient-menu-id">{{ patient.id }}</span>
-    <div class="patient-menu">Live Feed</div>
-    <div class="patient-menu" routerLink="">Chat</div>
-    <div class="patient-menu" routerLink="">Care Instructions</div>
-    <div class="patient-menu" routerLink="/patient/patient-qr/{{ patient.id }}">QR Code</div>
+<div class=menu_container *ngIf="menuVisible">
+    <img id="patient-menu-avatar" src="/assets/img/avatar.png">
+    <div id="patient-menu-name-id">
+        <div id=patient-menu-name>{{ patient.name }}, <!--{{ patient.age }}--></div>
+        <div id="patient-menu-id">{{ patient.id }}</div>
+    </div>
+    <div class="patient-menu-item" id="patient-menu-live-feed" (click)="toggleMenu()">Live Feed</div>
+    <div class="patient-menu-item" id="patient-menu-qr-code" routerLink="/patient/patient-qr/{{ patient.id }}">QR Code</div>
 </div>

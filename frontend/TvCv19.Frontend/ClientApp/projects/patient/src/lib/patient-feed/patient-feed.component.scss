@@ -3,16 +3,17 @@
     width: 100%;
 }
 
-#temp-button {
+#menu-button {
     position: absolute;
-    top: 0px;
-    left: 0px;
+    top: 20px;
+    left: 20px;
 }
 
 lib-patient-menu {
     position: absolute;
-    top: 35px;
+    top: 0px;
     left: 0px;
+    height: 100%;
     background: #FAFAFA;
 }
 
