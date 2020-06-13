@@ -43,6 +43,7 @@ namespace TvCv19.Frontend.Controllers
                 _logger.LogWarning($"Unable to create room for patient: {patientModel.Name} id: {patientModel.Id}");
             }
             patientModel.Token = token;
+            patientModel.AdmissionStatus = AdmissionStatus.Admitted;
             await _patientRepository.UpdatePatient(patientModel);
             return Ok(patientModel);
         }
@@ -67,8 +68,8 @@ namespace TvCv19.Frontend.Controllers
         [HttpGet("physician/{id}")]
         public async Task<IActionResult> GetPatientByPhysician(string id)
         {
-            var patient = await _patientRepository.GetPatientsByPhysician(id);
-            return Ok(patient);
+            var patients = await _patientRepository.GetPatientsByPhysician(id);
+            return Ok(patients);
         }
 
         [HttpPost("discharge/{id}")]
@@ -85,8 +86,25 @@ namespace TvCv19.Frontend.Controllers
         public async Task<IActionResult> GetPatientMessages(string id)
         {
             var msgs = await _messageRepository.GetMessagesByGroup(id);
-            var messages = msgs.Select(x => new MessageDto(x.Sender, x.Body, x.Date, x.Id, x.IsCareInstruction, x.IsAudio, x.IsImage, x.Stats));
+            var messages = msgs.Select(x => new MessageDto(x.Sender, x.Body, x.Date, x.Id, x.IsCareInstruction, x.IsAudio, x.IsImage, x.Stats, x.IsEscalation));
             return Ok(messages);
+        }
+
+        [HttpGet("delete/all")]
+        public async Task<IActionResult> DeleteAllPatients() {
+            var patients = await _patientRepository.GetPatients();
+            foreach (var patient in patients)
+            {
+                await _patientRepository.DischargePatient(patient.Id);
+                await _roomClient.DeleteRoomAsync(patient.Id);
+            }
+
+            var rooms = await _roomClient.GetRoomsAsync();
+            foreach (var room in rooms)
+            {
+                await _roomClient.DeleteRoomAsync(room.Name);
+            }
+            return Ok("Deleted all rooms and discharged all patients");
         }
 
     }

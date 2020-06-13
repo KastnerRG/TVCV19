@@ -6,11 +6,8 @@ using TvCv19.Frontend.Domain.Models;
 
 namespace TvCv19.Frontend.Domain.Repositories
 {
-
-
     public class MessageRepository : BaseRepository, IMessageRepository
     {
-
         public async Task<string> AddMessage(Message message)
         {
             message.Id = Guid.NewGuid().ToString().Replace("-", string.Empty);
@@ -26,18 +23,19 @@ namespace TvCv19.Frontend.Domain.Repositories
             }
 
             var sql = @$"INSERT INTO medecc.message
-                        (id, group_id, body, sender, date, is_care_instruction, is_audio, is_image, stats_id)
-                        VALUES (@Id, @GroupId, @Body, @Sender, @Date, @IsCareInstruction, @IsAudio, @IsImage, '{statsId}' )";
+                        (id, group_id, body, sender, date, is_care_instruction, is_audio, is_image, is_escalation, stats_id)
+                        VALUES (@Id, @GroupId, @Body, @Sender, @Date, @IsCareInstruction, @IsAudio, @IsImage, @IsEscalation, '{statsId}' )";
             await ExecuteAsync<Message>(sql, message);
             return message.Id;
         }
 
         public async Task<IEnumerable<Message>> GetMessagesByGroup(string groupId)
         {
-            var messageSql = $@"SELECT message.id as id, group_id as groupId, body, sender, date, is_care_instruction as isCareInstruction, is_audio as isAudio, is_image as isImage, message.stats_id,
+            var messageSql = $@"SELECT message.id as id, group_id as groupId, body, sender, date, is_care_instruction as isCareInstruction, is_audio as isAudio, is_image as isImage, is_escalation as isEscalation, message.stats_id,
                                 stats.id, stats.PR, stats.TV, stats.PP, stats.IE, stats.MP, stats.O2
                                 FROM medecc.message as message
                                 LEFT JOIN medecc.stats as stats ON message.stats_id = stats.id
+                                WHERE message.group_id = '{groupId}'
                                 ORDER BY date";
             using var connection = GetConnection();
             await connection.OpenAsync();
