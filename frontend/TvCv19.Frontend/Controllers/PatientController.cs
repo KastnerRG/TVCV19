@@ -15,17 +15,17 @@ namespace TvCv19.Frontend.Controllers
     [Route("api/patient")]
     public class PatientController : Controller
     {
-        private const string DAILY_TOKEN = "Ee910bcf0c64a3fac675bf9b04e89780a9972ba61078f188a0314b6805532ae5";
-
         private ILogger<PatientController> _logger;
         private IPatientRepository _patientRepository;
         private readonly IMessageRepository _messageRepository;
+        private readonly RoomClient _roomClient;
 
-        public PatientController(IPatientRepository patientRepository, IMessageRepository messageRepository, ILogger<PatientController> logger)
+        public PatientController(IPatientRepository patientRepository, IMessageRepository messageRepository, RoomClient roomClient, ILogger<PatientController> logger)
         {
             _logger = logger;
             _patientRepository = patientRepository;
             _messageRepository = messageRepository;
+            _roomClient = roomClient;
         }
 
         [HttpPost()]
@@ -33,22 +33,17 @@ namespace TvCv19.Frontend.Controllers
         {
             patientModel.Id = await _patientRepository.AdmitPatient(patientModel);
 
-            // Cannot use a GUID as room name - domain + GUID is too many characters for daily.co
-            try
+            var token = await _roomClient.CreateRoomAsync(new RoomRequest
             {
-               using (var roomClient = new RoomClient(DAILY_TOKEN))
-               {
-                 await roomClient.CreateRoomAsync(new Room
-                 {
-                  Name = $"{patientModel.Id}"
-                 });
-               }
-            }
-            catch (Exception ex)
+                Name = $"{patientModel.Id}",
+                Properties = new RoomProperties() { OwnerOnlyBroadcast = true }
+            });
+            if(string.IsNullOrWhiteSpace(token))
             {
-               throw ex;
+                _logger.LogWarning($"Unable to create room for patient: {patientModel.Name} id: {patientModel.Id}");
             }
-
+            patientModel.Token = token;
+            await _patientRepository.UpdatePatient(patientModel);
             return Ok(patientModel);
         }
 
@@ -81,10 +76,7 @@ namespace TvCv19.Frontend.Controllers
         {
             var _id = _patientRepository.DischargePatient(id);
 
-            using (var roomClient = new RoomClient(DAILY_TOKEN))
-            {
-                await roomClient.DeleteRoomAsync(_id);
-            }
+            await _roomClient.DeleteRoomAsync(_id);
 
             return Ok(_id);
         }

@@ -1,18 +1,18 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.Json.Serialization;
 
 namespace TvCv19.DailyCo.Client.Models
 {
     public class Room
     {
-        [JsonProperty(PropertyName = "api_created")]
+        [JsonPropertyName("api_created")]
         public bool? ApiCreated { get; set; }
 
         public RoomProperties Config { get; set; }
 
-        [JsonProperty(PropertyName = "created_at")]
+        [JsonPropertyName("created_at")]
         public DateTime? CreatedAt { get; set; }
 
         public string Name { get; set; }
@@ -20,5 +20,10 @@ namespace TvCv19.DailyCo.Client.Models
         public RoomPrivacy Privacy { get; set; }
 
         public string Url { get; set; }
+    }
+
+    public class RoomRequest {
+        public string Name { get; set; }
+        public RoomProperties Properties {get; set;}
     }
 }
