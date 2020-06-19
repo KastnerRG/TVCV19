@@ -8,8 +8,9 @@ namespace TvCv19.Frontend.Domain
         public string Name { get; set; }
         public string CaregiverId { get; set; }
         public string Location { get; set; }
+        public int EscalationLevel { get; set; }
         public AdmissionStatus AdmissionStatus { get; set; }
-
+        public string Token { get; set; }
     }
 
  

@@ -1,65 +1,61 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using System.Text.Json;
 using TvCv19.DailyCo.Client.Models;
 
 namespace TvCv19.DailyCo.Client
 {
-    public class RoomClient : IDisposable
+    public class RoomClient
     {
         private const string DAILY_URL = "https://api.daily.co/v1";
+        private JsonSerializerOptions serializerOptions = new JsonSerializerOptions() { PropertyNamingPolicy = JsonNamingPolicy.CamelCase, IgnoreNullValues = true, PropertyNameCaseInsensitive = true };
 
         private class RoomList
         {
             public Room[] Data { get; set; }
         }
 
-        private readonly HttpClient httpClient;
+        private readonly HttpClient _httpClient;
 
-        static RoomClient()
+        public RoomClient(HttpClient httpClient)
         {
-            JsonConvert.DefaultSettings = () =>
-            {
-                var serializerSettings = new JsonSerializerSettings
-                {
-                    ContractResolver = new CamelCasePropertyNamesContractResolver(),
-                    NullValueHandling = NullValueHandling.Ignore
-                };
-
-                return serializerSettings;
-            };
-
+            _httpClient = httpClient;
         }
-
-        public RoomClient(string token)
+        public async Task<string> CreateRoomAsync(RoomRequest room)
         {
-            httpClient = new HttpClient();
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-        }
+            var content = new StringContent(JsonSerializer.Serialize(room, serializerOptions));
+            var response = await _httpClient.PostAsync($"{DAILY_URL}/rooms", content);
 
-        public async Task<Room> CreateRoomAsync(Room room)
-        {
-            using (var content = new StringContent(JsonConvert.SerializeObject(room)))
+            if (response.IsSuccessStatusCode)
             {
-                using (var response = await httpClient.PostAsync($"{DAILY_URL}/rooms", content))
-                {
-                    if (response.IsSuccessStatusCode)
-                    {
-                        return JsonConvert.DeserializeObject<Room>(await response.Content.ReadAsStringAsync());
-                    }
-
-                    throw new Exception("Cannot create room");
-                }
+                var token = await CreateRoomTokenAsync(room.Name);
+                return token;
             }
+
+            return null;
+        }
+
+        private async Task<string> CreateRoomTokenAsync(string roomName)
+        {
+
+            var content = new StringContent(JsonSerializer.Serialize(new TokenRequest { Properties = new TokenProperties { IsOwner = true, RoomName = roomName } }, serializerOptions));
+            var response = await _httpClient.PostAsync($"{DAILY_URL}/meeting-tokens", content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var token = JsonSerializer.Deserialize<TokenResponse>(await response.Content.ReadAsStringAsync(), serializerOptions);
+                return token.Token;
+            }
+
+            return null;
+
         }
 
         public async Task DeleteRoomAsync(string name)
         {
-            var response = await httpClient.DeleteAsync($"{DAILY_URL}/rooms/{name}");
+            var response = await _httpClient.DeleteAsync($"{DAILY_URL}/rooms/{name}");
             response.Dispose();
         }
 
@@ -67,23 +63,14 @@ namespace TvCv19.DailyCo.Client
 
         public async Task<IEnumerable<Room>> GetRoomsAsync()
         {
-            using (var response = await httpClient.GetAsync($"{DAILY_URL}/rooms"))
-            {
-                return JsonConvert.DeserializeObject<RoomList>(await response.Content.ReadAsStringAsync()).Data;
-            }
+            var response = await _httpClient.GetAsync($"{DAILY_URL}/rooms");
+            return JsonSerializer.Deserialize<RoomList>(await response.Content.ReadAsStringAsync(), serializerOptions).Data;
         }
 
         public async Task<Room> GetRoomAsync(string name)
         {
-            using (var response = await httpClient.GetAsync($"{DAILY_URL}/rooms/{name}"))
-            {
-                return JsonConvert.DeserializeObject<Room>(await response.Content.ReadAsStringAsync());
-            }
-        }
-
-        public void Dispose()
-        {
-            httpClient.Dispose();
+            var response = await _httpClient.GetAsync($"{DAILY_URL}/rooms/{name}");
+            return JsonSerializer.Deserialize<Room>(await response.Content.ReadAsStringAsync(), serializerOptions);
         }
     }
 }

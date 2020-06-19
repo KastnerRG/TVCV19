@@ -4,6 +4,8 @@ export class PatientModel {
     location: string;
     caregiverId: string;
     addmissionStatus: AdmissionStatus;
+    escalationLevel: number;
+    token: string;
 }
 
 export enum AdmissionStatus {
