@@ -87,7 +87,7 @@ namespace TvCv19.Frontend
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, UserManager<ApplicationLogin> userManager)
         {
-            EnsureDefaultUser(userManager);
+            EnsureDefaultUser(userManager).Wait();
 
             if (env.IsDevelopment())
             {
@@ -140,7 +140,7 @@ namespace TvCv19.Frontend
                 await userManager.CreateAsync(new ApplicationLogin
                 {
                     UserName = "administrator"
-                }, "password1");
+                }, "Password1!");
             }
         }
     }

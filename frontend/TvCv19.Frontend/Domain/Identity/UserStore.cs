@@ -9,7 +9,7 @@ using TvCv19.Frontend.Domain.Repositories;
 
 namespace TvCv19.Frontend.Domain.Identity
 {
-    public class UserStore : IUserStore<ApplicationLogin>
+    public class UserStore : IUserStore<ApplicationLogin>, IUserPasswordStore<ApplicationLogin>
     {
         private readonly IApplicationLoginRepository _repository;
 
@@ -61,6 +61,13 @@ namespace TvCv19.Frontend.Domain.Identity
             return Task.FromResult(user.NormalizedUserName);
         }
 
+        public Task<string> GetPasswordHashAsync(ApplicationLogin user, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            return Task.FromResult(user.PasswordHash);
+        }
+
         public Task<string> GetUserIdAsync(ApplicationLogin user, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -75,11 +82,27 @@ namespace TvCv19.Frontend.Domain.Identity
             return Task.FromResult(user.UserName);
         }
 
+        public Task<bool> HasPasswordAsync(ApplicationLogin user, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            return Task.FromResult(!string.IsNullOrEmpty(user.PasswordHash));
+        }
+
         public Task SetNormalizedUserNameAsync(ApplicationLogin user, string normalizedName, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
             user.NormalizedUserName = normalizedName;
+
+            return Task.FromResult(0);
+        }
+
+        public Task SetPasswordHashAsync(ApplicationLogin user, string passwordHash, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            user.PasswordHash = passwordHash;
 
             return Task.FromResult(0);
         }
