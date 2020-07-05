@@ -14,3 +14,6 @@ export * from './lib/models/change-shift-route-data.model';
 
 export * from './lib/services/patient.service';
 export * from './lib/services/physician.service';
+export * from './lib/services/authorization.service';
+
+export * from './lib/guards/authorization.guard';
