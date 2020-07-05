@@ -1,12 +1,13 @@
 using System.IO;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TvCv19.Frontend.Domain.Repositories;
 
 namespace TvCv19.Frontend.Controllers
 {
-
+    [Authorize]
     [Route("api/media")]
     public class MediaController : Controller {
         private readonly IMediaRepository _repository;

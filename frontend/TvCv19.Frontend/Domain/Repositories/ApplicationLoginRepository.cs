@@ -14,7 +14,7 @@ namespace TvCv19.Frontend.Domain.Repositories
             var sql = @$"INSERT INTO `medecc`.`application-login`
                         (id, user_name, normalized_user_name, password_hash)
                         VALUES ('{id}', @UserName, @NormalizedUserName, @PasswordHash)";
-            return ExecuteAsync<Patient>(sql, applicationLogin);
+            return ExecuteAsync<ApplicationLogin>(sql, applicationLogin);
         }
 
         public Task DeleteApplicationLoginAsync(string normalizedUserName)
@@ -29,7 +29,7 @@ namespace TvCv19.Frontend.Domain.Repositories
 
         public Task<ApplicationLogin> FindByNormalizedUserNameAsync(string normalizedUserName)
         {
-            var sql = "SELECT id, user_name, normalized_user_name, password_hash FROM `medecc`.`application-login` WHERE normalized_user_name = @normalized_user_name";
+            var sql = "SELECT id, user_name as userName, normalized_user_name as normalizedUserName, password_hash as passwordHash FROM `medecc`.`application-login` WHERE normalized_user_name = @normalized_user_name";
 
             return GetFirstOrDefaultAsync<ApplicationLogin>(sql, new { normalized_user_name = normalizedUserName });
         }

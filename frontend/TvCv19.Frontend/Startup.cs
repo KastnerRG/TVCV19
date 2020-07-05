@@ -1,6 +1,5 @@
 using System;
 using System.Net.Http.Headers;
-using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -140,7 +139,7 @@ namespace TvCv19.Frontend
                 await userManager.CreateAsync(new ApplicationLogin
                 {
                     UserName = "administrator"
-                }, "Password1!");
+                }, "Password1!"); // This is the simpliest password that meets the requirements.
             }
         }
     }

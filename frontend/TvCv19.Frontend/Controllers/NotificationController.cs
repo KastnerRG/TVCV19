@@ -1,10 +1,12 @@
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using TvCv19.Frontend.Domain;
 
 namespace TvCv19.Frontend.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/notification")]
     public class NotificationController : Controller
