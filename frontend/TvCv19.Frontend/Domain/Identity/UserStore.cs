@@ -45,7 +45,7 @@ namespace TvCv19.Frontend.Domain.Identity
             cancellationToken.ThrowIfCancellationRequested();
 
             var applicationLogin = await _repository.FindByIdAsync(userId);
-            if (applicationLogin.Enabled)
+            if (applicationLogin?.Enabled ?? false)
             {
                 return applicationLogin;
             }
@@ -60,7 +60,7 @@ namespace TvCv19.Frontend.Domain.Identity
             cancellationToken.ThrowIfCancellationRequested();
 
             var applicationLogin = await _repository.FindByNormalizedUserNameAsync(normalizedUserName);
-            if (applicationLogin.Enabled)
+            if (applicationLogin?.Enabled ?? false)
             {
                 return applicationLogin;
             }
