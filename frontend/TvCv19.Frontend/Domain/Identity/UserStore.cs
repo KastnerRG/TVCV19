@@ -31,7 +31,7 @@ namespace TvCv19.Frontend.Domain.Identity
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            await _repository.DeleteApplicationLoginAsync(user.NormalizedUserName);
+            await _repository.DisableApplicationLoginAsync(user.NormalizedUserName);
 
             return IdentityResult.Success;
         }
@@ -40,18 +40,34 @@ namespace TvCv19.Frontend.Domain.Identity
         {
         }
 
-        public Task<ApplicationLogin> FindByIdAsync(string userId, CancellationToken cancellationToken)
+        public async Task<ApplicationLogin> FindByIdAsync(string userId, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            return _repository.FindByIdAsync(userId);
+            var applicationLogin = await _repository.FindByIdAsync(userId);
+            if (applicationLogin.Enabled)
+            {
+                return applicationLogin;
+            }
+            else
+            {
+                return null;
+            }
         }
 
-        public Task<ApplicationLogin> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken)
+        public async Task<ApplicationLogin> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            return _repository.FindByNormalizedUserNameAsync(normalizedUserName);
+            var applicationLogin = await _repository.FindByNormalizedUserNameAsync(normalizedUserName);
+            if (applicationLogin.Enabled)
+            {
+                return applicationLogin;
+            }
+            else
+            {
+                return null;
+            }    
         }
 
         public Task<string> GetNormalizedUserNameAsync(ApplicationLogin user, CancellationToken cancellationToken)
