@@ -9,9 +9,9 @@ namespace TvCv19.Frontend.Domain.Repositories
     public interface IApplicationLoginRepository
     {
         Task AddApplicationLoginAsync(ApplicationLogin applicationLogin);
-        Task DeleteApplicationLoginAsync(string normalizedUserName);
+        Task DisableApplicationLoginAsync(string normalizedUserName);
         Task<ApplicationLogin> FindByIdAsync(string id);
         Task<ApplicationLogin> FindByNormalizedUserNameAsync(string normalizedUserName);
-        Task UpdateApplicationLoginAsync(ApplicationLogin applicationLogin);
+        Task<ApplicationLogin> UpdateApplicationLoginAsync(ApplicationLogin applicationLogin);
     }
 }
