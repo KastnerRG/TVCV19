@@ -1,8 +1,10 @@
 ﻿using System;
 namespace TvCv19.Frontend.Domain.Models
 {
-    public class Message
+    public class Message : IDbEntity
     {
+        public Message() { }
+
         public Message(string groupId, string message, Physician physician, DateTime date, bool isCareInstruction, bool isAudio, bool isImage, Stats stats, string recieverId)
         {
             GroupId = groupId;
@@ -16,7 +18,7 @@ namespace TvCv19.Frontend.Domain.Models
             ReceiverId = recieverId;
         }
 
-        public string Id { get; set; } = Guid.NewGuid().ToString();
+        public string Id { get; set; } 
         public string GroupId { get; }
         public string Body { get; }
         public string Sender { get; }
@@ -25,10 +27,11 @@ namespace TvCv19.Frontend.Domain.Models
         public bool IsCareInstruction { get; }
         public bool IsAudio { get; }
         public bool IsImage { get; }
-        public Stats Stats { get; }
+        public Stats Stats { get; set; }
     }
-    public class Stats
+    public class Stats : IDbEntity
     {
+        public string Id { get; set; } 
         public string PR { get; set; }
         public string TV { get; set; }
         public string PP { get; set; }

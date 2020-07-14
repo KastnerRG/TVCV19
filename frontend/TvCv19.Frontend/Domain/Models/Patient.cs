@@ -1,8 +1,9 @@
 ﻿using System;
+using TvCv19.Frontend.Domain.Models;
 
 namespace TvCv19.Frontend.Domain
 {
-    public class Patient
+    public class Patient : IDbEntity
     {
         public string Id { get; set; }
         public string Name { get; set; }
@@ -13,9 +14,5 @@ namespace TvCv19.Frontend.Domain
         public string Token { get; set; }
     }
 
- 
-    public enum AdmissionStatus{ Admitted, Discharged }
-
-
- 
+    public enum AdmissionStatus { Admitted = 1, Discharged = 2 }
 }
