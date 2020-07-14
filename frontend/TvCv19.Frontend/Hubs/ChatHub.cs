@@ -20,10 +20,10 @@ namespace TvCv19.Frontend.Hubs
             _messageRepository = messageRepository;
         }
         public Task SubscribeAsync(string patientId) =>
-            this.Groups.AddToGroupAsync(Context.ConnectionId, patientId);
+            Groups.AddToGroupAsync(Context.ConnectionId, patientId);
 
         public Task UnsubscribeAsync(string patientId) =>
-            this.Groups.RemoveFromGroupAsync(Context.ConnectionId, patientId);
+            Groups.RemoveFromGroupAsync(Context.ConnectionId, patientId);
 
         public async Task SendMessageAsync(string patientId, string physicianId, string message, Stats stats, bool isCareInstruction, bool isAudio, bool isImage)
         {
@@ -37,14 +37,17 @@ namespace TvCv19.Frontend.Hubs
         }
     }
 
-    public static class MessageExtensions {
-        public static MessageModel ToMessageModel(this Message m, string id, string physicianId) {
-            
+    public static class MessageExtensions
+    {
+        public static MessageModel ToMessageModel(this Message m, string id, string physicianId)
+        {
+
             return new MessageModel(m, id, physicianId);
         }
     }
 
-    public class MessageModel {
+    public class MessageModel
+    {
         public MessageModel(Message m, string id, string physicianId)
         {
             Id = id;
@@ -59,7 +62,7 @@ namespace TvCv19.Frontend.Hubs
             Date = m.Date;
             ReceiverId = m.ReceiverId;
         }
-   
+
         public string PatientId { get; set; }
         public string PhysicianId { get; }
         public string ReceiverId { get; set; }

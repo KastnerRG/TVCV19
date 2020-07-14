@@ -131,16 +131,16 @@ export class ChatComponent implements OnInit, AfterViewChecked {
 
   getMedia(message: MessageModel): void {
     if (message.isAudio || message.isImage) {
-      const fileName = message.message;
-      if (this.audioCache[fileName]) {
-        this.audioCache[fileName].play();
+      const fileId = message.message;
+      if (this.audioCache[fileId]) {
+        this.audioCache[fileId].play();
         return;
       }
-      this.mediaService.getMedia(fileName).subscribe((blob: Blob) => {
+      this.mediaService.getMedia(fileId).subscribe((blob: Blob) => {
         if (message.isAudio) {
-          this.playAudio(blob, fileName);
+          this.playAudio(blob, fileId);
         } else if (message.isImage) {
-          this.downloadImage(fileName, blob);
+          this.downloadImage(fileId, blob);
         }
       });
     }
@@ -161,8 +161,8 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     const file: File = fileInputEvent.target.files[0];
     this.mediaService
       .sendMedia({ file, fileName: file.name, mimeType: file.type })
-      .subscribe(async () => {
-        await this.sendPictureMessage(file.name);
+      .subscribe(async (x) => {
+        await this.sendPictureMessage(x.id);
       });
   }
 
@@ -182,7 +182,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
             mimeType: 'audio/mpeg',
           })
           .subscribe(async (x) => {
-            await this.sendAudioMessage(x.fileName);
+            await this.sendAudioMessage(x.id);
           });
       });
   }
