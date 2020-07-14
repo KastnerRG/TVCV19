@@ -33,6 +33,9 @@
   <mat-form-field fxFlexAlign="center">
     <mat-label>Care Type</mat-label>
     <select matNativeControl required formControlName="hierarchy">
+      <option disabled>
+        PLEASE SELECT
+      </option>
       <option value="firstLine">Bedside Care</option>
       <option value="secondLine">Physician</option>
       <option value="commander">Commander</option>
@@ -47,6 +50,9 @@
   >
     <mat-label>Supervisor</mat-label>
     <select matNativeControl formControlName="supervisorId">
+      <option disabled>
+        PLEASE SELECT
+      </option>
       <option *ngFor="let physician of physicians" value="{{ physician.id }}">{{
         physician.name
       }}</option>
@@ -61,6 +67,9 @@
   >
     <mat-label>Supervisor</mat-label>
     <select matNativeControl formControlName="supervisorId">
+      <option disabled>
+        PLEASE SELECT
+      </option>
       <option *ngFor="let physician of commanders" value="{{ physician.id }}">{{
         physician.name
       }}</option>

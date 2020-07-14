@@ -1,0 +1,55 @@
+<div class="patient-table">
+
+    <mat-form-field fxFlexAlign="center" appearance="fill">
+      <mat-label>Search</mat-label>
+      <input matInput (keyup)="applyFilter($event)" placeholder="Name">
+    </mat-form-field>
+    
+    <mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+    
+      <!-- Name Column -->
+      <ng-container matColumnDef="name">
+        <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
+        <mat-cell *matCellDef="let person"> {{person.name}} </mat-cell>
+      </ng-container>
+
+      <!-- Location Column -->
+      <ng-container matColumnDef="location">
+        <mat-header-cell *matHeaderCellDef> Location </mat-header-cell>
+        <mat-cell *matCellDef="let person"> {{person.location}} </mat-cell>
+      </ng-container>
+  
+      <!-- ID Column -->
+      <ng-container matColumnDef="id">
+        <mat-header-cell *matHeaderCellDef> ID </mat-header-cell>
+        <mat-cell *matCellDef="let person"> {{ person.id }} </mat-cell>
+      </ng-container>
+    
+      <!-- Role Column -->
+      <ng-container matColumnDef="role">
+        <mat-header-cell *matHeaderCellDef> Role </mat-header-cell>
+        <mat-cell *matCellDef="let person"> Patient </mat-cell>
+      </ng-container>
+  
+      <!-- Emulate Column -->
+      <ng-container matColumnDef="emulate">
+          <mat-header-cell *matHeaderCellDef> Emulate </mat-header-cell>
+          <mat-cell *matCellDef="let person"> 
+              <a mat-raised-button color="primary" routerLink="../patient/live/{{ person.id }}">Emulate</a>
+          </mat-cell>
+      </ng-container>
+      
+      <!-- Delete Column -->
+      <ng-container matColumnDef="delete">
+          <mat-header-cell *matHeaderCellDef> Delete </mat-header-cell>
+          <mat-cell *matCellDef="let person"> 
+              <button (click)="deletePatientRow(person.id)" mat-button color="warn">DELETE</button>
+          </mat-cell>
+      </ng-container>
+    
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    </mat-table>
+  
+  </div>
+  

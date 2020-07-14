@@ -23,7 +23,8 @@ import { CommonModule } from '@angular/common';
 import { PatientFeedComponent } from './patient-feed/patient-feed.component';
 import { FlexModule } from '@angular/flex-layout';
 import { PatientAuthorizationComponent } from './patient-authorization/patient-authorization.component';
-
+import { PatientTableComponent } from './patient-table/patient-table.component';
+import { MatTableModule } from '@angular/material/table';
 
 
 @NgModule({
@@ -35,7 +36,8 @@ import { PatientAuthorizationComponent } from './patient-authorization/patient-a
     RootComponent,
     PatientRegistrationRootComponent,
     PatientFeedComponent,
-    PatientAuthorizationComponent
+    PatientAuthorizationComponent,
+    PatientTableComponent
   ],
   imports: [
     RouterModule.forChild([
@@ -63,7 +65,8 @@ import { PatientAuthorizationComponent } from './patient-authorization/patient-a
     MatOptionModule,
     QRCodeModule,
     FlexModule,
-    SharedModule
+    SharedModule,
+    MatTableModule
   ],
   exports: []
 })

@@ -19,7 +19,7 @@ import { MatListModule } from '@angular/material/list';
 import { UserManagementComponent } from './user-management/user-management.component';
 import { MatDialogModule } from '@angular/material/dialog';
 import { EditUserComponent } from './edit-user/edit-user.component';
-
+import { AdminTableComponent } from './admin-table/admin-table.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +28,8 @@ import { EditUserComponent } from './edit-user/edit-user.component';
     RootComponent,
     AddPatientDeviceComponent,
     UserManagementComponent,
-    EditUserComponent
+    EditUserComponent,
+    AdminTableComponent
   ],
   imports: [
     RouterModule.forChild([
@@ -49,7 +50,9 @@ import { EditUserComponent } from './edit-user/edit-user.component';
     MatSlideToggleModule,
     FlexModule,
     CommonModule,
-    SharedModule
+    SharedModule,
+    MatTableModule,
+    MatListModule
   ],
   exports: [
     AdminComponent,

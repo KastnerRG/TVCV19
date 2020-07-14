@@ -1,0 +1,42 @@
+
+mat-form-field {
+    width: 95vw;
+    position: relative;
+    height: 50px;
+    margin-top: 30px;
+    left: 2.5vw;
+    right: 2.5vw;
+   }
+
+mat-table {
+    width: 95vw;
+    position: relative;
+    height: auto;
+    margin-top: 20px;
+    left: 2.5vw;
+    right: 2.5vw;
+}
+
+
+mat-header-row {
+    height: 30px;
+}
+
+mat-header-cell {
+    flex-direction: column;
+    text-align: center;
+    justify-content: center;
+}
+
+
+mat-cell {
+    overflow: visible;
+    text-align: center;
+    justify-content: center;
+}
+
+
+button {
+margin: 10px 10px 0 0;
+width: 90px;
+}
