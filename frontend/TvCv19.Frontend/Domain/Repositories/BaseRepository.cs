@@ -10,7 +10,7 @@ namespace TvCv19.Frontend.Domain
 
     public class BaseRepository
     {
-        private string _connectionString = "Server=localhost;Database=medecc;Uid=root;Pwd=Password1;";
+        private string _connectionString = "Server=132.239.17.29;Database=medecc;Uid=webuser;Pwd=Fr33Cl1n1c;";
 
         public MySqlConnection GetConnection()
         {
