@@ -17,7 +17,7 @@ namespace TvCv19.DailyCo.Client.Models
 
         public string Name { get; set; }
 
-        public RoomPrivacy Privacy { get; set; }
+        public string Privacy { get; set; }
 
         public string Url { get; set; }
     }

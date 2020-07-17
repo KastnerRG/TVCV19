@@ -10,21 +10,31 @@ import { HttpClientModule } from '@angular/common/http';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { AppToolbarComponent } from './app-toolbar/app-toolbar.component';
 import { MatIconModule } from '@angular/material/icon';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatInputModule } from '@angular/material/input';
+import { EscalatePatientDialog } from './escalate-patient/escalate-patient.dialog';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
     AppComponent,
     RootComponent,
-    AppToolbarComponent
+    AppToolbarComponent,
+    EscalatePatientDialog
   ],
   imports: [
     BrowserModule,
+    CommonModule,
     BrowserAnimationsModule,
     HttpClientModule,
     AppRoutingModule,
     MatListModule,
     MatButtonModule,
     MatToolbarModule,
+    MatInputModule,
+    FormsModule,
+    MatDialogModule,
     MatIconModule
   ],
   providers: [],
