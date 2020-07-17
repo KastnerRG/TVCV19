@@ -1,12 +1,16 @@
 import { Injectable } from '@angular/core';
-
-import { HubConnectionBuilder, HubConnection, LogLevel, HubConnectionState } from '@microsoft/signalr';
+import {
+  HubConnectionBuilder,
+  HubConnection,
+  LogLevel,
+  HubConnectionState,
+} from '@microsoft/signalr';
 import { Subject, Observable } from 'rxjs';
 import { MessageModel } from 'projects/shared/src/public-api';
 import { StatsData } from './patient-stats/patient-stats.dialog';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ChatService {
   private connection: HubConnection;
@@ -18,7 +22,7 @@ export class ChatService {
     this.messages = this.messagesSubject.asObservable();
 
     this.connection = new HubConnectionBuilder()
-      .withUrl("/hubs/chat")
+      .withUrl('/hubs/chat')
       .configureLogging(LogLevel.Information)
       .build();
 
@@ -33,12 +37,31 @@ export class ChatService {
     }
 
     await this.connectAsync();
-    await this.connection.invoke("SubscribeAsync", patientId);
+    await this.connection.invoke('SubscribeAsync', patientId);
   }
 
-  async sendMessageAsync(patientId: string, physicianId: string, message: string, stats: StatsData, isCareInstruction: boolean, isAudio: boolean = false, isImage: boolean = false): Promise<void> {
+  async sendMessageAsync(
+    patientId: string,
+    physicianId: string,
+    message: string,
+    stats?: StatsData,
+    isCareInstruction?: boolean,
+    isAudio?: boolean,
+    isImage?: boolean,
+    isEscalation?: boolean
+  ): Promise<void> {
     await this.connectAsync();
-    await this.connection.invoke("SendMessageAsync", patientId, physicianId, message, stats, isCareInstruction, isAudio, isImage);
+    await this.connection.invoke(
+      'SendMessageAsync',
+      patientId,
+      physicianId,
+      message,
+      stats,
+      isCareInstruction,
+      isAudio,
+      isImage,
+      isEscalation
+    );
   }
 
   private async connectAsync(): Promise<void> {

@@ -8,6 +8,7 @@
   `is_audio` tinyint(1) DEFAULT NULL,
   `is_image` tinyint(1) DEFAULT NULL,
   `stats_id` varchar(36) DEFAULT NULL,
+  `is_escalation` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) 
 

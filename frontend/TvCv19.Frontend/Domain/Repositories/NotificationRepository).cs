@@ -13,8 +13,8 @@ namespace TvCv19.Frontend.Domain
         {
             notifiaction.Id = Guid.NewGuid().ToString().Replace("-", string.Empty);
             var sql = $@"INSERT INTO medecc.notification
-                         (id,sender_id,reciever_id,patient_id,link,date)
-                         VALUES(@Id, @SenderId, @RecieverId, @PatientId, @Link,@Date)";
+                         (id,reciever_id,patient_id,link,date, is_escalation)
+                         VALUES(@Id, @RecieverId, @PatientId, @Link,@Date, @IsEscalation)";
             await ExecuteAsync<Notification>(sql, notifiaction);
             return notifiaction;
         }
@@ -31,7 +31,7 @@ namespace TvCv19.Frontend.Domain
         public async Task<IEnumerable<Notification>> GetNotifications(string id)
         {
 
-            var sql = $@"SELECT id, sender_id as senderId, reciever_id as recieverId, patient_id as patientId, link, date
+            var sql = $@"SELECT id, reciever_id as recieverId, patient_id as patientId, link, date, is_escalation as isEscalation
                          FROM medecc.notification
                          WHERE reciever_id = @id";
             var param = new { id };

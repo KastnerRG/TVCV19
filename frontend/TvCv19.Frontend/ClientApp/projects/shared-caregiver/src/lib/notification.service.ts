@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Subject, throwError, Observable } from 'rxjs';
+import { Subject, throwError, Observable, Subscription } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 
 @Injectable({
@@ -8,20 +8,22 @@ import { catchError } from 'rxjs/operators';
 })
 export class NotificationService {
   notifications = new Subject<Notification>();
+  private chatserviceSubscription: Array<Subscription> = [];
   constructor(private http: HttpClient) {}
 
-  async addNotification(notification: Notification) : Promise<void> {
-    notification = await this.http
-      .post<Notification>('/api/notification', notification)
-      .pipe(catchError(this.handleError)).toPromise();
-    this.notifications.next(notification);
+  unsubscribe() {
+    this.chatserviceSubscription.forEach((s) => s.unsubscribe());
   }
-
-  async subscribeAsync(recieverId: string) : Promise<void> {
-    const notifications = await this.get(recieverId).toPromise();
-    for (const notification of notifications) {
-      this.notifications.next(notification)
-    }
+  async subscribeAsync(recieverId: string): Promise<void> {
+    // todo remove and get from service 
+    // get all unread notifications every second
+    setInterval(() => {
+      this.get(recieverId).subscribe((notifications) => {
+        for (const notification of notifications) {
+          this.notifications.next(notification);
+        }
+      });
+    }, 1000);
   }
 
   private get(recieverId: string): Observable<Array<Notification>> {
@@ -54,10 +56,10 @@ export class NotificationService {
 
 export interface Notification {
   id?: string;
-  senderId?: string;
   recieverId?: string;
   patientId?: string;
   link?: string;
   message?: string;
   date?: Date;
+  isEscalation?: boolean;
 }

@@ -14,7 +14,11 @@ namespace TvCv19.DailyCo.Client
 
         private class RoomList
         {
-            public Room[] Data { get; set; }
+            public Rooms[] Data { get; set; }
+        }
+
+        public class Rooms {
+            public string Name { get; set; }
         }
 
         private readonly HttpClient _httpClient;
@@ -61,7 +65,7 @@ namespace TvCv19.DailyCo.Client
 
         public Task DeleteRoomAsync(Room room) => DeleteRoomAsync(room.Name);
 
-        public async Task<IEnumerable<Room>> GetRoomsAsync()
+        public async Task<IEnumerable<Rooms>> GetRoomsAsync()
         {
             var response = await _httpClient.GetAsync($"{DAILY_URL}/rooms");
             return JsonSerializer.Deserialize<RoomList>(await response.Content.ReadAsStringAsync(), serializerOptions).Data;
