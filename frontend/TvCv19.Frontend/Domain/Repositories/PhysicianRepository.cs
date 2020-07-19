@@ -65,26 +65,31 @@ namespace TvCv19.Frontend.Domain.Repositories
         public async Task<CarerHierarchyTree> GetHeirarchyTree(string id)
         {
             var directReports = await GetPhysicianTeam(id);
-            if(!directReports.Any()) {
+            if (!directReports.Any())
+            {
                 var supervisorId = (await GetPhysicianAsync(id)).SupervisorId;
                 var supervisor = (await GetPhysiciansAsync()).Where(p => p.Id == supervisorId).FirstOrDefault();
-                return new CarerHierarchyTree() {
+                return new CarerHierarchyTree()
+                {
                     Name = "Supervisor",
-                    Children = new [] {new CarerHierarchyTree() {
+                    Children = new[] {new CarerHierarchyTree() {
                         Name = supervisor.Name
                     }}
                 };
             }
-            var tree = new CarerHierarchyTree() {
+            var tree = new CarerHierarchyTree()
+            {
                 Name = "Care Team"
             };
-            var children = (await Task.WhenAll(directReports.Select(async r => new CarerHierarchyTree() {
+            var children = (await Task.WhenAll(directReports.Select(async r => new CarerHierarchyTree()
+            {
                 Name = r.Name,
                 Hierarchy = r.Hierarchy,
-                Children = (await GetPhysicianTeam(r.Id)).Select(bc => new CarerHierarchyTree() {
+                Children = (await GetPhysicianTeam(r.Id)).Select(bc => new CarerHierarchyTree()
+                {
                     Name = bc.Name,
                     Hierarchy = bc.Hierarchy
-                }) 
+                })
             })));
             tree.Children = children;
             return tree;

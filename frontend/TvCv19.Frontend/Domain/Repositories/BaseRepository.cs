@@ -36,13 +36,14 @@ namespace TvCv19.Frontend.Domain
         {
             using var connection = GetConnection();
    
+
             await connection.OpenAsync();
             return await connection.QueryFirstOrDefaultAsync<T>(sql, param);
 
         }
 
-        
+
     }
 
-    
+
 }

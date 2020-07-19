@@ -4,21 +4,24 @@ import {
   Notification,
   NotificationService,
 } from 'projects/shared-caregiver/src/lib/notification.service';
+import { HierarchyLevel, PatientModel, PhysicianModel } from 'projects/shared/src/public-api';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ToolbarService {
-  toolBarData = new BehaviorSubject<ToolBarData>({
-    title: ''
-  });
+  toolBarData = new Subject<ToolBarData>();
 
   deleteNotification: Subject<Notification> = new Subject<Notification>();
 
-  constructor() { }
+  constructor(private notificationService: NotificationService) {
+    this.deleteNotification.subscribe(async n => {
+      this.notificationService.delete(n.id).toPromise();
+    })
+   }
  
-  setToolbarData(data: ToolBarData): void {
-    this.toolBarData.next(data);
+  setToolbarData(data: ToolBarData) {
+        this.toolBarData.next(data);
   }
 }
 
@@ -27,8 +30,9 @@ export interface ToolBarData {
   menu?: Array<MenuLinks>;
   back?: boolean;
   notificationReceiverId?: string;
-
+  escalation?: Escalation
 }
+
 export interface MenuLinks {
   link: string;
   title: string;
@@ -36,4 +40,9 @@ export interface MenuLinks {
 
 export interface Message {
   link?: string;
+}
+
+export interface Escalation {
+  patient: PatientModel
+  physician: PhysicianModel
 }

@@ -1,40 +1,28 @@
-.bedside {
-  font-weight: bold;
-  font-size: 24px;
-  &__patient-list {
-    &__patient {
-      padding-top: 20px;
-      &__row {
-        padding: 0 30px;
-        &:first-of-type {
-          margin-top: 60px;
-        }
-      }
-      &__name {
-        margin-right: 12px;
-        padding-top: 12px;
-      }
-    }
-  }
-}
-qrcode {
-  display: flex;
-  justify-content: center;
-}
-
-.physician {
+.carer-patient-list {
   padding: 30px 10px;
-  &__patient-list {
-    &__patient {
-      padding: 0 25px;
-      font-size: 16px;
-      margin-top: 20px;
-      &:first-of-type {
-        margin-top: 60px;
-      }
-      &__avatar {
-         padding-right: 15px;
-      }
+  .patient {
+    padding: 0 25px;
+    font-size: 16px;
+    margin-top: 20px;
+    &:first-of-type {
+      margin-top: 60px;
+    }
+    &__name {
+      align-self: center;
+    }
+    &__avatar {
+      margin-right: 20px;
+      height: 40px;
+      width: 40px;
+    }
+    .alert-high {
+      background: url("/assets/img/avatar-alert-high.png") no-repeat;
+    }
+    .alert-medium {
+      background: url("/assets/img/avatar-alert-medium.png") no-repeat;
+    }
+    .alert-low {
+      background: url("/assets/img/avatar.png") no-repeat;
     }
   }
 }

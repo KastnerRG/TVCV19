@@ -21,7 +21,7 @@ namespace TvCv19.Frontend.Domain
         public Task<Notification> AddNotification(Notification notifiaction)
         {
             _notifications.Add(notifiaction);
-            
+
             return Task.FromResult(notifiaction);
         }
 
@@ -37,13 +37,14 @@ namespace TvCv19.Frontend.Domain
         }
     }
 
-    public class Notification : IDbEntity {
+    public class Notification : IDbEntity
+    {
         public string Id { get; set; }
-        public string SenderId { get; set; }
         public string RecieverId { get; set; }
         public string PatientId { get; set; }
         public string Link { get; set; }
         public string Message { get; set; }
         public DateTime Date { get; set; }
+        public bool IsEscalation { get; set; }
     }
 }

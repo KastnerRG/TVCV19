@@ -7,7 +7,7 @@
       (click)="getMedia(chatMessage)"
     >
       <span>{{ chatMessage.name }} </span>
-      <div *ngIf="!chatMessage.stats" [ngClass]="{'recording' : chatMessage.isAudio, 'image-upload' : chatMessage.isImage}" class="messages__message__text">{{chatMessage.isAudio || chatMessage.isImage ? '' : chatMessage.message }}</div>
+      <div *ngIf="!chatMessage.stats" [ngClass]="{'recording' : chatMessage.isAudio, 'image-upload' : chatMessage.isImage, 'escalate' : chatMessage.isEscalation}" class="messages__message__text">{{chatMessage.isAudio || chatMessage.isImage ? '' : chatMessage.message }}</div>
       <div *ngIf="chatMessage.stats" class="stats" fxLayout="column">
         <img src="/assets/img/imgupload.png" >
         <p>respiratory rate (RR) {{chatMessage.stats.pr}}</p>

@@ -80,6 +80,9 @@ export class ChatComponent implements OnInit, AfterViewChecked {
       this.physicianId,
       this.messageToSend,
       null,
+      false,
+      false,
+      false,
       false
     );
 
@@ -94,6 +97,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
       null,
       false,
       true,
+      false,
       false
     );
   }
@@ -106,7 +110,8 @@ export class ChatComponent implements OnInit, AfterViewChecked {
       null,
       false,
       false,
-      true
+      true,
+      false
     );
   }
 
@@ -116,6 +121,9 @@ export class ChatComponent implements OnInit, AfterViewChecked {
       this.physicianId,
       this.messageToSend,
       stats,
+      false,
+      false,
+      false,
       false
     );
   }

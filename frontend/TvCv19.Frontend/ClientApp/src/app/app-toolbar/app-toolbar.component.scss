@@ -12,3 +12,11 @@ mat-toolbar {
     justify-content: space-between;
   }
 }
+
+.escalate {
+    height: 20px;
+}
+
+.de-escalate {
+  transform: rotate(180deg);
+}
