@@ -12,4 +12,5 @@ export interface MessageModel {
     receiverId: string;
     isCareInstruction: boolean;
     isAudio: boolean;
+    isEscalation: boolean;
   }

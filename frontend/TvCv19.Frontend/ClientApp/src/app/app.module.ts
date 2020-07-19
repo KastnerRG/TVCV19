@@ -15,17 +15,23 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatDialogModule } from '@angular/material/dialog';
+import { EscalatePatientDialog } from './escalate-patient/escalate-patient.dialog';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
     AppComponent,
     RootComponent,
     AppToolbarComponent,
-    LoginComponent
+    LoginComponent,
+    EscalatePatientDialog
   ],
   imports: [
     ReactiveFormsModule,
     BrowserModule,
+    CommonModule,
     BrowserAnimationsModule,
     HttpClientModule,
     AppRoutingModule,
@@ -35,7 +41,9 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     MatIconModule,
     MatFormFieldModule,
     MatInputModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    FormsModule,
+    MatDialogModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

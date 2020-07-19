@@ -14,17 +14,20 @@ namespace TvCv19.Frontend.Domain.Repositories
         Task<Media> GetMedia(string id);
     }
 
-    public class Media : IDbEntity {
+    public class Media : IDbEntity
+    {
         public string Id { get; set; }
         public string FileName { get; set; }
         public byte[] File { get; set; }
         public string MimeType { get; set; }
     }
 
-    public static class MediaMessageExtensions {
-        public static Media ToMedia(this MediaMessage message) {
+    public static class MediaMessageExtensions
+    {
+        public static Media ToMedia(this MediaMessage message)
+        {
             IFormFile recording = message.File;
-            var media = new Media(); 
+            var media = new Media();
             media.FileName = message.FileName;
             media.MimeType = message.MimeType;
             using (var ms = new MemoryStream())

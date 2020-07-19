@@ -3,9 +3,9 @@ namespace TvCv19.Frontend.Domain.Models
 {
     public class Message : IDbEntity
     {
+        // needed for db
         public Message() { }
-
-        public Message(string groupId, string message, Physician physician, DateTime date, bool isCareInstruction, bool isAudio, bool isImage, Stats stats, string recieverId)
+        public Message(string groupId, string message, Physician physician, DateTime date, bool isCareInstruction, bool isAudio, bool isImage, Stats stats, string recieverId, bool isEscalation)
         {
             GroupId = groupId;
             Body = message;
@@ -16,6 +16,7 @@ namespace TvCv19.Frontend.Domain.Models
             IsImage = isImage;
             Stats = stats;
             ReceiverId = recieverId;
+            IsEscalation = isEscalation;
         }
 
         public string Id { get; set; } 
@@ -23,6 +24,7 @@ namespace TvCv19.Frontend.Domain.Models
         public string Body { get; }
         public string Sender { get; }
         public string ReceiverId { get; set; }
+        public bool IsEscalation { get; set; }
         public DateTime Date { get; }
         public bool IsCareInstruction { get; }
         public bool IsAudio { get; }
