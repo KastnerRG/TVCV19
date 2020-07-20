@@ -1,4 +1,4 @@
-CREATE DATABASE medecc
+CREATE DATABASE medecc;
 
   CREATE TABLE `medecc`.`patient` (
   `id` varchar(36) NOT NULL,
