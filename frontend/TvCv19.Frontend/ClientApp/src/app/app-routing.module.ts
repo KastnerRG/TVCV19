@@ -12,7 +12,7 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'admin', component: AdminComponent, canActivate: [AuthorizationGuard], loadChildren: 'projects/admin/src/public-api#AdminModule' },
   { path: 'caregiver', component: BedsideComponent, canActivate: [AuthorizationGuard], loadChildren: 'projects/bedside/src/public-api#BedsideModule'  },
-  { path: 'patient', component: PatientComponent, canActivate: [AuthorizationGuard], loadChildren: 'projects/patient/src/public-api#PatientModule' },
+  { path: 'patient', component: PatientComponent, loadChildren: 'projects/patient/src/public-api#PatientModule' },
   { path: 'physician', component: PhysicianComponent, canActivate: [AuthorizationGuard], loadChildren: 'projects/physician/src/public-api#PhysicianModule' },
   { path: '', canActivate: [AuthorizationGuard], component: RootComponent },
   { path: 'commander', canActivate: [AuthorizationGuard], component: CommanderRootComponent },

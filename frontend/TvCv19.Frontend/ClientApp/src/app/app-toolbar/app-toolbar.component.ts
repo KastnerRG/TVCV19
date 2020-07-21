@@ -11,7 +11,7 @@ import {
   EscalationData,
 } from '../escalate-patient/escalate-patient.dialog';
 import { MatDialog } from '@angular/material/dialog';
-import { PatientService, HierarchyLevel } from 'projects/shared/src/public-api';
+import { PatientService, HierarchyLevel, AuthorizationService } from 'projects/shared/src/public-api';
 import { ChatService } from 'projects/shared-caregiver/src/lib/chat.service';
 
 @Component({
@@ -30,7 +30,8 @@ export class AppToolbarComponent implements OnInit {
     private router: Router,
     private notificationService: NotificationService,
     private patientService: PatientService,
-    private chatService: ChatService
+    private chatService: ChatService,
+    private authorizationService: AuthorizationService
   ) {
     this.toolbarService.toolBarData.subscribe(async (d) => {
       this.data = d;
@@ -129,5 +130,9 @@ export class AppToolbarComponent implements OnInit {
       this.notification = undefined;
       this.toolbarService.deleteNotification.next(this.notification);
       this.router.navigateByUrl(link);
+  }
+
+  logout() {
+    this.authorizationService.logout().subscribe(x => location.href = '/');
   }
 }

@@ -22,7 +22,7 @@ namespace TvCv19.Frontend.Domain.Identity
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
 
         public Task<ApplicationRole> FindByIdAsync(string roleId, CancellationToken cancellationToken)
