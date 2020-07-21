@@ -23,4 +23,8 @@ export class AuthorizationService {
         map(data => data as LoginResult)
       );
   }
+
+  logout() {
+    return this.httpClient.post('/api/logout', {});
+  }
 }

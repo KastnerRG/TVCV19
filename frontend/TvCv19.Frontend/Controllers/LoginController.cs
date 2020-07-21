@@ -13,7 +13,6 @@ using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
 namespace TvCv19.Frontend.Controllers
 {
-    [Route("api/login")]
     [ApiController]
     public class LoginController : ControllerBase
     {
@@ -24,13 +23,24 @@ namespace TvCv19.Frontend.Controllers
             this.signInManager = signInManager;
         }
 
+        [Route("api/login")]
         [HttpGet]
         public bool CheckLoggedIn() =>
             User.Identity.IsAuthenticated;
 
+        [Route("api/login")]
         [HttpPost]
         public Task<SignInResult> LoginAsync(LoginModel loginModel) =>
             signInManager.PasswordSignInAsync(loginModel.UserName, loginModel.Password, loginModel.RememberMe, true);
+
+        [Route("api/logout")]
+        [HttpPost]
+        public IActionResult Logout()
+        {
+            Response.Cookies.Delete(".AspNetCore.Identity.Application");
+
+            return Ok();
+        }
     }
 
     public class LoginModel
