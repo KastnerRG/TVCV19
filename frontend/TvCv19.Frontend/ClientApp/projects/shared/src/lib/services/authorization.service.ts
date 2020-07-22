@@ -29,7 +29,7 @@ export class AuthorizationService {
       responseType: 'text'
     }).pipe(
       map(token => {
-        localStorage.setItem(this.tokenName, token);
+        this.setToken(token);
 
         return token;
       })
@@ -38,5 +38,9 @@ export class AuthorizationService {
 
   logout() {
     localStorage.removeItem(this.tokenName);
+  }
+
+  setToken(token: string) {
+    localStorage.setItem(this.tokenName, token);
   }
 }

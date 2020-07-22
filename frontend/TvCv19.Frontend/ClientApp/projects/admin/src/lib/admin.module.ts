@@ -12,18 +12,21 @@ import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { FlexModule } from '@angular/flex-layout';
 import { CommonModule } from '@angular/common';
+import { AddPatientDeviceComponent } from './add-patient-device/add-patient-device.component';
 
 
 @NgModule({
   declarations: [
     AdminComponent,
     PhysicianAdminComponent,
-    RootComponent
+    RootComponent,
+    AddPatientDeviceComponent
   ],
   imports: [
     RouterModule.forChild([
       { path: '', component: RootComponent },
-      { path: 'physician', component: PhysicianAdminComponent }
+      { path: 'physician', component: PhysicianAdminComponent },
+      { path: 'add-patient-device', component: AddPatientDeviceComponent }
     ]),
     ReactiveFormsModule,
     MatFormFieldModule,
