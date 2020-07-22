@@ -22,6 +22,7 @@ import { MatOptionModule } from '@angular/material/core';
 import { CommonModule } from '@angular/common';
 import { PatientFeedComponent } from './patient-feed/patient-feed.component';
 import { FlexModule } from '@angular/flex-layout';
+import { PatientAuthorizationComponent } from './patient-authorization/patient-authorization.component';
 
 
 
@@ -33,11 +34,13 @@ import { FlexModule } from '@angular/flex-layout';
     CameraSetupComponent,
     RootComponent,
     PatientRegistrationRootComponent,
-    PatientFeedComponent
+    PatientFeedComponent,
+    PatientAuthorizationComponent
   ],
   imports: [
     RouterModule.forChild([
       { path: '', component: RootComponent },
+      { path: 'authorization', component: PatientAuthorizationComponent },
       { path: 'live/:id', component: PatientFeedComponent},
       { path: 'registration', component: PatientRegistrationRootComponent, children: [
         { path: '', component: PatientRegistrationComponent },

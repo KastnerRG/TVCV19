@@ -17,3 +17,5 @@ export * from './lib/services/physician.service';
 export * from './lib/services/authorization.service';
 
 export * from './lib/guards/authorization.guard';
+
+export * from './lib/interceptors/token.interceptor';

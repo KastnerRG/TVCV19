@@ -133,6 +133,8 @@ export class AppToolbarComponent implements OnInit {
   }
 
   logout() {
-    this.authorizationService.logout().subscribe(x => location.href = '/');
+    this.authorizationService.logout();
+
+    location.href = '/';
   }
 }
