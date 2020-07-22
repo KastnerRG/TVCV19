@@ -16,18 +16,15 @@ export class LoginComponent implements OnInit {
   ngOnInit(): void {
     this.loginFormGroup = new FormGroup({
       userName: new FormControl(''),
-      password: new FormControl(''),
-      rememberMe: new FormControl(false)
-    })
+      password: new FormControl('')
+    });
   }
 
   login() {
     this.authService
       .login(this.loginFormGroup.value)
-      .subscribe(result => {
-        if (result.succeeded) {
-          location.href = '/';
-        }
+      .subscribe(_ => {
+        location.href = '/';
       });
   }
 

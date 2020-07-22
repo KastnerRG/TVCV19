@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,7 @@ using TvCv19.Frontend.Domain.Repositories;
 
 namespace TvCv19.Frontend.Hubs
 {
+    [Authorize]
     public class ChatHub : Hub
     {
         private readonly IPhysicianRepository _physicianRepository;
