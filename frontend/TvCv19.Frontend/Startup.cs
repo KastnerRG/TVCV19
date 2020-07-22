@@ -141,6 +141,7 @@ namespace TvCv19.Frontend
                     pattern: "{controller}/{action=Index}/{id?}");
 
                 endpoints.MapHub<ChatHub>("/hubs/chat");
+                endpoints.MapHub<DeviceAuthorizationHub>("/hubs/device-authorization");
             });
 
             app.UseSpa(spa =>
