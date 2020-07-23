@@ -20,6 +20,7 @@ import { EscalatePatientDialog } from './escalate-patient/escalate-patient.dialo
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TokenInterceptor } from 'projects/shared/src/public-api';
+import { MatTableModule } from '@angular/material/table';
 
 @NgModule({
   declarations: [
@@ -45,6 +46,7 @@ import { TokenInterceptor } from 'projects/shared/src/public-api';
     MatCheckboxModule,
     FormsModule,
     MatDialogModule,
+    MatTableModule
   ],
   providers: [
     {

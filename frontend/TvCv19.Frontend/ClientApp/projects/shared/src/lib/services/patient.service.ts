@@ -54,6 +54,16 @@ export class PatientService {
       .pipe(catchError(this.handleError));
   }
 
+  dischargePatient(id: string): Observable<any> {
+    return this.http
+      .post(`/api/patient/discharge/${id}`, {
+        headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+        }),
+      })
+      .pipe(catchError(this.handleError));
+  }
+
   private handleError(error: HttpErrorResponse) {
     if (error.error instanceof ErrorEvent) {
       // A client-side or network error occurred. Handle it accordingly.

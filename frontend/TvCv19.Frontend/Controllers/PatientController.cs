@@ -81,7 +81,7 @@ namespace TvCv19.Frontend.Controllers
 
             await _roomClient.DeleteRoomAsync(_id);
 
-            return Ok(_id);
+            return Ok();
         }
 
         [HttpGet("{id}/messages")]

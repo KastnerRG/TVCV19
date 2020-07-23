@@ -31,7 +31,7 @@ export class PhysicianService {
       })
       .pipe(catchError(this.handleError));
   }
-  ß
+  
   getHierarchy(id: string): Observable<CarerNode> {
     return this.http
       .get<CarerNode>(`/api/physician/hierarchy/${id}`, {
