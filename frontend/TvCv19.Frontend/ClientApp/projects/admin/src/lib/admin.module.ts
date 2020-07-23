@@ -13,6 +13,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { FlexModule } from '@angular/flex-layout';
 import { CommonModule } from '@angular/common';
 import { AddPatientDeviceComponent } from './add-patient-device/add-patient-device.component';
+import { MatListModule } from '@angular/material/list';
 
 
 @NgModule({
@@ -34,6 +35,7 @@ import { AddPatientDeviceComponent } from './add-patient-device/add-patient-devi
     MatButtonModule,
     MatInputModule,
     MatIconModule,
+    MatListModule,
     FlexModule,
     CommonModule,
     SharedModule
