@@ -6,7 +6,7 @@ import { MatListModule } from '@angular/material/list';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { BedsideRootComponent } from './bedside-root/bedside-root.component';
-import { PhysicianHierarchyComponent, CarerRouteResolverService, PatientDetailComponent, SharedCaregiverModule, getCaregiverRoute } from 'projects/shared-caregiver/src/public-api';
+import { PhysicianHierarchyComponent, CarerRouteResolverService, PatientDetailComponent, SharedCaregiverModule, getCaregiverRoute, SharedCaregiverComponent } from 'projects/shared-caregiver/src/public-api';
 
 
 
@@ -18,7 +18,7 @@ import { PhysicianHierarchyComponent, CarerRouteResolverService, PatientDetailCo
   ],
   imports: [
     CommonModule,
-    RouterModule.forChild(getCaregiverRoute(RootComponent, BedsideRootComponent)),
+    RouterModule.forChild(getCaregiverRoute(RootComponent, SharedCaregiverComponent)),
     MatListModule,
     MatButtonModule,
     SharedCaregiverModule

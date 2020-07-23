@@ -10,9 +10,10 @@ import { HierarchyLevel, PatientModel, PhysicianModel } from 'projects/shared/sr
   providedIn: 'root',
 })
 export class ToolbarService {
+  private isOpen: boolean; 
   toolBarData = new Subject<ToolBarData>();
-
   deleteNotification: Subject<Notification> = new Subject<Notification>();
+  menuClick: Subject<MenuState> = new Subject<MenuState>(); 
 
   constructor(private notificationService: NotificationService) {
     this.deleteNotification.subscribe(async n => {
@@ -22,6 +23,11 @@ export class ToolbarService {
  
   setToolbarData(data: ToolBarData) {
         this.toolBarData.next(data);
+  }
+
+  onMenuClick() {
+    this.isOpen = !this.isOpen;
+    this.menuClick.next({isOpen: this.isOpen})
   }
 }
 
@@ -45,4 +51,8 @@ export interface Message {
 export interface Escalation {
   patient: PatientModel
   physician: PhysicianModel
+}
+
+export interface MenuState {
+  isOpen: boolean
 }

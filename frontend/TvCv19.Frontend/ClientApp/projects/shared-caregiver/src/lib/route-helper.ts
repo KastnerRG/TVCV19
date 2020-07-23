@@ -11,16 +11,56 @@ import { PatientListComponent } from './patient-list/patient-list.component';
 import { ChangeShiftRouteResolverService } from './change-shift/change-shift-route-resolver.service';
 import { PatientDetailRouteResolverService } from './patient-detail/patient-detail-route-resolver.service';
 import { CarerHierarchyResolverService } from './physician-hierarchy/carer-hierarchy-resolver.service';
+import { CarerMenuComponent } from './carer-menu/carer-menu.component';
 
-export function getCaregiverRoute(rootComponent: Type<any>, caregiverRootComponent: Type<any>): Routes {
-    return [
-        { path: '', component: rootComponent }, 
-        { path: ':id', component: caregiverRootComponent, children: [
-            { path: '',
-                component: HierarchyComponent,
-                resolve: {
-                    model: CarerHierarchyResolverService
-                }
+export function getCaregiverRoute(
+  rootComponent: Type<any>,
+  caregiverRootComponent: Type<any>
+): Routes {
+  return [
+    { path: '', component: rootComponent },
+    {
+      path: ':id',
+      component: caregiverRootComponent,
+      children: [
+        {
+          path: '',
+          component: HierarchyComponent,
+          resolve: {
+            model: CarerHierarchyResolverService,
+          },
+        },
+        {
+          path: 'patients',
+          component: PatientListComponent,
+          resolve: {
+            model: CarerRouteResolverService,
+          },
+        },
+        {
+          path: 'change-shift',
+          component: ChangeShiftComponent,
+          resolve: {
+            model: ChangeShiftRouteResolverService,
+          },
+        },
+        {
+          path: 'menu',
+          component: CarerMenuComponent,
+          resolve: {
+            model: CarerRouteResolverService,
+          },
+        },
+        {
+          path: 'patient/:id',
+          component: caregiverRootComponent,
+          children: [
+            {
+              path: '',
+              component: PatientDetailComponent,
+              resolve: {
+                model: PatientDetailRouteResolverService,
+              },
             },
             {
               path: 'chat',
