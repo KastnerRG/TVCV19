@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -49,6 +50,7 @@ namespace TvCv19.Frontend.Controllers
             return Ok(token);
         }
 
+        [Authorize]
         [Route("api/device/patient/{token}")]
         [HttpPut]
         public async Task<IActionResult> EndRegisterPatientDeviceAsync(string token, [FromBody]EndRegisterPatientDeviceModel model)

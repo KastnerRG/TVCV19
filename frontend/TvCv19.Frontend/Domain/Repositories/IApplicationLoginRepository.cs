@@ -12,6 +12,7 @@ namespace TvCv19.Frontend.Domain.Repositories
         Task DisableApplicationLoginAsync(string normalizedUserName);
         Task<ApplicationLogin> FindByIdAsync(string id);
         Task<ApplicationLogin> FindByNormalizedUserNameAsync(string normalizedUserName);
+        Task<IEnumerable<ApplicationLogin>> GetApplicationLoginsAsync();
         Task<ApplicationLogin> UpdateApplicationLoginAsync(ApplicationLogin applicationLogin);
     }
 }
