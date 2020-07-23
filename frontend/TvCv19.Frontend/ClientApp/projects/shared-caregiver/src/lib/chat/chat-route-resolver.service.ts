@@ -26,7 +26,7 @@ export class ChatRouteResolverService {
         if(patient){
           return this.physicianService.getPhysician(physicianId).pipe(
             mergeMap(physician => {
-               this.toolbarService.setToolbarData({menu: undefined, back: true, title: `${patient.name} (${physician.name})`})
+               this.toolbarService.setToolbarData({back: true, title: `${patient.name}`, escalation: {patient: patient, physician: physician}})
               return this.patientService.getMessages(patientId).pipe(
                 mergeMap((messages) => {
                   if (messages) {

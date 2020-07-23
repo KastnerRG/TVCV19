@@ -35,6 +35,7 @@ namespace TvCv19.Frontend.Domain
         public async Task<T> GetFirstOrDefaultAsync<T>(string sql, object param) where T : IDbEntity
         {
             using var connection = GetConnection();
+   
 
             await connection.OpenAsync();
             return await connection.QueryFirstOrDefaultAsync<T>(sql, param);

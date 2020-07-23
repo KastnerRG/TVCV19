@@ -13,6 +13,6 @@ namespace TvCv19.Frontend.Domain
         public AdmissionStatus AdmissionStatus { get; set; }
         public string Token { get; set; }
     }
-
-    public enum AdmissionStatus { Admitted = 1, Discharged = 2 }
+ 
+    public enum AdmissionStatus{ Admitted = 1, Discharged = 2 }
 }

@@ -1,6 +1,6 @@
 <mat-toolbar color="primary">
-  <mat-toolbar-row>
-    <button *ngIf="data.menu" routerLink="/" (click)="homeClick()" mat-icon-button>
+  <mat-toolbar-row *ngIf="data">
+    <button *ngIf="data.menu" (click)="homeClick()" mat-icon-button>
       <mat-icon>menu</mat-icon>
     </button>
     <button (click)="back()" *ngIf="data.back" mat-icon-button>
@@ -8,7 +8,13 @@
     </button>
     <span class="title">{{data.title}}</span>
     <span>
-    <img *ngIf="notifications.length > 0" (click)="noticationClick()" src="/assets/img/toolbar-message.png">
+    <img *ngIf="notification" (click)="noticationClick()" src="/assets/img/toolbar-message.png">
+    </span>
+    <span *ngIf="data.escalation" (click)="escalate()">
+      <img class="escalate" [ngClass]="{'de-escalate' : !isEscalate()}" src="/assets/img/escalate.png">
     </span>
   </mat-toolbar-row>
+  <span>
+    <button mat-button (click)="logout()">Logout</button>
+  </span>
 </mat-toolbar>

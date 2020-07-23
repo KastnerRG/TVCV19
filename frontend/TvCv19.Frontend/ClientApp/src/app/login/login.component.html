@@ -1,0 +1,20 @@
+<form [formGroup]='loginFormGroup' (ngSubmit)="login()">
+    <div>
+        <mat-form-field>
+            <mat-label>User Name</mat-label>
+            <input formControlName="userName" matInput>
+        </mat-form-field>
+    </div>
+
+    <div>
+        <mat-form-field>
+            <mat-label>Password</mat-label>
+            <input formControlName="password" type="password" matInput>
+        </mat-form-field>
+    </div>
+
+    <div>
+        <a routerLink="/patient/authorization" mat-button>PATIENT</a>
+        <button type="submit" mat-button>LOGIN</button>
+    </div>
+</form>

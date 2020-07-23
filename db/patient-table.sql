@@ -1,4 +1,4 @@
-CREATE DATABASE medecc
+CREATE DATABASE medecc;
 
   CREATE TABLE `medecc`.`patient` (
   `id` varchar(36) NOT NULL,
@@ -7,7 +7,8 @@ CREATE DATABASE medecc
   `location` varchar(45) NOT NULL,
   `admission_status` enum('Admitted','Discharged') NOT NULL,
   `age` int DEFAULT NULL,
+  `escalation_level` int DEFAULT NULL,
   `date_of_birth` date DEFAULT NULL,
-  `token` varchar(500) NOT NULL,
+  `token` varchar(500) DEFAULT NULL,
   PRIMARY KEY (`id`)
 )
