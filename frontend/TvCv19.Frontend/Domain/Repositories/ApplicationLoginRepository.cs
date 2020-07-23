@@ -39,9 +39,16 @@ namespace TvCv19.Frontend.Domain.Repositories
             return GetFirstOrDefaultAsync<ApplicationLogin>(sql, new { normalized_user_name = normalizedUserName });
         }
 
+        public Task<IEnumerable<ApplicationLogin>> GetApplicationLoginsAsync()
+        {
+            var sql = "SELECT id, user_name as userName, normalized_user_name as normalizedUserName, password_hash as passwordHash, enabled FROM `medecc`.`application-login`";
+
+            return GetAsync<ApplicationLogin>(sql, null);
+        }
+
         public async Task<ApplicationLogin> UpdateApplicationLoginAsync(ApplicationLogin applicationLogin)
         {
-            var sql = @$"UPDATE medecc.application-login
+            var sql = @$"UPDATE `medecc.application-login`
                          SET user_name = @UserName, normalized_user_name = @NormalizedUserName, password_hash = @PasswordHash, enabled = @Enabled
                          WHERE  id = @Id";
             await ExecuteAsync<ApplicationLogin>(sql, applicationLogin);
