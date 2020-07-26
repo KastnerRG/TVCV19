@@ -57,7 +57,7 @@ export class HierarchyComponent implements OnInit {
     private route: ActivatedRoute,
     private toolbarService: ToolbarService
   ) {
-    this.toolbarService.setToolbarData({ title: 'Hierarchy', menu: [] });
+    this.toolbarService.setToolbarData({ title: 'Hierarchy'});
   }
 
   hasChild = (_: number, node: ExampleFlatNode) => node.expandable;

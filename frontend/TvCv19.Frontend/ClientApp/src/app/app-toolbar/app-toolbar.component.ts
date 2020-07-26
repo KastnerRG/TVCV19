@@ -44,8 +44,7 @@ export class AppToolbarComponent implements OnInit {
     
   }
 
-  homeClick() {
-   // this.toolbarService.setToolbarData(undefined);
+  openMenu() {
     this.toolbarService.onMenuClick();
   }
 

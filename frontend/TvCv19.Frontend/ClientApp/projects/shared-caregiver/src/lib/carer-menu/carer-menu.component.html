@@ -1,29 +1,28 @@
-<div class="main-menu-text"><p>Menu</p></div>
+<div class="menu-header"><p>Menu</p></div>
 
 <div class="menu">
   <mat-action-list>
-    <div class="menu__item" mat-list-item routerLink="../patients">
-      <span class="menu__header">Patients</span>
+    <div class="menu-item" mat-list-item (click)="close()" routerLink="./patients">
+      <span class="menu-item__header">Patients</span>
       <span>List of Patients</span>
     </div>
-    <div class="menu__item" mat-list-item routerLink="./">
-      <span class="menu__header">Notifications</span>
-      <span>Escalated Cases</span>
-    </div>
-    <div class="menu__item" mat-list-item routerLink="../change-shift">
-      <span class="menu__header">Shift Change</span>
+    <div class="menu-item" mat-list-item (click)="close()" routerLink="./change-shift">
+      <span class="menu-item__header">Shift Change</span>
       <span>Hand off Patients</span>
     </div>
-    <div class="menu__item" mat-list-item (click)="toggleQr()">
-      <!-- routerLink="../../2/patients"> -->
-      <span class="menu__header">QR Code</span>
+    <div class="menu-item" mat-list-item (click)="close()" routerLink="./">
+      <span class="menu-item__header">Hierarchy</span>
+      <span>View Hierarchy</span>
+    </div>
+    <div class="menu-item" mat-list-item (click)="toggleQr()">
+      <span class="menu-item__header">QR Code</span>
       <span>Display the QR code</span>
     </div>
   </mat-action-list>
 </div>
 
-<div *ngIf="showQR" class="physician">
-  <div class="physician__qr" routerLink="../physician/{{ physician.id }}">
+<div *ngIf="showQR">
+  <div class="qr-container">
     <div>
       <qrcode
         [qrdata]="physician.id"
@@ -33,13 +32,4 @@
     </div>
   </div>
 </div>
-<div *ngIf="false" class="restart">
-  <button
-    routerLink="./"
-    class="restart__button"
-    mat-fab
-    aria-label="Restart Button"
-  >
-    <mat-icon>refresh</mat-icon>
-  </button>
-</div>
+

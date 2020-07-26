@@ -17,11 +17,6 @@
         <input id="location" formControlName="location" matInput placeholder="Patient Location" required>
         <mat-icon matSuffix>mode_edit</mat-icon>
     </mat-form-field>    
-    <mat-form-field fxFlexAlign="center" appearance="fill">
-        <mat-label>Age</mat-label>
-        <input id="age" formControlName="age" required matInput placeholder="Patient Age" >
-        <mat-icon matSuffix>mode_edit</mat-icon>
-    </mat-form-field>
     <div mat-dialog-actions align="end">
         <button color="primary" mat-raised-button [disabled]="!patientRegistrationForm.valid" type="submit">Next</button>
     </div>

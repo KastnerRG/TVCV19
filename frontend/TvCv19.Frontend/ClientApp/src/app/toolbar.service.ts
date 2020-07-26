@@ -33,8 +33,6 @@ export class ToolbarService {
 
 export interface ToolBarData {
   title?: string;
-  menu?: Array<MenuLinks>;
-  back?: boolean;
   notificationReceiverId?: string;
   escalation?: Escalation
 }

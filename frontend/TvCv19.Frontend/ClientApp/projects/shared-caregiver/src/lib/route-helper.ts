@@ -1,6 +1,5 @@
 import { Routes } from '@angular/router';
 import { Type } from '@angular/core';
-import { PhysicianHierarchyComponent } from './physician-hierarchy/physician-hierarchy.component';
 import { HierarchyComponent } from './physician-hierarchy/hierarchy.component';
 import { CarerRouteResolverService } from './physician-hierarchy/carer-route-resolver.service';
 import { PatientDetailComponent } from './patient-detail/patient-detail.component';
@@ -11,7 +10,6 @@ import { PatientListComponent } from './patient-list/patient-list.component';
 import { ChangeShiftRouteResolverService } from './change-shift/change-shift-route-resolver.service';
 import { PatientDetailRouteResolverService } from './patient-detail/patient-detail-route-resolver.service';
 import { CarerHierarchyResolverService } from './physician-hierarchy/carer-hierarchy-resolver.service';
-import { CarerMenuComponent } from './carer-menu/carer-menu.component';
 
 export function getCaregiverRoute(
   rootComponent: Type<any>,
@@ -42,13 +40,6 @@ export function getCaregiverRoute(
           component: ChangeShiftComponent,
           resolve: {
             model: ChangeShiftRouteResolverService,
-          },
-        },
-        {
-          path: 'menu',
-          component: CarerMenuComponent,
-          resolve: {
-            model: CarerRouteResolverService,
           },
         },
         {

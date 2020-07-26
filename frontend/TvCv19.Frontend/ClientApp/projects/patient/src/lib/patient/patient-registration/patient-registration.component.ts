@@ -16,13 +16,12 @@ export class PatientRegistrationComponent implements OnInit {
     this.patientRegistrationForm = this.formBuilder.group({
       name: '',
       location: '',
-      age: '',
       caregiverId: '',
     });
   }
 
   ngOnInit(): void {
-    this.toolbarService.setToolbarData({menu: []})
+    this.toolbarService.setToolbarData({})
   }
 
   onSubmit(patient: PatientModel) {

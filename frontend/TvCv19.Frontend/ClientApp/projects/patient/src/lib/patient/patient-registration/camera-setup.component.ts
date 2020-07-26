@@ -16,6 +16,6 @@ export class CameraSetupComponent implements OnInit {
 
   }
    ngOnInit() {
-     this.toolbarService.setToolbarData({menu: []})
+     this.toolbarService.setToolbarData({})
    }
 }

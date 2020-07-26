@@ -23,7 +23,7 @@ export class PatientDetailRouteResolverService {
     return this.patientService.getPatient(patientId).pipe(
       mergeMap((patient) => {
         if (patient) {
-          this.toolbarService.setToolbarData({back: true, title: patient.name, menu: undefined})
+          this.toolbarService.setToolbarData({ title: patient.name})
           return of(patient);
         } else {
           this.router.navigateByUrl('/');
