@@ -44,9 +44,8 @@ export class AppToolbarComponent implements OnInit {
     
   }
 
-  homeClick() {
-    this.toolbarService.setToolbarData(undefined);
-    this.router.navigateByUrl('/');
+  openMenu() {
+    this.toolbarService.onMenuClick();
   }
 
   isEscalate(): boolean {

@@ -24,8 +24,6 @@ import { PatientFeedComponent } from './patient-feed/patient-feed.component';
 import { FlexModule } from '@angular/flex-layout';
 import { PatientAuthorizationComponent } from './patient-authorization/patient-authorization.component';
 
-
-
 @NgModule({
   declarations: [
     PatientComponent,
@@ -35,7 +33,7 @@ import { PatientAuthorizationComponent } from './patient-authorization/patient-a
     RootComponent,
     PatientRegistrationRootComponent,
     PatientFeedComponent,
-    PatientAuthorizationComponent
+    PatientAuthorizationComponent,
   ],
   imports: [
     RouterModule.forChild([
@@ -63,8 +61,8 @@ import { PatientAuthorizationComponent } from './patient-authorization/patient-a
     MatOptionModule,
     QRCodeModule,
     FlexModule,
-    SharedModule
+    SharedModule,
   ],
-  exports: []
+  exports: [],
 })
-export class PatientModule { }
+export class PatientModule {}

@@ -1,6 +1,5 @@
 import { Routes } from '@angular/router';
 import { Type } from '@angular/core';
-import { PhysicianHierarchyComponent } from './physician-hierarchy/physician-hierarchy.component';
 import { HierarchyComponent } from './physician-hierarchy/hierarchy.component';
 import { CarerRouteResolverService } from './physician-hierarchy/carer-route-resolver.service';
 import { PatientDetailComponent } from './patient-detail/patient-detail.component';
@@ -12,43 +11,66 @@ import { ChangeShiftRouteResolverService } from './change-shift/change-shift-rou
 import { PatientDetailRouteResolverService } from './patient-detail/patient-detail-route-resolver.service';
 import { CarerHierarchyResolverService } from './physician-hierarchy/carer-hierarchy-resolver.service';
 
-export function getCaregiverRoute(rootComponent: Type<any>, caregiverRootComponent: Type<any>): Routes {
-    return [
-        { path: '', component: rootComponent }, 
-        { path: ':id', component: caregiverRootComponent, children: [
-            { path: '',
-                component: HierarchyComponent,
-                resolve: {
-                    model: CarerHierarchyResolverService
-                }
+export function getCaregiverRoute(
+  rootComponent: Type<any>,
+  caregiverRootComponent: Type<any>
+): Routes {
+  return [
+    { path: '', component: rootComponent },
+    {
+      path: ':id',
+      component: caregiverRootComponent,
+      children: [
+        {
+          path: '',
+          component: HierarchyComponent,
+          resolve: {
+            model: CarerHierarchyResolverService,
+          },
+        },
+        {
+          path: 'patients',
+          component: PatientListComponent,
+          resolve: {
+            model: CarerRouteResolverService,
+          },
+        },
+        {
+          path: 'change-shift',
+          component: ChangeShiftComponent,
+          resolve: {
+            model: ChangeShiftRouteResolverService,
+          },
+        },
+        {
+          path: 'patient/:id',
+          component: caregiverRootComponent,
+          children: [
+            {
+              path: '',
+              component: PatientDetailComponent,
+              resolve: {
+                model: PatientDetailRouteResolverService,
+              },
             },
             {
-              path: 'patients', component: PatientListComponent,
+              path: 'chat',
+              component: ChatComponent,
               resolve: {
-                model: CarerRouteResolverService
-            }
+                messages: ChatRouteResolverService,
+              },
             },
-            { path: 'change-shift', component: ChangeShiftComponent,
+            {
+              path: 'change-shift',
+              component: ChangeShiftComponent,
               resolve: {
-                model: ChangeShiftRouteResolverService
-            }
+                model: ChangeShiftRouteResolverService,
+              },
+              data: { isGrandChild: true },
             },
-            { path: 'patient/:id', component: caregiverRootComponent, children: [
-                { path: '', component: PatientDetailComponent, resolve: {
-                  model: PatientDetailRouteResolverService
-                } },
-                { path: 'chat', component: ChatComponent, 
-                  resolve: {
-                    messages: ChatRouteResolverService 
-                  } 
-                },
-                { path: 'change-shift', component: ChangeShiftComponent,
-                  resolve: {
-                    model: ChangeShiftRouteResolverService 
-                  },
-                  data: {isGrandChild: true}
-                }
-            ]}
-        ]}
-    ];
+          ],
+        },
+      ],
+    },
+  ];
 }

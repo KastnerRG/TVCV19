@@ -7,7 +7,7 @@ import { ToolbarService } from 'src/app/toolbar.service';
 @Component({
   selector: 'patient-registration',
   templateUrl: './patient-registration.component.html',
-  styleUrls: ['./patient-registration.component.scss']
+  styleUrls: ['./patient-registration.component.scss'],
 })
 export class PatientRegistrationComponent implements OnInit {
   patientRegistrationForm;
@@ -16,22 +16,23 @@ export class PatientRegistrationComponent implements OnInit {
     this.patientRegistrationForm = this.formBuilder.group({
       name: '',
       location: '',
-      caregiverId: ''
-    })
+      caregiverId: '',
+    });
   }
 
   ngOnInit(): void {
-    this.toolbarService.setToolbarData({menu: []})
-  }
-  logPatients() {
-    console.log(this.patients)
+    this.toolbarService.setToolbarData({})
   }
 
   onSubmit(patient: PatientModel) {
-    this.service.admitPatient(patient).subscribe(p => {
-      patient.id = p.id;
-      this.router.navigateByUrl(`/patient/registration/assign-caregiver/${p.id}`)
-    },
-      error => console.error(error))
+    this.service.admitPatient(patient).subscribe(
+      (p) => {
+        patient.id = p.id;
+        this.router.navigateByUrl(
+          `/patient/registration/assign-caregiver/${p.id}`
+        );
+      },
+      (error) => console.error(error)
+    );
   }
 }

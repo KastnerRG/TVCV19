@@ -26,7 +26,7 @@ export class AssignCareGiverComponent implements OnInit {
   constructor(private route: ActivatedRoute, private patientService: PatientService, private toolbarService: ToolbarService, private router: Router) { }
 
   ngOnInit(): void {
-    this.toolbarService.setToolbarData({menu:[]})
+    this.toolbarService.setToolbarData({})
     this.route.data.subscribe((data: { model: AssignCareGiverModel }) => {
       this.patient = data.model.patient;
       this.options = data.model.caregivers;

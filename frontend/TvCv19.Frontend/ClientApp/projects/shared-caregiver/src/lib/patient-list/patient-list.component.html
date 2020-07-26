@@ -1,4 +1,4 @@
-<div class="carer-patient-list">
+<div *ngIf="show" class="carer-patient-list">
   <div class="patient" (click)="onClick(patient)" *ngFor="let patient of patients">
     <div fxLayout="row">
       <div class="patient__avatar" [ngClass]="{'alert-high': patient.alertLevel ===  2, 'alert-medium': patient.alertLevel ===  1,'alert-low': patient.alertLevel ===  0 || !patient.alertLevel}"></div>

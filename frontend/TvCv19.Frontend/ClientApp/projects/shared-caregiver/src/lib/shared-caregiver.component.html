@@ -1,0 +1,9 @@
+<mat-drawer-container class="menu-container" [ngClass]="{'hidden': !showMenu}" autosize>
+    <mat-drawer #drawer class="sidenav" mode="side">
+      <lib-carer-menu></lib-carer-menu>        
+    </mat-drawer>
+    <mat-drawer-content>
+    </mat-drawer-content>
+  </mat-drawer-container>
+  <router-outlet>
+  </router-outlet>   

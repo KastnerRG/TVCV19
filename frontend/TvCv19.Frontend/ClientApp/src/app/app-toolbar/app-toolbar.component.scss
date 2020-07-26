@@ -3,6 +3,7 @@ mat-toolbar {
   height: 7vh;
   min-height: 6vh;
   position: fixed;
+  z-index: 3;
 
   mat-toolbar-row {
     background-color: #c9c9c9;
@@ -19,4 +20,9 @@ mat-toolbar {
 
 .de-escalate {
   transform: rotate(180deg);
+}
+.toolbar-container {
+  display: flex;
+  flex-grow: 1;
+  align-items: center;
 }
