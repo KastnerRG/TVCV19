@@ -1,20 +1,19 @@
 <mat-toolbar color="primary">
-  <mat-toolbar-row *ngIf="data">
-    <button *ngIf="data.menu" (click)="homeClick()" mat-icon-button>
-      <mat-icon>menu</mat-icon>
-    </button>
-    <button (click)="back()" *ngIf="data.back" mat-icon-button>
-      <mat-icon>arrow_back</mat-icon>
-    </button>
-    <span class="title">{{data.title}}</span>
+  <mat-toolbar-row>
+    <div class="toolbar-container" *ngIf="data">
+      <button (click)="openMenu()" mat-icon-button>
+        <mat-icon>menu</mat-icon>
+      </button>
+      <span class="title">{{data.title}}</span>
+      <span>
+      <img *ngIf="notification" (click)="noticationClick()" src="/assets/img/toolbar-message.png">
+      </span>
+      <span *ngIf="data.escalation" (click)="escalate()">
+        <img class="escalate" [ngClass]="{'de-escalate' : !isEscalate()}" src="/assets/img/escalate.png">
+      </span>
+    </div>
     <span>
-    <img *ngIf="notification" (click)="noticationClick()" src="/assets/img/toolbar-message.png">
-    </span>
-    <span *ngIf="data.escalation" (click)="escalate()">
-      <img class="escalate" [ngClass]="{'de-escalate' : !isEscalate()}" src="/assets/img/escalate.png">
+      <button mat-button (click)="logout()">Logout</button>
     </span>
   </mat-toolbar-row>
-  <span>
-    <button mat-button (click)="logout()">Logout</button>
-  </span>
 </mat-toolbar>

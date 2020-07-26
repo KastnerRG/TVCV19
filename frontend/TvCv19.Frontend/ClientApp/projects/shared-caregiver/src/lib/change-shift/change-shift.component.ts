@@ -11,6 +11,7 @@ import {
   HierarchyLevel,
   PhysicianService,
 } from 'projects/shared/src/public-api';
+import { ToolbarService } from 'src/app/toolbar.service';
 
 export interface Caregiver {
   name: string;
@@ -28,13 +29,19 @@ export class ChangeShiftComponent implements OnInit {
   caregiverControl = new FormControl();
   options: Caregiver[];
   filteredOptions: Observable<Caregiver[]>;
+  show: boolean = true;
 
   constructor(
     private route: ActivatedRoute,
     private patientService: PatientService,
     private physicianService: PhysicianService,
-    private router: Router
-  ) {}
+    private router: Router,
+    private toolbarService: ToolbarService
+  ) {
+    toolbarService.menuClick.subscribe(e => {
+      this.show = !e.isOpen;
+    })
+  }
 
   ngOnInit(): void {
     this.route.data.subscribe((data: { model: ChangeShiftRouteDataModel }) => {

@@ -1,0 +1,39 @@
+.menu {
+  padding-left: 42px;
+  &-item {
+    margin-bottom: 30px;
+    &__header {
+      font-size: 25px;
+      line-height: 24px;
+      display: flex;
+      align-items: center;
+      color: rgba(0, 0, 0, 0.87);
+    }
+  }
+  
+  font-family: Roboto;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 20px;
+  display: flex;
+  align-items: center;
+  color: rgba(0, 0, 0, 0.54);
+}
+
+.menu-header {
+  padding-left: 42px;
+  padding-top: 85px;
+  margin-bottom: 30px;
+  font-weight: bold;
+  font-size: 36px;
+  line-height: 38px;
+  color: rgba(0, 0, 0, 0.55);
+}
+
+.qr-container {
+    padding-bottom: 60px;
+    display: flex;
+    justify-content: center;
+}
+

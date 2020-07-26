@@ -17,6 +17,7 @@ import { Subscription } from 'rxjs';
 export class PatientListComponent implements OnInit, OnDestroy {
   patients: Array<PatientAlertModel> = [];
   careTeam: Array<PhysicianModel> = [];
+  show: boolean = true;
   private physician: PhysicianModel;
   private deleteNotificationSubscription: Subscription;
 
@@ -45,6 +46,10 @@ export class PatientListComponent implements OnInit, OnDestroy {
         );
       }
     );
+
+    toolbarService.menuClick.subscribe(e => {
+      this.show = !e.isOpen;
+    })
   }
 
   ngOnDestroy(): void {
@@ -75,7 +80,6 @@ export class PatientListComponent implements OnInit, OnDestroy {
 
   private setToolbar() {
     this.toolbarService.setToolbarData({
-      menu: [{ link: '', title: 'Shift change' }],
       title: 'Patient List',
       notificationReceiverId: this.physician.id,
     });

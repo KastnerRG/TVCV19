@@ -21,7 +21,7 @@ export class PatientFeedComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.toolbarService.setToolbarData({menu: []})
+    this.toolbarService.setToolbarData({})
   }
 
 }

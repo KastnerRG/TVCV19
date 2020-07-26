@@ -1,0 +1,35 @@
+<div class="menu-header"><p>Menu</p></div>
+
+<div class="menu">
+  <mat-action-list>
+    <div class="menu-item" mat-list-item (click)="close()" routerLink="./patients">
+      <span class="menu-item__header">Patients</span>
+      <span>List of Patients</span>
+    </div>
+    <div class="menu-item" mat-list-item (click)="close()" routerLink="./change-shift">
+      <span class="menu-item__header">Shift Change</span>
+      <span>Hand off Patients</span>
+    </div>
+    <div class="menu-item" mat-list-item (click)="close()" routerLink="./">
+      <span class="menu-item__header">Hierarchy</span>
+      <span>View Hierarchy</span>
+    </div>
+    <div class="menu-item" mat-list-item (click)="toggleQr()">
+      <span class="menu-item__header">QR Code</span>
+      <span>Display the QR code</span>
+    </div>
+  </mat-action-list>
+</div>
+
+<div *ngIf="showQR">
+  <div class="qr-container">
+    <div>
+      <qrcode
+        [qrdata]="physician.id"
+        [width]="256"
+        [errorCorrectionLevel]="'M'"
+      ></qrcode>
+    </div>
+  </div>
+</div>
+

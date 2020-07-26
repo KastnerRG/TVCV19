@@ -26,7 +26,7 @@ export class PhysicianHierarchyComponent implements OnInit {
         this.id = data.model.physician.id;
         this.isSupervisor = data.model.physician.hierarchy === HierarchyLevel.SecondLine;
         this.careTeam = data.model.careTeam
-        this.toolbarService.setToolbarData({ menu: [], title: data.model.physician.name})
+        this.toolbarService.setToolbarData({ title: data.model.physician.name})
         if(!this.isSupervisor) {
           this.supervisor = await this.physicianService.getPhysician(data.model.physician.supervisorId).toPromise()
         }
