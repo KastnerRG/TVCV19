@@ -11,6 +11,7 @@ import {
   PatientStatsDialog,
   StatsData,
 } from '../patient-stats/patient-stats.dialog';
+import { ToolbarService } from 'src/app/toolbar.service';
 
 export interface DownloadedImage {
   url: SafeUrl;
@@ -30,6 +31,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   public isRecording: boolean;
   public recordedTime: string;
   public downloadedImage: DownloadedImage = { url: '', fileName: '' };
+  public show: boolean = true;
   private audioCache = {};
 
   @ViewChild('downloadImage') download: any;
@@ -41,7 +43,8 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     private mediaService: MediaService,
     private sanitizer: DomSanitizer,
     private dialog: MatDialog,
-    route: ActivatedRoute
+    route: ActivatedRoute,
+    toolbarService: ToolbarService
   ) {
     chatService.messages.subscribe((m) => {
       if(m.patientId === this.patientId){
@@ -66,6 +69,10 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     this.audioRecordingService
       .getRecordedTime()
       .subscribe((time: string) => (this.recordedTime = time));
+
+     toolbarService.menuClick.subscribe((e) => {
+        this.show = !e.isOpen;
+     });
   }
 
   ngOnInit(): void {}

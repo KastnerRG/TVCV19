@@ -69,9 +69,16 @@ export function getCaregiverRoute(
               data: { isGrandChild: true },
             },
             {
-              path:'checklist', component: PhysicianChecklistComponent,
-              data: {isGrandChild: true}
-            }
+              path:'checklist', component: PhysicianChecklistComponent
+            },
+            {
+              path: 'change-shift',
+              component: ChangeShiftComponent,
+              resolve: {
+                model: ChangeShiftRouteResolverService,
+              },
+              data: { isGrandChild: true },
+            },
           ],
         },
       ],

@@ -1,12 +1,8 @@
-import { Component, OnInit, EventEmitter, Input } from '@angular/core';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatListModule } from '@angular/material/list';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PhysicianChecklistModel } from '../physician-checklist-model';
 import { ToolbarService } from 'src/app/toolbar.service';
 import { ChatService } from '../chat.service';
-import { MediaService } from '../media.service';
-import { MessageModel } from 'projects/shared/src/public-api';
 import {
   PhysicianService,
   PatientService,
@@ -23,7 +19,7 @@ export class PhysicianChecklistComponent implements OnInit {
   patientName: string;
   physicianName: string;
   uncheckedWarnText: boolean;
-  checkListForm;
+  show: boolean = true;
 
   inputItems = [
     'Check Manual resuscitator',
@@ -51,37 +47,29 @@ export class PhysicianChecklistComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router
   ) {
-    //get the patientId
+    toolbar.menuClick.subscribe((e) => {
+      this.show = !e.isOpen;
+    });
     route.parent.params.subscribe((p: any) => {
       this.patientId = p['id'];
     });
 
-    //get the physicianId
     route.parent.parent.params.subscribe((p) => {
       this.physicianId = p['id'];
     });
 
-    //try to grab the patient's name using patient service and set toolbar
     this.patientService
       .getPatient(this.patientId)
       .toPromise()
       .then((res) => {
         this.patientName = res.name;
         this.toolbar.setToolbarData({
-          menu: undefined,
-          title: this.physicianName + ' (' + this.patientName + ')',
-          back: true,
+          title: this.patientName,
         });
       });
 
-    //try to grab the physician's name using physician service and set toolbar
     this.physicianService.getPhysician(this.physicianId).subscribe((p) => {
       this.physicianName = p.name;
-      this.toolbar.setToolbarData({
-        menu: undefined,
-        title: this.physicianName + ' (' + this.patientName + ')',
-        back: true,
-      });
     });
   }
 
@@ -116,6 +104,7 @@ export class PhysicianChecklistComponent implements OnInit {
         null,
         false,
         false,
+        false,
         false
       );
     }
@@ -124,9 +113,7 @@ export class PhysicianChecklistComponent implements OnInit {
   ngOnInit(): void {
     this.uncheckedWarnText = false;
     this.toolbar.setToolbarData({
-      menu: undefined,
       title: this.physicianName + ' (' + this.patientName + ')',
-      back: true,
     });
     for (let i = 0; i < this.inputItems.length; i++) {
       this.checkList.push({

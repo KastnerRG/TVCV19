@@ -36,7 +36,7 @@ export class ChangeShiftComponent implements OnInit {
     private patientService: PatientService,
     private physicianService: PhysicianService,
     private router: Router,
-    private toolbarService: ToolbarService
+    toolbarService: ToolbarService
   ) {
     toolbarService.menuClick.subscribe(e => {
       this.show = !e.isOpen;

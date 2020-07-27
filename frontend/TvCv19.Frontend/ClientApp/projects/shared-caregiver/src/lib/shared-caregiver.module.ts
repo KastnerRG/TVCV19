@@ -29,7 +29,6 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatListModule } from '@angular/material/list';
 import {MatSidenavModule} from '@angular/material/sidenav';
 import { PhysicianChecklistComponent } from './physician-checklist/physician-checklist.component';
-import { PhysicianMessagingChecklistComponent } from './physician-messaging-checklist/physician-messaging-checklist.component';
 
 @NgModule({
   declarations: [
@@ -44,7 +43,6 @@ import { PhysicianMessagingChecklistComponent } from './physician-messaging-chec
     HierarchyComponent,
     CarerMenuComponent,
     PhysicianChecklistComponent,
-    PhysicianMessagingChecklistComponent
   ],
   imports: [
     CommonModule,
