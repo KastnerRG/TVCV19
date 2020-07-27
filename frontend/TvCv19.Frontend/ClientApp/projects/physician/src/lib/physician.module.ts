@@ -1,4 +1,6 @@
-import { NgModule, } from '@angular/core';
+import { NgModule } from '@angular/core';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatListModule } from '@angular/material/list';
 import { RouterModule } from '@angular/router';
 import { PhysicianComponent } from './physician.component';
 import { RootComponent } from './root/root.component';
@@ -12,7 +14,6 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatListModule } from '@angular/material/list';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { PhysicianRootComponent } from './physician-root/physician-root.component';
@@ -44,6 +45,6 @@ import { CommanderRootComponent } from './commander-root/commander-root.componen
     MatButtonModule,
     SharedCaregiverModule
   ],
-  exports: [PhysicianComponent, RouterModule]
+  exports: [PhysicianComponent, RouterModule],
 })
-export class PhysicianModule { }
+export class PhysicianModule {}

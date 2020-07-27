@@ -6,7 +6,7 @@ import { PhysicianModel, PhysicianService, HierarchyLevel } from 'projects/share
 @Component({
   selector: 'lib-phyiscian-admin',
   templateUrl: './physician-admin.component.html',
-  styleUrls: ['./physician-admin.component.scss']
+  styleUrls: ['./physician-admin.component.scss'],
 })
 export class PhysicianAdminComponent implements OnInit {
   caregiverRegistrationForm;
@@ -23,11 +23,11 @@ export class PhysicianAdminComponent implements OnInit {
       name: '',
       location: '',
       hierarchy: '',
-      supervisorId: ''
-    })
+      supervisorId: '',
+    });
   }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {}
 
   onSubmit(physician: PhysicianModel) {
     this.service.addPhysician(physician).subscribe(p => {
