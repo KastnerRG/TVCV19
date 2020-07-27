@@ -1,3 +1,4 @@
+<div *ngIf="show">
 <lib-video-receiver [room]="room"></lib-video-receiver>
 <div class="care-options">
   <div
@@ -17,7 +18,7 @@
       fxFlexAlign="center"
       class="care-options__instructions"
     >
-      <img fxFlexAlign="center" src="/assets/img/instructions.png" />
+      <img routerLink="checklist" fxFlexAlign="center" src="/assets/img/instructions.png" />
     </div>
     <div
       fxLayout="column"
@@ -41,4 +42,5 @@
       <img routerLink="change-shift" fxFlexAlign="center" src="/assets/img/info.png" />
     </div>
   </div>
+</div>
 </div>

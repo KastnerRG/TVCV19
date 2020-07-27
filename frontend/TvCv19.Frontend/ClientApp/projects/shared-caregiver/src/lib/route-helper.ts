@@ -10,6 +10,7 @@ import { PatientListComponent } from './patient-list/patient-list.component';
 import { ChangeShiftRouteResolverService } from './change-shift/change-shift-route-resolver.service';
 import { PatientDetailRouteResolverService } from './patient-detail/patient-detail-route-resolver.service';
 import { CarerHierarchyResolverService } from './physician-hierarchy/carer-hierarchy-resolver.service';
+import { PhysicianChecklistComponent } from './physician-checklist/physician-checklist.component';
 
 export function getCaregiverRoute(
   rootComponent: Type<any>,
@@ -59,6 +60,16 @@ export function getCaregiverRoute(
               resolve: {
                 messages: ChatRouteResolverService,
               },
+            },
+            {
+              path: 'patients', component: PatientListComponent,
+              resolve: {
+                model: ChangeShiftRouteResolverService,
+              },
+              data: { isGrandChild: true },
+            },
+            {
+              path:'checklist', component: PhysicianChecklistComponent
             },
             {
               path: 'change-shift',
