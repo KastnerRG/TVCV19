@@ -23,6 +23,7 @@ We are currently racing against the global novel coronavirus pandemic and could 
 If you want to contribute to the project, please fill out this [online form](https://docs.google.com/forms/d/e/1FAIpQLSf2osgKSobmYf0kSwzRrotV2hk5i8TjtZZdn5XptA1UjeIXVA/viewform)  and join our [slack channel](https://join.slack.com/t/scalablecv19solutions/shared_invite/zt-cxcbnbyu-yu4dxzaMjjnQvBGkQYVkxw) (#tv-cv19).
 
 ## How to Run
+**Note:** If you have an old database created from the DB scripts, be sure to drop the DB before continuing.
 
 ### Setup the database for development
 We use mySQL for our backend database.  The development instance uses a predetermined password.
