@@ -11,7 +11,7 @@ namespace TvCv19.Frontend.Domain.Repositories
         {
             using var context = new MedeccContext();
 
-            var id = Guid.NewGuid().ToString().Replace("-", string.Empty);
+            var id = Guid.NewGuid().ToString("N");;
 
             media.Id = id;
             await context.AddAsync(media);

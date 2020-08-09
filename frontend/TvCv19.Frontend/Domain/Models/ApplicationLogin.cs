@@ -3,6 +3,7 @@ using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
@@ -13,6 +14,7 @@ namespace TvCv19.Frontend.Domain.Models
 {
     public class ApplicationLogin : IDbEntity
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public string Id { get; set; }
         [Required]
         public bool? Enabled { get; set; } = true;

@@ -15,7 +15,7 @@ namespace TvCv19.Frontend.Domain
         {
             using var context = new MedeccContext();
 
-            patient.Id = Guid.NewGuid().ToString().Replace("-", string.Empty);
+            patient.Id = Guid.NewGuid().ToString("N");;
 
             await context.AddAsync(patient);
             await context.SaveChangesAsync();

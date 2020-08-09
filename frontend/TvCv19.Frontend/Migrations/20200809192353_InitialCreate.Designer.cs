@@ -9,7 +9,7 @@ using TvCv19.Frontend.Domain.Repositories;
 namespace TvCv19.Frontend.Migrations
 {
     [DbContext(typeof(MedeccContext))]
-    [Migration("20200806123218_InitialCreate")]
+    [Migration("20200809192353_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -87,21 +87,27 @@ namespace TvCv19.Frontend.Migrations
                         .HasColumnType("varchar(767)");
 
                     b.Property<string>("IE")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("MP")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("O2")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("PP")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("PR")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("TV")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
