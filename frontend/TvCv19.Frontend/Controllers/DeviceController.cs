@@ -47,6 +47,9 @@ namespace TvCv19.Frontend.Controllers
                 UserName = token
             });
 
+            // Ensure that the user is created a patient so that we can limit rights.
+            await userManager.AddToRoleAsync(await userManager.FindByNameAsync(token), "Patient");
+
             return Ok(token);
         }
 
