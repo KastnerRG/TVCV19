@@ -22,6 +22,7 @@ namespace TvCv19.Frontend.Domain.Models
             IsEscalation = isEscalation;
         }
 
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public string Id { get; set; } 
         [Required]
         public string GroupId { get; set; }
@@ -41,11 +42,17 @@ namespace TvCv19.Frontend.Domain.Models
     public class Stats : IDbEntity
     {
         public string Id { get; set; } 
+        [Required]
         public string PR { get; set; }
+        [Required]
         public string TV { get; set; }
+        [Required]
         public string PP { get; set; }
+        [Required]
         public string IE { get; set; }
+        [Required]
         public string MP { get; set; }
+        [Required]
         public string O2 { get; set; }
     }
 }
