@@ -16,6 +16,7 @@ using TvCv19.Frontend.Domain.Repositories;
 using TvCv19.Frontend.Hubs;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using System.Linq;
 
 namespace TvCv19.Frontend
 {
@@ -38,6 +39,7 @@ namespace TvCv19.Frontend
             services.AddScoped<IMediaRepository, MediaRepository>();
             services.AddScoped<INotificationRepository, NotificationRepository>();
             services.AddScoped<IApplicationLoginRepository, ApplicationLoginRepository>();
+            services.AddScoped<IApplicationRoleRepository, ApplicationRoleRepository>();
             services.AddControllersWithViews().AddNewtonsoftJson();
             services.AddSignalR();
             services.AddHttpClient<RoomClient>(c => c.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", DAILY_TOKEN));
@@ -110,9 +112,10 @@ namespace TvCv19.Frontend
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, UserManager<ApplicationLogin> userManager)
+        public async void Configure(IApplicationBuilder app, IWebHostEnvironment env, RoleManager<ApplicationRole> roleManager, UserManager<ApplicationLogin> userManager)
         {
-            EnsureDefaultUser(userManager).Wait();
+            await EnsureDefaultRolesAsync(roleManager);
+            await EnsureDefaultUserAsync(userManager);
 
             if (env.IsDevelopment())
             {
@@ -159,7 +162,7 @@ namespace TvCv19.Frontend
             });
         }
 
-        private async Task EnsureDefaultUser(UserManager<ApplicationLogin> userManager)
+        private async Task EnsureDefaultUserAsync(UserManager<ApplicationLogin> userManager)
         {
             if (await userManager.FindByNameAsync("administrator") == null)
             {
@@ -167,6 +170,28 @@ namespace TvCv19.Frontend
                 {
                     UserName = "administrator"
                 }, "Password1!"); // This is the simpliest password that meets the requirements.
+            }
+
+            var administrator = await userManager.FindByNameAsync("administrator");
+            await userManager.AddToRoleAsync(administrator, "Administrator");
+        }
+
+        private Task EnsureDefaultRolesAsync(RoleManager<ApplicationRole> roleManager)
+        {
+            return Task.WhenAll(
+                EnsureRoleExistsAsync("Administrator", roleManager),
+                EnsureRoleExistsAsync("Patient", roleManager),
+                EnsureRoleExistsAsync("Physician", roleManager));
+        }
+
+        private async Task EnsureRoleExistsAsync(string roleName, RoleManager<ApplicationRole> roleManager)
+        {
+            if (await roleManager.FindByNameAsync(roleName) == null)
+            {
+                await roleManager.CreateAsync(new ApplicationRole
+                {
+                    Name = roleName
+                });
             }
         }
     }

@@ -14,6 +14,8 @@ namespace TvCv19.Frontend.Domain.Repositories
 
         public DbSet<ApplicationLogin> ApplicationLogins { get; set; }
 
+        public DbSet<ApplicationRole> ApplicationRoles { get; set; }
+
         public DbSet<Physician> Caregivers { get; set; }
 
         public DbSet<Media> Media { get; set; }
@@ -30,6 +32,11 @@ namespace TvCv19.Frontend.Domain.Repositories
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<ApplicationLogin>().Property(p => p.NormalizedUserName).IsRequired();
+            modelBuilder.Entity<ApplicationLogin>().Property(p => p.PasswordHash).IsRequired();
+
+            modelBuilder.Entity<ApplicationRole>().Property(p => p.NormalizedName).IsRequired();
+
             modelBuilder.Entity<Media>().Property(p => p.File).HasColumnType("longblob");
 
             modelBuilder.Entity<Patient>().Property(p => p.CaregiverId).IsRequired();

@@ -43,7 +43,10 @@ namespace TvCv19.Frontend.Controllers
             
             if (result.Succeeded)
             {
-                return Ok(await userManager.FindByNameAsync(model.ApplicationLogin.UserName));
+                var createdUserName = await userManager.FindByNameAsync(model.ApplicationLogin.UserName);
+                await userManager.AddToRoleAsync(createdUserName, "Physician");
+
+                return Ok(createdUserName);
             }
 
             return BadRequest();
@@ -73,7 +76,14 @@ namespace TvCv19.Frontend.Controllers
                 PasswordHash = fromDatabase.PasswordHash
             };
 
-            return Ok(await userManager.UpdateAsync(applicationLoginToUpdate));
+            var result = await userManager.UpdateAsync(applicationLoginToUpdate);
+
+            if (result.Errors.Any())
+            {
+                return BadRequest(result);
+            }
+
+            return Ok(result);
         }
 
         [HttpPut("{id}/password")]

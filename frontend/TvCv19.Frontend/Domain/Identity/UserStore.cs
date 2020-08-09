@@ -9,13 +9,29 @@ using TvCv19.Frontend.Domain.Repositories;
 
 namespace TvCv19.Frontend.Domain.Identity
 {
-    public class UserStore : IUserStore<ApplicationLogin>, IUserPasswordStore<ApplicationLogin>
+    public class UserStore : IUserStore<ApplicationLogin>, IUserPasswordStore<ApplicationLogin>, IUserRoleStore<ApplicationLogin>
     {
         private readonly IApplicationLoginRepository _repository;
+        private readonly RoleManager<ApplicationRole> _roleManager;
 
-        public UserStore(IApplicationLoginRepository repository)
+        public UserStore(IApplicationLoginRepository repository, RoleManager<ApplicationRole> roleManager)
         {
             _repository = repository;
+            _roleManager = roleManager;
+        }
+
+        public async Task AddToRoleAsync(ApplicationLogin user, string roleName, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var role = await _roleManager.FindByNameAsync(roleName);
+
+            if (role == null)
+            {
+                throw new ArgumentNullException($"{nameof(roleName)} is null");
+            }
+
+            user.Roles.Add(role);
         }
 
         public async Task<IdentityResult> CreateAsync(ApplicationLogin user, CancellationToken cancellationToken)
@@ -84,6 +100,14 @@ namespace TvCv19.Frontend.Domain.Identity
             return Task.FromResult(user.PasswordHash);
         }
 
+        public Task<IList<string>> GetRolesAsync(ApplicationLogin user, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            return Task.FromResult((IList<string>)(from r in user.Roles
+                                                   select r.Name).ToList());
+        }
+
         public Task<string> GetUserIdAsync(ApplicationLogin user, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -98,11 +122,52 @@ namespace TvCv19.Frontend.Domain.Identity
             return Task.FromResult(user.UserName);
         }
 
+        public async Task<IList<ApplicationLogin>> GetUsersInRoleAsync(string roleName, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var role = await _roleManager.FindByNameAsync(roleName);
+
+            if (role == null)
+            {
+                return null;
+            }
+
+            return (from u in await _repository.GetApplicationLoginsAsync()
+                    where u.Roles.Any(r => r.NormalizedName == role.NormalizedName)
+                    select u).ToList();
+        }
+
         public Task<bool> HasPasswordAsync(ApplicationLogin user, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
             return Task.FromResult(!string.IsNullOrEmpty(user.PasswordHash));
+        }
+
+        public async Task<bool> IsInRoleAsync(ApplicationLogin user, string roleName, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var role = await _roleManager.FindByNameAsync(roleName);
+            return (from r in user.Roles
+                    where r.NormalizedName == role?.NormalizedName
+                    select r).Any();
+        }
+
+        public async Task RemoveFromRoleAsync(ApplicationLogin user, string roleName, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var role = await _roleManager.FindByNameAsync(roleName);
+            var userRole = (from r in user.Roles
+                            where r.NormalizedName == role?.NormalizedName
+                            select r).FirstOrDefault();
+
+            if (userRole != null)
+            {
+                user.Roles.Remove(userRole);
+            }
         }
 
         public Task SetNormalizedUserNameAsync(ApplicationLogin user, string normalizedName, CancellationToken cancellationToken)

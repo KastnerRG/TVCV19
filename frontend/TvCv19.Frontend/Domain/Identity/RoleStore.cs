@@ -5,19 +5,43 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using TvCv19.Frontend.Domain.Models;
+using TvCv19.Frontend.Domain.Repositories;
 
 namespace TvCv19.Frontend.Domain.Identity
 {
     public class RoleStore : IRoleStore<ApplicationRole>
     {
-        public Task<IdentityResult> CreateAsync(ApplicationRole role, CancellationToken cancellationToken)
+        private readonly IApplicationRoleRepository _repository;
+
+        public RoleStore(IApplicationRoleRepository applicationRoleRepository)
         {
-            throw new NotImplementedException();
+            this._repository = applicationRoleRepository;
         }
 
-        public Task<IdentityResult> DeleteAsync(ApplicationRole role, CancellationToken cancellationToken)
+        public async Task<IdentityResult> CreateAsync(ApplicationRole role, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            cancellationToken.ThrowIfCancellationRequested();
+
+            if (await FindByNameAsync(role.Name, cancellationToken) == null)
+            {
+                await _repository.AddApplicationRoleAsync(role);
+
+                return IdentityResult.Success;
+            }
+
+            return IdentityResult.Failed(new IdentityError
+            {
+                Description = "Duplicate role name."
+            });
+        }
+
+        public async Task<IdentityResult> DeleteAsync(ApplicationRole role, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            await _repository.DeleteApplicationRoleAsync(role);
+
+            return IdentityResult.Success;
         }
 
         public void Dispose()
@@ -27,42 +51,64 @@ namespace TvCv19.Frontend.Domain.Identity
 
         public Task<ApplicationRole> FindByIdAsync(string roleId, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            cancellationToken.ThrowIfCancellationRequested();
+
+            return _repository.FindByIdAsync(roleId);
         }
 
         public Task<ApplicationRole> FindByNameAsync(string normalizedRoleName, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            cancellationToken.ThrowIfCancellationRequested();
+
+            return _repository.FindByNameAsync(normalizedRoleName);
         }
 
         public Task<string> GetNormalizedRoleNameAsync(ApplicationRole role, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            cancellationToken.ThrowIfCancellationRequested();
+
+            return Task.FromResult(role.NormalizedName);
         }
 
         public Task<string> GetRoleIdAsync(ApplicationRole role, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            cancellationToken.ThrowIfCancellationRequested();
+
+            return Task.FromResult(role.Id);
         }
 
         public Task<string> GetRoleNameAsync(ApplicationRole role, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            cancellationToken.ThrowIfCancellationRequested();
+
+            return Task.FromResult(role.Name);
         }
 
         public Task SetNormalizedRoleNameAsync(ApplicationRole role, string normalizedName, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            cancellationToken.ThrowIfCancellationRequested();
+
+            role.NormalizedName = normalizedName;
+
+            return Task.FromResult(0);
         }
 
         public Task SetRoleNameAsync(ApplicationRole role, string roleName, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            cancellationToken.ThrowIfCancellationRequested();
+
+            role.Name = roleName;
+
+            return Task.FromResult(0);
         }
 
-        public Task<IdentityResult> UpdateAsync(ApplicationRole role, CancellationToken cancellationToken)
+        public async Task<IdentityResult> UpdateAsync(ApplicationRole role, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            cancellationToken.ThrowIfCancellationRequested();
+
+            await _repository.UpdateAsync(role);
+
+            return IdentityResult.Success;
         }
     }
 }

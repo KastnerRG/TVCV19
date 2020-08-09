@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,8 +12,7 @@ namespace TvCv19.Frontend.Domain.Repositories
     {
         public async Task AddApplicationLoginAsync(ApplicationLogin applicationLogin)
         {
-            var id = Guid.NewGuid().ToString("N");;
-            applicationLogin.Id = id;
+            applicationLogin.Id = Guid.NewGuid().ToString("N");
 
             using var context = new MedeccContext();
             await context.AddAsync(applicationLogin);
@@ -34,7 +34,7 @@ namespace TvCv19.Frontend.Domain.Repositories
 
             return Task.FromResult((from a in context.ApplicationLogins
                                     where a.Id == id
-                                    select a).FirstOrDefault());
+                                    select a).Include(l => l.Roles).FirstOrDefault());
         }
 
         public Task<ApplicationLogin> FindByNormalizedUserNameAsync(string normalizedUserName)
@@ -43,14 +43,14 @@ namespace TvCv19.Frontend.Domain.Repositories
 
             return Task.FromResult((from a in context.ApplicationLogins
                                     where a.NormalizedUserName == normalizedUserName
-                                    select a).FirstOrDefault());
+                                    select a).Include(l => l.Roles).FirstOrDefault());
         }
 
         public Task<IEnumerable<ApplicationLogin>> GetApplicationLoginsAsync()
         {
             using var context = new MedeccContext();
 
-            return Task.FromResult((IEnumerable<ApplicationLogin>)context.ApplicationLogins.ToArray());
+            return Task.FromResult((IEnumerable<ApplicationLogin>)context.ApplicationLogins.Include(l => l.Roles).ToArray());
         }
 
         public async Task<ApplicationLogin> UpdateApplicationLoginAsync(ApplicationLogin applicationLogin)
