@@ -33,7 +33,7 @@ namespace TvCv19.Frontend.Domain.Repositories
 
             var applicationRole = (from r in context.ApplicationRoles
                                    where r.Id == id
-                                   select r).Include(p => p.ApplicationLogins).FirstOrDefault();
+                                   select r).Include(p => p.LoginRoles).FirstOrDefault();
 
             return Task.FromResult(applicationRole);
         }
@@ -44,7 +44,7 @@ namespace TvCv19.Frontend.Domain.Repositories
 
             var applicationRole = (from r in context.ApplicationRoles
                                    where r.NormalizedName == normalizedRoleName
-                                   select r).Include(p => p.ApplicationLogins).FirstOrDefault();
+                                   select r).Include(p => p.LoginRoles).FirstOrDefault();
 
             return Task.FromResult(applicationRole);
         }

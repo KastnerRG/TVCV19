@@ -18,11 +18,11 @@ namespace TvCv19.Frontend.Domain.Models
         public string Id { get; set; }
         [Required]
         public bool? Enabled { get; set; } = true;
+        public IList<ApplicationLoginRole> LoginRoles { get; set; }
         public string NormalizedUserName { get; set; }
         [Required]
         public string UserName { get; set; }
         public string PasswordHash { get; set; }
-        public List<ApplicationRole> Roles { get; set; }
 
         public string GenerateJwtToken(IConfiguration configuration)
         {

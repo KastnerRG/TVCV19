@@ -43,12 +43,31 @@ namespace TvCv19.Frontend.Migrations
                     b.ToTable("ApplicationLogins");
                 });
 
-            modelBuilder.Entity("TvCv19.Frontend.Domain.Models.ApplicationRole", b =>
+            modelBuilder.Entity("TvCv19.Frontend.Domain.Models.ApplicationLoginRole", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("varchar(767)");
 
                     b.Property<string>("ApplicationLoginId")
+                        .IsRequired()
+                        .HasColumnType("varchar(767)");
+
+                    b.Property<string>("ApplicationRoleId")
+                        .IsRequired()
+                        .HasColumnType("varchar(767)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ApplicationLoginId");
+
+                    b.HasIndex("ApplicationRoleId");
+
+                    b.ToTable("ApplicationLoginRoles");
+                });
+
+            modelBuilder.Entity("TvCv19.Frontend.Domain.Models.ApplicationRole", b =>
+                {
+                    b.Property<string>("Id")
                         .HasColumnType("varchar(767)");
 
                     b.Property<string>("Name")
@@ -60,8 +79,6 @@ namespace TvCv19.Frontend.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ApplicationLoginId");
 
                     b.ToTable("ApplicationRoles");
                 });
@@ -240,11 +257,19 @@ namespace TvCv19.Frontend.Migrations
                     b.ToTable("Media");
                 });
 
-            modelBuilder.Entity("TvCv19.Frontend.Domain.Models.ApplicationRole", b =>
+            modelBuilder.Entity("TvCv19.Frontend.Domain.Models.ApplicationLoginRole", b =>
                 {
-                    b.HasOne("TvCv19.Frontend.Domain.Models.ApplicationLogin", null)
-                        .WithMany("Roles")
-                        .HasForeignKey("ApplicationLoginId");
+                    b.HasOne("TvCv19.Frontend.Domain.Models.ApplicationLogin", "ApplicationLogin")
+                        .WithMany("LoginRoles")
+                        .HasForeignKey("ApplicationLoginId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TvCv19.Frontend.Domain.Models.ApplicationRole", "ApplicationRole")
+                        .WithMany("LoginRoles")
+                        .HasForeignKey("ApplicationRoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("TvCv19.Frontend.Domain.Models.Message", b =>

@@ -31,7 +31,15 @@ namespace TvCv19.Frontend.Domain.Identity
                 throw new ArgumentNullException($"{nameof(roleName)} is null");
             }
 
-            user.Roles.Add(role);
+            var applicationLoginRole = new ApplicationLoginRole
+            {
+                Id = Guid.NewGuid().ToString("N"),
+                ApplicationLogin = user,
+                ApplicationRole = role
+            };
+
+            user.LoginRoles.Add(applicationLoginRole);
+            role.LoginRoles.Add(applicationLoginRole);
         }
 
         public async Task<IdentityResult> CreateAsync(ApplicationLogin user, CancellationToken cancellationToken)
@@ -104,8 +112,8 @@ namespace TvCv19.Frontend.Domain.Identity
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            return Task.FromResult((IList<string>)(from r in user.Roles
-                                                   select r.Name).ToList());
+            return Task.FromResult((IList<string>)(from r in user.LoginRoles
+                                                   select r.ApplicationRole.Name).ToList());
         }
 
         public Task<string> GetUserIdAsync(ApplicationLogin user, CancellationToken cancellationToken)
@@ -133,9 +141,8 @@ namespace TvCv19.Frontend.Domain.Identity
                 return null;
             }
 
-            return (from u in await _repository.GetApplicationLoginsAsync()
-                    where u.Roles.Any(r => r.NormalizedName == role.NormalizedName)
-                    select u).ToList();
+            return (from l in role.LoginRoles
+                    select l.ApplicationLogin).ToList();
         }
 
         public Task<bool> HasPasswordAsync(ApplicationLogin user, CancellationToken cancellationToken)
@@ -150,8 +157,8 @@ namespace TvCv19.Frontend.Domain.Identity
             cancellationToken.ThrowIfCancellationRequested();
 
             var role = await _roleManager.FindByNameAsync(roleName);
-            return (from r in user.Roles
-                    where r.NormalizedName == role?.NormalizedName
+            return (from r in user.LoginRoles
+                    where r.ApplicationRole.NormalizedName == role?.NormalizedName
                     select r).Any();
         }
 
@@ -160,13 +167,14 @@ namespace TvCv19.Frontend.Domain.Identity
             cancellationToken.ThrowIfCancellationRequested();
 
             var role = await _roleManager.FindByNameAsync(roleName);
-            var userRole = (from r in user.Roles
-                            where r.NormalizedName == role?.NormalizedName
-                            select r).FirstOrDefault();
+            var applicationLoginRole = (from r in user.LoginRoles
+                                        where r.ApplicationRole.NormalizedName == role?.NormalizedName
+                                        select r).FirstOrDefault();
 
-            if (userRole != null)
+            if (applicationLoginRole != null)
             {
-                user.Roles.Remove(userRole);
+                user.LoginRoles.Remove(applicationLoginRole);
+                role.LoginRoles.Remove(applicationLoginRole);
             }
         }
 

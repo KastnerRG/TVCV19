@@ -16,6 +16,8 @@ namespace TvCv19.Frontend.Domain.Repositories
 
         public DbSet<ApplicationRole> ApplicationRoles { get; set; }
 
+        public DbSet<ApplicationLoginRole> ApplicationLoginRoles { get; set; }
+
         public DbSet<Physician> Caregivers { get; set; }
 
         public DbSet<Media> Media { get; set; }
@@ -40,6 +42,16 @@ namespace TvCv19.Frontend.Domain.Repositories
             modelBuilder.Entity<Media>().Property(p => p.File).HasColumnType("longblob");
 
             modelBuilder.Entity<Patient>().Property(p => p.CaregiverId).IsRequired();
+
+            modelBuilder.Entity<ApplicationLoginRole>().HasKey(lr => new { lr.ApplicationLoginId, lr.ApplicationRoleId });
+            modelBuilder.Entity<ApplicationLoginRole>()
+                .HasOne(lr => lr.ApplicationLogin)
+                .WithMany(l => l.LoginRoles)
+                .HasForeignKey(lr => lr.ApplicationLoginId);
+            modelBuilder.Entity<ApplicationLoginRole>()
+                .HasOne(lr => lr.ApplicationRole)
+                .WithMany(r => r.LoginRoles)
+                .HasForeignKey(lr => lr.ApplicationRoleId);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) =>
