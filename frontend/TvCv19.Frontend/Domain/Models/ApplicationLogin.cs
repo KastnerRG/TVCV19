@@ -2,6 +2,8 @@
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
@@ -12,10 +14,15 @@ namespace TvCv19.Frontend.Domain.Models
 {
     public class ApplicationLogin : IDbEntity
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public string Id { get; set; }
-        public bool? Enabled { get; set; }
+        [Required]
+        public bool? Enabled { get; set; } = true;
+        [Required]
         public string NormalizedUserName { get; set; }
+        [Required]
         public string UserName { get; set; }
+        [Required]
         public string PasswordHash { get; set; }
 
         public string GenerateJwtToken(IConfiguration configuration)
