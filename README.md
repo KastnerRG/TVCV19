@@ -21,3 +21,26 @@ You can learn more by browsing our [concept slides](https://docs.google.com/pres
 We are currently racing against the global novel coronavirus pandemic and could use a hand. 
 
 If you want to contribute to the project, please fill out this [online form](https://docs.google.com/forms/d/e/1FAIpQLSf2osgKSobmYf0kSwzRrotV2hk5i8TjtZZdn5XptA1UjeIXVA/viewform)  and join our [slack channel](https://join.slack.com/t/scalablecv19solutions/shared_invite/zt-cxcbnbyu-yu4dxzaMjjnQvBGkQYVkxw) (#tv-cv19).
+
+## How to Run
+**Note:** If you have an old database created from the DB scripts, be sure to drop the DB before continuing.
+
+### Setup the database for development
+We use mySQL for our backend database.  The development instance uses a predetermined password.
+
+To setup the database follow these steps:
+1. Execute `ALTER USER 'root'@'localhost' IDENTIFIED BY 'Password1'` in mySQL
+1. Execute `dotnet tool install --global dotnet-ef` to install the tools for Entity Framework.
+1. Execute `dotnet ef database update` to create the database.
+
+### Before running the C# Code
+1. Navigate to `./frontend/TvCv19.Frontend/ClientApp`
+1. Execute `npm install`
+1. Execute `ng serve`.  **Note: You must be running `ng serve` for the ASP.Net Core web app to be able to display the website.**
+
+### Run the C# Code
+1. Launch `./frontend/TvCv19.Frontend.sln`
+1. Run the app
+
+## Add New Migrations
+After updating the models or the `MedeccContext`, it is necessary to create a new DB migration.  To do so, execute `dotnet ef migrations add <migration name>`.

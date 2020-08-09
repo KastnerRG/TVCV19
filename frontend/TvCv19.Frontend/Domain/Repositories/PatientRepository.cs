@@ -1,88 +1,91 @@
-﻿using System;
+﻿using Microsoft.Extensions.Configuration;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using TvCv19.Frontend.Domain.Repositories;
 
 namespace TvCv19.Frontend.Domain
 {
 
 
-    public class PatientRepository : BaseRepository, IPatientRepository
+    public class PatientRepository : IPatientRepository
     {
         public async Task<string> AdmitPatient(Patient patient)
         {
-            var id = Guid.NewGuid().ToString().Replace("-", string.Empty);
-            var sql = @$"INSERT INTO medecc.patient
-                        (id, name, caregiver_id, location)
-                        VALUES ('{id}', @Name, @CaregiverId, @Location)";
-            await ExecuteAsync<Patient>(sql, patient);
-            return id.ToString();
+            using var context = new MedeccContext();
+
+            patient.Id = Guid.NewGuid().ToString("N");;
+
+            await context.AddAsync(patient);
+            await context.SaveChangesAsync();
+
+            return patient.Id;
         }
 
         public async Task<string> DischargePatient(string id)
         {
-            var param = new { id, AdmissionStatus = AdmissionStatus.Discharged };
-            var sql = @$"UPDATE medecc.patient
-                         SET admission_status = @AdmissionStatus
-                         WHERE id = @id";
+            using var context = new MedeccContext();
 
-            await ExecuteAsync<Patient>(sql, param);
+            var patient = (from p in context.Patients
+                           where p.Id == id
+                           select p).First();
+
+            patient.AdmissionStatus = AdmissionStatus.Discharged;
+            await context.SaveChangesAsync();
+
             return id;
         }
 
-        public async Task<Patient> GetPatient(string id)
+        public Task<Patient> GetPatient(string id)
         {
-            var param = new { id, AdmissionStatus = AdmissionStatus.Admitted };
-            var sql = $@"SELECT id, name, caregiver_id as caregiverId, location, admission_status as admissionStatus,
-                         escalation_level as escalationLevel, token
-                         FROM medecc.patient
-                         WHERE id = @id AND admission_status = @AdmissionStatus";
-            return await GetFirstOrDefaultAsync<Patient>(sql, param);
+            using var context = new MedeccContext();
+
+            return Task.FromResult((from p in context.Patients
+                                    where p.Id == id && p.AdmissionStatus == AdmissionStatus.Admitted
+                                    select p).FirstOrDefault());
         }
 
-        public async Task<IEnumerable<Patient>> GetPatients()
+        public Task<IEnumerable<Patient>> GetPatients()
         {
-            var param = new { AdmissionStatus = AdmissionStatus.Admitted };
-            var sql = $@"SELECT id, name, caregiver_id as caregiverId, location, admission_status as admissionStatus,
-                         escalation_level as escalationLevel, token
-                         FROM medecc.patient
-                         WHERE admission_status = @AdmissionStatus";
+            using var context = new MedeccContext();
 
-            return await GetAsync<Patient>(sql, param);
+            var patients = from p in context.Patients
+                           where p.AdmissionStatus == AdmissionStatus.Admitted
+                           select p;
+
+            return Task.FromResult((IEnumerable<Patient>)patients.ToArray());
         }
 
-        public async Task<IEnumerable<Patient>> GetPatientsByPhysician(string id)
+        public Task<IEnumerable<Patient>> GetPatientsByPhysician(string id)
         {
-            var param = new { id, AdmissionStatus = AdmissionStatus.Admitted };
-            var sql = @"WITH
-                          firstLevelTeam AS (
-                                             SELECT id FROM medecc.caregiver
-                                             WHERE supervisor_id = @id
-					      ),
-                          secondLevelTeam AS (
-                                               SELECT id FROM medecc.caregiver
-                                               WHERE supervisor_id in(SELECT id FROM firstLevelTeam) 
-					      )
-                         
-                          SELECT patient.id, patient.name, patient.caregiver_id as caregiverId, patient.location, patient.admission_status as admissionStatus,
-                                            escalation_level as escalationLevel, token
-                                            FROM medecc.patient as patient
-					                        WHERE patient.caregiver_id in (
-                                                                            SELECT * FROM firstLevelTeam
-                                                                            UNION ALL
-                                                                            SELECT * FROM secondLevelTeam
-                                                                           )
-					      OR patient.caregiver_id = @id
-                          AND patient.admission_status = @AdmissionStatus";
-            return await GetAsync<Patient>(sql, param);
+            using var context = new MedeccContext();
+
+            var firstLevelTeam = (from c in context.Caregivers
+                                  where c.SupervisorId == id
+                                  select c.Id).ToHashSet();
+
+            var secondLevelTeam = from c in context.Caregivers
+                                  where firstLevelTeam.Contains(c.SupervisorId)
+                                  select c.Id;
+
+            var caregivers = firstLevelTeam.Concat(secondLevelTeam).ToHashSet();
+
+            var patients = from p in context.Patients
+                           where (caregivers.Contains(p.CaregiverId) || p.CaregiverId == id) &&
+                            p.AdmissionStatus == AdmissionStatus.Admitted
+                           select p;
+
+            return Task.FromResult((IEnumerable<Patient>)patients.ToArray());
         }
 
         public async Task<Patient> UpdatePatient(Patient patient)
         {
-            var sql = @"UPDATE medecc.patient
-                         SET name = @Name, caregiver_id = @CaregiverId, location = @Location, admission_status = @AdmissionStatus,
-                         escalation_level = @EscalationLevel, token = @Token
-                         WHERE  id = @Id";
-            await ExecuteAsync<Patient>(sql, patient);
+            using var context = new MedeccContext();
+
+            context.Update(patient);
+            await context.SaveChangesAsync();
+
             return patient;
         }
     }

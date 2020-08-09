@@ -1,27 +1,32 @@
+using Microsoft.Extensions.Configuration;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace TvCv19.Frontend.Domain.Repositories
 {
-    public class MediaRepository : BaseRepository, IMediaRepository
+    public class MediaRepository : IMediaRepository
     {
         public async Task<string> AddMedia(Media media)
         {
-            var id = Guid.NewGuid().ToString().Replace("-", string.Empty);
-            var sql = $@"INSERT INTO medecc.media
-                         (id, file_name, file, mime_type)
-                         VALUES ('{id}', @FileName, @File, @MimeType)";
-            await ExecuteAsync<Media>(sql, media);
+            using var context = new MedeccContext();
+
+            var id = Guid.NewGuid().ToString("N");;
+
+            media.Id = id;
+            await context.AddAsync(media);
+            await context.SaveChangesAsync();
+
             return id;
         }
 
-        public async Task<Media> GetMedia(string id)
+        public Task<Media> GetMedia(string id)
         {
-            var param = new { id };
-            var sql = $@"SELECT id, file_name as fileName, file, mime_type as mimeType
-                         FROM medecc.media
-                         WHERE id = @id";
-            return await GetFirstOrDefaultAsync<Media>(sql, param);
+            using var context = new MedeccContext();
+
+            return Task.FromResult((from m in context.Media
+                                    where m.Id == id
+                                    select m).FirstOrDefault());
         }
     }
 }
