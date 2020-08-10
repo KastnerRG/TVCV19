@@ -52,7 +52,7 @@ namespace TvCv19.Frontend.Controllers
         }
 
         [HttpPut]
-        [Authorize(Roles = "physician")]
+        [Authorize(Roles = "physician, patient")]
         public async Task<IActionResult> UpdatePatient(Patient patientModel)
         {
             patientModel = await _patientRepository.UpdatePatient(patientModel);

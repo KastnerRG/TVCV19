@@ -53,13 +53,13 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     });
 
     route.parent.params.subscribe((p: any) => {
-      this.patientId = p['id'];
+      this.patientId = parseInt(p['id']);
 
       this.chatService.subscribeAsync(this.patientId);
     });
 
     route.parent.parent.params.subscribe((p) => {
-      this.physicianId = p['id'];
+      this.physicianId = parseInt(p['id']);
     });
 
     route.data.subscribe((data: { messages: MessageModel[] }) => {

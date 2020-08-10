@@ -9,8 +9,8 @@ using TvCv19.Frontend.Domain.Repositories;
 namespace TvCv19.Frontend.Migrations
 {
     [DbContext(typeof(MedeccContext))]
-    [Migration("20200810102228_SupervisorNullable")]
-    partial class SupervisorNullable
+    [Migration("20200810121525_CaregiverIdNull")]
+    partial class CaregiverIdNull
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -34,7 +34,6 @@ namespace TvCv19.Frontend.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("PasswordHash")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("UserName")
@@ -188,7 +187,10 @@ namespace TvCv19.Frontend.Migrations
                     b.Property<int>("AdmissionStatus")
                         .HasColumnType("int");
 
-                    b.Property<int>("CaregiverId")
+                    b.Property<int>("ApplicationLoginId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("CaregiverId")
                         .HasColumnType("int");
 
                     b.Property<int>("EscalationLevel")
@@ -206,6 +208,8 @@ namespace TvCv19.Frontend.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ApplicationLoginId");
 
                     b.ToTable("Patients");
                 });
@@ -283,6 +287,15 @@ namespace TvCv19.Frontend.Migrations
                     b.HasOne("TvCv19.Frontend.Domain.Models.Stats", "Stats")
                         .WithMany()
                         .HasForeignKey("StatsId");
+                });
+
+            modelBuilder.Entity("TvCv19.Frontend.Domain.Patient", b =>
+                {
+                    b.HasOne("TvCv19.Frontend.Domain.Models.ApplicationLogin", "ApplicationLogin")
+                        .WithMany()
+                        .HasForeignKey("ApplicationLoginId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("TvCv19.Frontend.Domain.Physician", b =>

@@ -70,7 +70,7 @@ namespace TvCv19.Frontend.Domain
             var caregivers = firstLevelTeam.Concat(secondLevelTeam).ToHashSet();
 
             var patients = from p in context.Patients
-                           where (caregivers.Contains(p.CaregiverId) || p.CaregiverId == id) &&
+                           where p.CaregiverId.HasValue && (caregivers.Contains(p.CaregiverId.Value) || p.CaregiverId == id) &&
                             p.AdmissionStatus == AdmissionStatus.Admitted
                            select p;
 

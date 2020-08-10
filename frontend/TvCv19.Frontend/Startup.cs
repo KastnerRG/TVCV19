@@ -181,6 +181,7 @@ namespace TvCv19.Frontend
         private Task EnsureDefaultRolesAsync(RoleManager<ApplicationRole> roleManager)
         {
             return Task.WhenAll(
+                EnsureRoleExistsAsync("User", roleManager),
                 EnsureRoleExistsAsync("Administrator", roleManager),
                 EnsureRoleExistsAsync("Patient", roleManager),
                 EnsureRoleExistsAsync("Physician", roleManager));

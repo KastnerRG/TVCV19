@@ -10,13 +10,16 @@ namespace TvCv19.Frontend.Domain
         public int Id { get; set; }
         [Required]
         public string Name { get; set; }
-        public int CaregiverId { get; set; }
+        public int? CaregiverId { get; set; }
         [Required]
         public string Location { get; set; }
         public int EscalationLevel { get; set; }
         [Required]
         public AdmissionStatus AdmissionStatus { get; set; }
         public string Token { get; set; }
+        [Required]
+        public int ApplicationLoginId { get; set; }
+        public ApplicationLogin ApplicationLogin { get; set; }
     }
  
     public enum AdmissionStatus{ Admitted = 1, Discharged = 2 }

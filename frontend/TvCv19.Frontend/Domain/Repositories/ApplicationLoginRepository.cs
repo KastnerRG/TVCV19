@@ -10,12 +10,14 @@ namespace TvCv19.Frontend.Domain.Repositories
 {
     public class ApplicationLoginRepository : IApplicationLoginRepository
     {
-        public async Task AddApplicationLoginAsync(ApplicationLogin applicationLogin)
+        public async Task<ApplicationLogin> AddApplicationLoginAsync(ApplicationLogin applicationLogin)
         {
             using var context = new MedeccContext();
-            await context.AddAsync(applicationLogin);
+            var @return = await context.AddAsync(applicationLogin);
 
             await context.SaveChangesAsync();
+
+            return @return.Entity;
         }
 
         public async Task DisableApplicationLoginAsync(string normalizedUserName)

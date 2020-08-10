@@ -17,7 +17,7 @@ namespace TvCv19.Frontend.Migrations
                     Enabled = table.Column<bool>(nullable: false),
                     NormalizedUserName = table.Column<string>(nullable: false),
                     UserName = table.Column<string>(nullable: false),
-                    PasswordHash = table.Column<string>(nullable: false)
+                    PasswordHash = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -36,22 +36,6 @@ namespace TvCv19.Frontend.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ApplicationRoles", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Caregivers",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(nullable: false),
-                    Location = table.Column<string>(nullable: false),
-                    Hierarchy = table.Column<int>(nullable: false),
-                    SupervisorId = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Caregivers", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -87,24 +71,6 @@ namespace TvCv19.Frontend.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Patients",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(nullable: false),
-                    CaregiverId = table.Column<int>(nullable: false),
-                    Location = table.Column<string>(nullable: false),
-                    EscalationLevel = table.Column<int>(nullable: false),
-                    AdmissionStatus = table.Column<int>(nullable: false),
-                    Token = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Patients", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Stats",
                 columns: table => new
                 {
@@ -120,6 +86,54 @@ namespace TvCv19.Frontend.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Stats", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Caregivers",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(nullable: false),
+                    Location = table.Column<string>(nullable: false),
+                    Hierarchy = table.Column<int>(nullable: false),
+                    SupervisorId = table.Column<int>(nullable: true),
+                    ApplicationLoginId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Caregivers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Caregivers_ApplicationLogins_ApplicationLoginId",
+                        column: x => x.ApplicationLoginId,
+                        principalTable: "ApplicationLogins",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Patients",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(nullable: false),
+                    CaregiverId = table.Column<int>(nullable: false),
+                    Location = table.Column<string>(nullable: false),
+                    EscalationLevel = table.Column<int>(nullable: false),
+                    AdmissionStatus = table.Column<int>(nullable: false),
+                    Token = table.Column<string>(nullable: true),
+                    ApplicationLoginId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Patients", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Patients_ApplicationLogins_ApplicationLoginId",
+                        column: x => x.ApplicationLoginId,
+                        principalTable: "ApplicationLogins",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -177,9 +191,19 @@ namespace TvCv19.Frontend.Migrations
                 column: "ApplicationRoleId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Caregivers_ApplicationLoginId",
+                table: "Caregivers",
+                column: "ApplicationLoginId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Messages_StatsId",
                 table: "Messages",
                 column: "StatsId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Patients_ApplicationLoginId",
+                table: "Patients",
+                column: "ApplicationLoginId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -203,13 +227,13 @@ namespace TvCv19.Frontend.Migrations
                 name: "Patients");
 
             migrationBuilder.DropTable(
-                name: "ApplicationLogins");
-
-            migrationBuilder.DropTable(
                 name: "ApplicationRoles");
 
             migrationBuilder.DropTable(
                 name: "Stats");
+
+            migrationBuilder.DropTable(
+                name: "ApplicationLogins");
         }
     }
 }

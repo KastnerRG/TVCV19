@@ -41,7 +41,7 @@ namespace TvCv19.Frontend.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "physician")]
+        [Authorize(Roles = "physician, patient")]
         public async Task<IActionResult> GetPhysiciansAsync() => Ok(await _physicianRepository.GetPhysiciansAsync());
         [HttpGet("hierarchy/{id}")]
         [Authorize(Roles = "physician")]

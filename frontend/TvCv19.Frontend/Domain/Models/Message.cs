@@ -22,8 +22,6 @@ namespace TvCv19.Frontend.Domain.Models
             IsEscalation = isEscalation;
         }
 
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        [DataType("varchar(32)")]
         public int Id { get; set; } 
         [Required]
         public int GroupId { get; set; }

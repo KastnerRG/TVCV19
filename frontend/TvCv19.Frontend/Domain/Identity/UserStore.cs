@@ -37,6 +37,16 @@ namespace TvCv19.Frontend.Domain.Identity
                 ApplicationRole = role
             };
 
+            if (user.LoginRoles == null)
+            {
+                user.LoginRoles = new List<ApplicationLoginRole>();
+            }
+
+            if (role.LoginRoles == null)
+            {
+                role.LoginRoles = new List<ApplicationLoginRole>();
+            }
+
             user.LoginRoles.Add(applicationLoginRole);
             role.LoginRoles.Add(applicationLoginRole);
         }
@@ -45,7 +55,8 @@ namespace TvCv19.Frontend.Domain.Identity
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            await _repository.AddApplicationLoginAsync(user);
+            var result = await _repository.AddApplicationLoginAsync(user);
+            await AddToRoleAsync(result, "User", cancellationToken);
 
             return IdentityResult.Success;
         }

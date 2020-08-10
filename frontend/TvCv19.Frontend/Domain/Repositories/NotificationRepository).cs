@@ -25,7 +25,7 @@ namespace TvCv19.Frontend.Domain
         {
             using var context = new MedeccContext();
 
-            context.Remove(await GetNotifications(id));
+            context.RemoveRange(await GetNotifications(id));
             await context.SaveChangesAsync();
 
             return id;

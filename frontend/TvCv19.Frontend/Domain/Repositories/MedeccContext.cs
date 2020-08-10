@@ -36,13 +36,10 @@ namespace TvCv19.Frontend.Domain.Repositories
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ApplicationLogin>().Property(p => p.NormalizedUserName).IsRequired();
-            modelBuilder.Entity<ApplicationLogin>().Property(p => p.PasswordHash).IsRequired();
 
             modelBuilder.Entity<ApplicationRole>().Property(p => p.NormalizedName).IsRequired();
 
             modelBuilder.Entity<Media>().Property(p => p.File).HasColumnType("longblob");
-
-            modelBuilder.Entity<Patient>().Property(p => p.CaregiverId).IsRequired();
 
             modelBuilder.Entity<Physician>().Property(p => p.SupervisorId).IsRequired(false);
 
@@ -56,13 +53,24 @@ namespace TvCv19.Frontend.Domain.Repositories
                 .WithMany(r => r.LoginRoles)
                 .HasForeignKey(lr => lr.ApplicationRoleId);
 
-            // Necessary to work around a bug with MySql Entity Framework.
-            using var connection = new MySqlConnection(_connectionString);
-            connection.Open();
+            try
+            {
+                // Necessary to work around a bug with MySql Entity Framework.
+                using var connection = new MySqlConnection(_connectionString);
+                connection.Open();
 
-            using var command = connection.CreateCommand();
-            command.CommandText = "ALTER TABLE Caregivers MODIFY `SupervisorId` int NULL;";
-            command.ExecuteNonQuery();
+                using var command = connection.CreateCommand();
+
+                command.CommandText = "ALTER TABLE Caregivers MODIFY `SupervisorId` int NULL;";
+                command.ExecuteNonQuery();
+
+                command.CommandText = "ALTER TABLE Patients MODIFY `CaregiverId` int NULL;";
+                command.ExecuteNonQuery();
+            }
+            catch (Exception)
+            {
+                // Skip
+            }
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) =>

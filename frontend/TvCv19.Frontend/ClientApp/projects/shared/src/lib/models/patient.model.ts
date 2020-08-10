@@ -6,6 +6,7 @@ export class PatientModel {
     addmissionStatus: AdmissionStatus;
     escalationLevel: number;
     token: string;
+    applicationLoginId: number;
 }
 
 export enum AdmissionStatus {
