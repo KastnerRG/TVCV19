@@ -11,41 +11,18 @@ namespace TvCv19.Frontend.Domain
 {
     public interface INotificationRepository
     {
-        Task<IEnumerable<Notification>> GetNotifications(string recieverId);
-        Task<string> DeleteNotification(string id);
+        Task<IEnumerable<Notification>> GetNotifications(int recieverId);
+        Task<int> DeleteNotification(int id);
         Task<Notification> AddNotification(Notification notification);
-    }
-
-    public class PocNotificationRepository : INotificationRepository
-    {
-        private static List<Notification> _notifications = new List<Notification>();
-
-        public Task<Notification> AddNotification(Notification notifiaction)
-        {
-            _notifications.Add(notifiaction);
-
-            return Task.FromResult(notifiaction);
-        }
-
-        public Task<string> DeleteNotification(string id)
-        {
-            _notifications.Remove(_notifications.FirstOrDefault(x => x.Id == id));
-            return Task.FromResult(id);
-        }
-
-        public Task<IEnumerable<Notification>> GetNotifications(string id)
-        {
-            return Task.FromResult(_notifications.Where(x => x.RecieverId == id));
-        }
     }
 
     public class Notification : IDbEntity
     {
-        public string Id { get; set; }
+        public int Id { get; set; }
         [Required]
-        public string RecieverId { get; set; }
+        public int RecieverId { get; set; }
         [Required]
-        public string PatientId { get; set; }
+        public int PatientId { get; set; }
         public string Link { get; set; }
         [NotMapped]
         public string Message { get; set; }

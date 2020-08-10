@@ -53,7 +53,7 @@ namespace TvCv19.Frontend.Domain.Identity
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            return _repository.FindByIdAsync(roleId);
+            return _repository.FindByIdAsync(int.Parse(roleId));
         }
 
         public Task<ApplicationRole> FindByNameAsync(string normalizedRoleName, CancellationToken cancellationToken)
@@ -74,7 +74,7 @@ namespace TvCv19.Frontend.Domain.Identity
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            return Task.FromResult(role.Id);
+            return Task.FromResult(role.Id.ToString());
         }
 
         public Task<string> GetRoleNameAsync(ApplicationRole role, CancellationToken cancellationToken)

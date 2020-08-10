@@ -27,7 +27,7 @@ namespace TvCv19.Frontend.Controllers
         public async Task<IActionResult> AddPhysicianAsync(Physician physician) => Ok(await _physicianRepository.AddPhysicianAsync(physician));
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeletePhysicianAsync(string id)
+        public async Task<IActionResult> DeletePhysicianAsync(int id)
         {
             await _physicianRepository.DeletePhysicianAsync(id);
 
@@ -39,11 +39,11 @@ namespace TvCv19.Frontend.Controllers
         public async Task<IActionResult> GetPhysiciansAsync() => Ok(await _physicianRepository.GetPhysiciansAsync());
         [HttpGet("hierarchy/{id}")]
         [Authorize(Roles = "physician")]
-        public async Task<IActionResult> GetPhysicianHierarchy(string id) => Ok(await _physicianRepository.GetHeirarchyTree(id));
+        public async Task<IActionResult> GetPhysicianHierarchy(int id) => Ok(await _physicianRepository.GetHeirarchyTree(id));
 
         [HttpGet("{id}")]
         [Authorize(Roles = "physician")]
-        public async Task<IActionResult> GetPhysicianAsync(string id) => Ok(await _physicianRepository.GetPhysicianAsync(id));
+        public async Task<IActionResult> GetPhysicianAsync(int id) => Ok(await _physicianRepository.GetPhysicianAsync(id));
 
         [HttpPut("{id}")]
         [Authorize(Roles = "administrator")]

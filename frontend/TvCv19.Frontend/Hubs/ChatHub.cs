@@ -31,7 +31,7 @@ namespace TvCv19.Frontend.Hubs
         public Task UnsubscribeAsync(string patientId) =>
             Groups.RemoveFromGroupAsync(Context.ConnectionId, patientId);
 
-        public async Task SendMessageAsync(string patientId, string physicianId, string message, Stats stats, bool isCareInstruction, bool isAudio, bool isImage, bool isEscalation)
+        public async Task SendMessageAsync(int patientId, int physicianId, string message, Stats stats, bool isCareInstruction, bool isAudio, bool isImage, bool isEscalation)
         {
             var date = DateTime.Now;
             var physician = await _physicianRepository.GetPhysicianAsync(physicianId);
@@ -39,12 +39,12 @@ namespace TvCv19.Frontend.Hubs
             Message dbMessage = new Message(patientId, message, physician, date, isCareInstruction, isAudio, isImage, stats, recieverId, isEscalation);
             var id = await _messageRepository.AddMessage(dbMessage);
             await AddNotifications(patientId, physician, recieverId, isEscalation);
-            await Clients.Group(patientId).SendAsync("ReceiveMessage", dbMessage.ToMessageModel(id, physicianId));
+            await Clients.Group(patientId.ToString()).SendAsync("ReceiveMessage", dbMessage.ToMessageModel(id, physicianId));
         }
 
-        private async Task AddNotifications(string patientId, Physician physician, string recieverId, bool isEscalation)
+        private async Task AddNotifications(int patientId, Physician physician, int recieverId, bool isEscalation)
         {
-            var recieverIds = new List<string> { recieverId };
+            var recieverIds = new List<int> { recieverId };
             if (physician.Hierarchy == Hierarchy.SecondLine)
             {
                 recieverIds.Add(physician.SupervisorId);
@@ -72,7 +72,6 @@ namespace TvCv19.Frontend.Hubs
             {
                 await _notificationRepository.AddNotification(new Notification
                 {
-                    Id = Guid.NewGuid().ToString(),
                     IsEscalation = isEscalation,
                     Date = DateTime.Now,
                     Link = $"/caregiver/{recieverId}/patient/{patientId}/chat",
@@ -86,7 +85,6 @@ namespace TvCv19.Frontend.Hubs
                 {
                     await _notificationRepository.AddNotification(new Notification
                     {
-                        Id = Guid.NewGuid().ToString(),
                         IsEscalation = isEscalation,
                         Date = DateTime.Now,
                         Link = $"/caregiver/{id}/patient/{patientId}/chat",
@@ -100,7 +98,7 @@ namespace TvCv19.Frontend.Hubs
 
     public static class MessageExtensions
     {
-        public static MessageModel ToMessageModel(this Message m, string id, string physicianId)
+        public static MessageModel ToMessageModel(this Message m, int id, int physicianId)
         {
             return new MessageModel(m, id, physicianId);
         }
@@ -113,7 +111,7 @@ namespace TvCv19.Frontend.Hubs
 
     public class MessageModel
     {
-        public MessageModel(Message m, string id, string physicianId)
+        public MessageModel(Message m, int id, int physicianId)
         {
             Id = id;
             PatientId = m.GroupId;
@@ -129,11 +127,11 @@ namespace TvCv19.Frontend.Hubs
             IsEscalation = m.IsEscalation;
         }
 
-        public string PatientId { get; set; }
-        public string PhysicianId { get; }
-        public string ReceiverId { get; set; }
+        public int PatientId { get; set; }
+        public int PhysicianId { get; }
+        public int ReceiverId { get; set; }
         public bool IsEscalation { get; set; }
-        public string Id { get; set; }
+        public int Id { get; set; }
         public bool IsImage { get; set; }
         public bool IsCareInstruction { get; set; }
         public bool IsAudio { get; set; }

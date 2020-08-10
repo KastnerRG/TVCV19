@@ -11,11 +11,9 @@ namespace TvCv19.Frontend.Domain
 
     public class PatientRepository : IPatientRepository
     {
-        public async Task<string> AdmitPatient(Patient patient)
+        public async Task<int> AdmitPatient(Patient patient)
         {
             using var context = new MedeccContext();
-
-            patient.Id = Guid.NewGuid().ToString("N");;
 
             await context.AddAsync(patient);
             await context.SaveChangesAsync();
@@ -23,7 +21,7 @@ namespace TvCv19.Frontend.Domain
             return patient.Id;
         }
 
-        public async Task<string> DischargePatient(string id)
+        public async Task<int> DischargePatient(int id)
         {
             using var context = new MedeccContext();
 
@@ -37,7 +35,7 @@ namespace TvCv19.Frontend.Domain
             return id;
         }
 
-        public Task<Patient> GetPatient(string id)
+        public Task<Patient> GetPatient(int id)
         {
             using var context = new MedeccContext();
 
@@ -57,7 +55,7 @@ namespace TvCv19.Frontend.Domain
             return Task.FromResult((IEnumerable<Patient>)patients.ToArray());
         }
 
-        public Task<IEnumerable<Patient>> GetPatientsByPhysician(string id)
+        public Task<IEnumerable<Patient>> GetPatientsByPhysician(int id)
         {
             using var context = new MedeccContext();
 

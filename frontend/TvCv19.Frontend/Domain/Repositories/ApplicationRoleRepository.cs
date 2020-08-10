@@ -13,8 +13,6 @@ namespace TvCv19.Frontend.Domain.Repositories
         {
             using var context = new MedeccContext();
 
-            applicationRole.Id = Guid.NewGuid().ToString("N"); ;
-
             await context.ApplicationRoles.AddAsync(applicationRole);
             await context.SaveChangesAsync();
         }
@@ -27,7 +25,7 @@ namespace TvCv19.Frontend.Domain.Repositories
             return context.SaveChangesAsync();
         }
 
-        public Task<ApplicationRole> FindByIdAsync(string id)
+        public Task<ApplicationRole> FindByIdAsync(int id)
         {
             using var context = new MedeccContext();
 

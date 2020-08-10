@@ -58,9 +58,9 @@ namespace TvCv19.Frontend.Controllers
                select appLogin.StripPassword());
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateApplicationLoginAsync(string id, [FromBody]ApplicationLogin applicationLogin)
+        public async Task<IActionResult> UpdateApplicationLoginAsync(int id, [FromBody]ApplicationLogin applicationLogin)
         {
-            var fromDatabase = await userManager.FindByIdAsync(id);
+            var fromDatabase = await userManager.FindByIdAsync(id.ToString());
 
             if (fromDatabase == null)
             {

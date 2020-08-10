@@ -11,13 +11,13 @@ namespace TvCv19.Frontend.Domain.Repositories
 {
     public interface IMediaRepository
     {
-        Task<string> AddMedia(Media message);
-        Task<Media> GetMedia(string id);
+        Task<int> AddMedia(Media message);
+        Task<Media> GetMedia(int id);
     }
 
     public class Media : IDbEntity
     {
-        public string Id { get; set; }
+        public int Id { get; set; }
         [Required]
         public string FileName { get; set; }
         [Required]
@@ -41,22 +41,6 @@ namespace TvCv19.Frontend.Domain.Repositories
 
             }
             return media;
-        }
-    }
-
-    public class PocMediaRepository : IMediaRepository
-    {
-        private static List<Media> _mediaList = new List<Media>();
-
-        public Task<string> AddMedia(Media media)
-        {
-            _mediaList.Add(media);
-            return Task.FromResult(media.FileName);
-        }
-
-        public Task<Media> GetMedia(string id)
-        {
-            return Task.FromResult(_mediaList.FirstOrDefault(x => x.FileName == id));
         }
     }
 }

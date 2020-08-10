@@ -28,14 +28,14 @@ namespace TvCv19.Frontend.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(string id)
+        public async Task<IActionResult> Delete(int id)
         {
             id = await _notificationRepository.DeleteNotification(id);
             return Ok(new {id});
         }
 
         [HttpGet("{recieverId}")]
-        public async Task<IActionResult> Get(string recieverId)
+        public async Task<IActionResult> Get(int recieverId)
         {
             var notifications = await _notificationRepository.GetNotifications(recieverId);
             return Ok(notifications);

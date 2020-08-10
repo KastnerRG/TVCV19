@@ -8,7 +8,7 @@ namespace TvCv19.Frontend.Domain.Models
     {
         // needed for db
         public Message() { }
-        public Message(string groupId, string message, Physician physician, DateTime date, bool isCareInstruction, bool isAudio, bool isImage, Stats stats, string recieverId, bool isEscalation)
+        public Message(int groupId, string message, Physician physician, DateTime date, bool isCareInstruction, bool isAudio, bool isImage, Stats stats, int recieverId, bool isEscalation)
         {
             GroupId = groupId;
             Body = message;
@@ -23,15 +23,16 @@ namespace TvCv19.Frontend.Domain.Models
         }
 
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public string Id { get; set; } 
+        [DataType("varchar(32)")]
+        public int Id { get; set; } 
         [Required]
-        public string GroupId { get; set; }
+        public int GroupId { get; set; }
         [Required]
         public string Body { get; set; }
         [Required]
         public string Sender { get; set; }
         [NotMapped]
-        public string ReceiverId { get; set; }
+        public int ReceiverId { get; set; }
         public bool IsEscalation { get; set; }
         public DateTime Date { get; }
         public bool IsCareInstruction { get; }
@@ -41,7 +42,7 @@ namespace TvCv19.Frontend.Domain.Models
     }
     public class Stats : IDbEntity
     {
-        public string Id { get; set; } 
+        public int Id { get; set; } 
         [Required]
         public string PR { get; set; }
         [Required]

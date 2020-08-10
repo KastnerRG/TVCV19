@@ -12,8 +12,6 @@ namespace TvCv19.Frontend.Domain.Repositories
     {
         public async Task AddApplicationLoginAsync(ApplicationLogin applicationLogin)
         {
-            applicationLogin.Id = Guid.NewGuid().ToString("N");
-
             using var context = new MedeccContext();
             await context.AddAsync(applicationLogin);
 
@@ -28,7 +26,7 @@ namespace TvCv19.Frontend.Domain.Repositories
             await UpdateApplicationLoginAsync(applicationLogin);
         }
 
-        public Task<ApplicationLogin> FindByIdAsync(string id)
+        public Task<ApplicationLogin> FindByIdAsync(int id)
         {
             using var context = new MedeccContext();
 

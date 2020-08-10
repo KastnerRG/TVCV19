@@ -61,7 +61,7 @@ namespace TvCv19.Frontend.Controllers
 
         [HttpGet("{id}")]
         [Authorize(Roles = "physician, patient")]
-        public async Task<IActionResult> GetPatient(string id)
+        public async Task<IActionResult> GetPatient(int id)
         {
             var patient = await _patientRepository.GetPatient(id);
             return Ok(patient);
@@ -73,7 +73,7 @@ namespace TvCv19.Frontend.Controllers
 
         [HttpGet("physician/{id}")]
         [Authorize(Roles = "physician")]
-        public async Task<IActionResult> GetPatientByPhysician(string id)
+        public async Task<IActionResult> GetPatientByPhysician(int id)
         {
             var patients = await _patientRepository.GetPatientsByPhysician(id);
             return Ok(patients);
@@ -81,21 +81,21 @@ namespace TvCv19.Frontend.Controllers
 
         [HttpPost("discharge/{id}")]
         [Authorize(Roles = "physician")]
-        public async Task<IActionResult> DischargePatient(string id)
+        public async Task<IActionResult> DischargePatient(int id)
         {
             var _id = await _patientRepository.DischargePatient(id);
 
-            await _roomClient.DeleteRoomAsync(_id);
+            await _roomClient.DeleteRoomAsync(_id.ToString());
 
             return Ok(_id);
         }
 
         [HttpGet("{id}/messages")]
         [Authorize(Roles = "physician")]
-        public async Task<IActionResult> GetPatientMessages(string id)
+        public async Task<IActionResult> GetPatientMessages(int id)
         {
             var msgs = await _messageRepository.GetMessagesByGroup(id);
-            var messages = msgs.Select(x => new MessageDto(x.Sender, x.Body, x.Date, x.Id, x.IsCareInstruction, x.IsAudio, x.IsImage, x.Stats, x.IsEscalation));
+            var messages = msgs.Select(x => new MessageDto(x.Sender, x.Body, x.Date, x.Id.ToString(), x.IsCareInstruction, x.IsAudio, x.IsImage, x.Stats, x.IsEscalation));
             return Ok(messages);
         }
 
@@ -106,7 +106,7 @@ namespace TvCv19.Frontend.Controllers
             foreach (var patient in patients)
             {
                 await _patientRepository.DischargePatient(patient.Id);
-                await _roomClient.DeleteRoomAsync(patient.Id);
+                await _roomClient.DeleteRoomAsync(patient.Id.ToString());
             }
 
             var rooms = await _roomClient.GetRoomsAsync();

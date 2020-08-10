@@ -9,7 +9,7 @@ using TvCv19.Frontend.Domain.Repositories;
 namespace TvCv19.Frontend.Migrations
 {
     [DbContext(typeof(MedeccContext))]
-    [Migration("20200809192353_InitialCreate")]
+    [Migration("20200810093350_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -21,8 +21,9 @@ namespace TvCv19.Frontend.Migrations
 
             modelBuilder.Entity("TvCv19.Frontend.Domain.Models.ApplicationLogin", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("varchar(767)");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
                     b.Property<bool?>("Enabled")
                         .IsRequired()
@@ -45,18 +46,54 @@ namespace TvCv19.Frontend.Migrations
                     b.ToTable("ApplicationLogins");
                 });
 
+            modelBuilder.Entity("TvCv19.Frontend.Domain.Models.ApplicationLoginRole", b =>
+                {
+                    b.Property<int>("ApplicationLoginId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ApplicationRoleId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.HasKey("ApplicationLoginId", "ApplicationRoleId");
+
+                    b.HasIndex("ApplicationRoleId");
+
+                    b.ToTable("ApplicationLoginRoles");
+                });
+
+            modelBuilder.Entity("TvCv19.Frontend.Domain.Models.ApplicationRole", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("NormalizedName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ApplicationRoles");
+                });
+
             modelBuilder.Entity("TvCv19.Frontend.Domain.Models.Message", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("varchar(767)");
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
 
                     b.Property<string>("Body")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("GroupId")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<int>("GroupId")
+                        .HasColumnType("int");
 
                     b.Property<bool>("IsAudio")
                         .HasColumnType("bit");
@@ -71,8 +108,8 @@ namespace TvCv19.Frontend.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("StatsId")
-                        .HasColumnType("varchar(767)");
+                    b.Property<int?>("StatsId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -83,8 +120,9 @@ namespace TvCv19.Frontend.Migrations
 
             modelBuilder.Entity("TvCv19.Frontend.Domain.Models.Stats", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("varchar(767)");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
                     b.Property<string>("IE")
                         .IsRequired()
@@ -117,8 +155,9 @@ namespace TvCv19.Frontend.Migrations
 
             modelBuilder.Entity("TvCv19.Frontend.Domain.Notification", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("varchar(767)");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
                     b.Property<DateTime?>("Date")
                         .HasColumnType("datetime");
@@ -129,13 +168,11 @@ namespace TvCv19.Frontend.Migrations
                     b.Property<string>("Link")
                         .HasColumnType("text");
 
-                    b.Property<string>("PatientId")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<int>("PatientId")
+                        .HasColumnType("int");
 
-                    b.Property<string>("RecieverId")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<int>("RecieverId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -144,15 +181,15 @@ namespace TvCv19.Frontend.Migrations
 
             modelBuilder.Entity("TvCv19.Frontend.Domain.Patient", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("varchar(767)");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
                     b.Property<int>("AdmissionStatus")
                         .HasColumnType("int");
 
-                    b.Property<string>("CaregiverId")
-                        .IsRequired()
-                        .HasColumnType("text");
+                    b.Property<int>("CaregiverId")
+                        .HasColumnType("int");
 
                     b.Property<int>("EscalationLevel")
                         .HasColumnType("int");
@@ -175,8 +212,9 @@ namespace TvCv19.Frontend.Migrations
 
             modelBuilder.Entity("TvCv19.Frontend.Domain.Physician", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("varchar(767)");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
                     b.Property<int>("Hierarchy")
                         .HasColumnType("int");
@@ -189,8 +227,8 @@ namespace TvCv19.Frontend.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("SupervisorId")
-                        .HasColumnType("text");
+                    b.Property<int>("SupervisorId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -199,8 +237,9 @@ namespace TvCv19.Frontend.Migrations
 
             modelBuilder.Entity("TvCv19.Frontend.Domain.Repositories.Media", b =>
                 {
-                    b.Property<string>("Id")
-                        .HasColumnType("varchar(767)");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
                     b.Property<byte[]>("File")
                         .IsRequired()
@@ -217,6 +256,21 @@ namespace TvCv19.Frontend.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Media");
+                });
+
+            modelBuilder.Entity("TvCv19.Frontend.Domain.Models.ApplicationLoginRole", b =>
+                {
+                    b.HasOne("TvCv19.Frontend.Domain.Models.ApplicationLogin", "ApplicationLogin")
+                        .WithMany("LoginRoles")
+                        .HasForeignKey("ApplicationLoginId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TvCv19.Frontend.Domain.Models.ApplicationRole", "ApplicationRole")
+                        .WithMany("LoginRoles")
+                        .HasForeignKey("ApplicationRoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("TvCv19.Frontend.Domain.Models.Message", b =>

@@ -16,15 +16,13 @@ namespace TvCv19.Frontend.Domain.Repositories
         {
             using var context = new MedeccContext();
 
-            physician.Id = Guid.NewGuid().ToString("N");;
-
             await context.AddAsync(physician);
             await context.SaveChangesAsync();
 
             return physician;
         }
 
-        public async Task DeletePhysicianAsync(string id)
+        public async Task DeletePhysicianAsync(int id)
         {
             using var context = new MedeccContext();
 
@@ -32,7 +30,7 @@ namespace TvCv19.Frontend.Domain.Repositories
             await context.SaveChangesAsync();
         }
 
-        public Task<IEnumerable<Physician>> GetPhysicianTeam(string id)
+        public Task<IEnumerable<Physician>> GetPhysicianTeam(int id)
         {
             using var context = new MedeccContext();
 
@@ -50,7 +48,7 @@ namespace TvCv19.Frontend.Domain.Repositories
             return Task.FromResult((IEnumerable<Physician>)context.Caregivers.ToArray());
         }
 
-        public Task<Physician> GetPhysicianAsync(string id)
+        public Task<Physician> GetPhysicianAsync(int id)
         {
             using var context = new MedeccContext();
 
@@ -69,7 +67,7 @@ namespace TvCv19.Frontend.Domain.Repositories
             return physician;
         }
 
-        public async Task<CarerHierarchyTree> GetHeirarchyTree(string id)
+        public async Task<CarerHierarchyTree> GetHeirarchyTree(int id)
         {
             var directReports = await GetPhysicianTeam(id);
             if (!directReports.Any())

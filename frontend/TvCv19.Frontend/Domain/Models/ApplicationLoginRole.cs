@@ -7,17 +7,16 @@ using System.Threading.Tasks;
 
 namespace TvCv19.Frontend.Domain.Models
 {
-    public class ApplicationLoginRole
+    public class ApplicationLoginRole : IDbEntity
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public string Id { get; set; }
+        public int Id { get; set; }
 
         [Required]
-        public string ApplicationLoginId { get; set; }
+        public int ApplicationLoginId { get; set; }
         public ApplicationLogin ApplicationLogin { get; set; }
 
         [Required]
-        public string ApplicationRoleId { get; set; }
+        public int ApplicationRoleId { get; set; }
         public ApplicationRole ApplicationRole { get; set; }
     }
 }

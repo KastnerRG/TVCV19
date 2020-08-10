@@ -14,8 +14,7 @@ namespace TvCv19.Frontend.Domain.Models
 {
     public class ApplicationLogin : IDbEntity
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public string Id { get; set; }
+        public int Id { get; set; }
         [Required]
         public bool? Enabled { get; set; } = true;
         public IList<ApplicationLoginRole> LoginRoles { get; set; }
@@ -30,7 +29,7 @@ namespace TvCv19.Frontend.Domain.Models
             {
                 new Claim(JwtRegisteredClaimNames.Sub, UserName),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(ClaimTypes.NameIdentifier, Id),
+                new Claim(ClaimTypes.NameIdentifier, Id.ToString()),
             };
 
             foreach (var loginRole in LoginRoles)

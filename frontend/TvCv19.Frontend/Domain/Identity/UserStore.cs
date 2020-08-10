@@ -33,7 +33,6 @@ namespace TvCv19.Frontend.Domain.Identity
 
             var applicationLoginRole = new ApplicationLoginRole
             {
-                Id = Guid.NewGuid().ToString("N"),
                 ApplicationLogin = user,
                 ApplicationRole = role
             };
@@ -68,7 +67,7 @@ namespace TvCv19.Frontend.Domain.Identity
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var applicationLogin = await _repository.FindByIdAsync(userId);
+            var applicationLogin = await _repository.FindByIdAsync(int.Parse(userId));
             if (applicationLogin?.Enabled ?? false)
             {
                 return applicationLogin;
@@ -120,7 +119,7 @@ namespace TvCv19.Frontend.Domain.Identity
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            return Task.FromResult(user.Id);
+            return Task.FromResult(user.Id.ToString());
         }
 
         public Task<string> GetUserNameAsync(ApplicationLogin user, CancellationToken cancellationToken)

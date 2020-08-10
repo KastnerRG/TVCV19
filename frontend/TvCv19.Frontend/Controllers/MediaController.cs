@@ -24,7 +24,7 @@ namespace TvCv19.Frontend.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetMedia(string id) {
+        public async Task<IActionResult> GetMedia(int id) {
             var media = await _repository.GetMedia(id);
             return File(media.File, media.MimeType);
         }

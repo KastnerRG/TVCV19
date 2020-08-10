@@ -7,11 +7,10 @@ namespace TvCv19.Frontend.Domain
 {
     public class Patient : IDbEntity
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public string Id { get; set; }
+        public int Id { get; set; }
         [Required]
         public string Name { get; set; }
-        public string CaregiverId { get; set; }
+        public int CaregiverId { get; set; }
         [Required]
         public string Location { get; set; }
         public int EscalationLevel { get; set; }

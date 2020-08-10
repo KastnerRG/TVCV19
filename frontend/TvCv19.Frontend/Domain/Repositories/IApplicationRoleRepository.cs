@@ -10,7 +10,7 @@ namespace TvCv19.Frontend.Domain.Repositories
     {
         Task AddApplicationRoleAsync(ApplicationRole applicationRole);
         Task DeleteApplicationRoleAsync(ApplicationRole applicationRole);
-        Task<ApplicationRole> FindByIdAsync(string id);
+        Task<ApplicationRole> FindByIdAsync(int id);
         Task<ApplicationRole> FindByNameAsync(string normalizedRoleName);
         Task<ApplicationRole> UpdateAsync(ApplicationRole role);
     }

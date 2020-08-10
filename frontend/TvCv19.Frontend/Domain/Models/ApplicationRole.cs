@@ -9,8 +9,7 @@ namespace TvCv19.Frontend.Domain.Models
 {
     public class ApplicationRole : IDbEntity
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public string Id { get; set; }
+        public int Id { get; set; }
         public IList<ApplicationLoginRole> LoginRoles { get; set; }
         [Required]
         public string Name { get; set; }
