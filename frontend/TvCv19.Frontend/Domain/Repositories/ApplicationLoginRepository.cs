@@ -34,7 +34,10 @@ namespace TvCv19.Frontend.Domain.Repositories
 
             return Task.FromResult((from a in context.ApplicationLogins
                                     where a.Id == id
-                                    select a).Include(l => l.LoginRoles).FirstOrDefault());
+                                    select a)
+                                    .Include(l => l.LoginRoles)
+                                    .ThenInclude(p => p.ApplicationRole)
+                                    .FirstOrDefault());
         }
 
         public Task<ApplicationLogin> FindByNormalizedUserNameAsync(string normalizedUserName)
@@ -43,14 +46,19 @@ namespace TvCv19.Frontend.Domain.Repositories
 
             return Task.FromResult((from a in context.ApplicationLogins
                                     where a.NormalizedUserName == normalizedUserName
-                                    select a).Include(l => l.LoginRoles).FirstOrDefault());
+                                    select a)
+                                    .Include(l => l.LoginRoles)
+                                    .ThenInclude(p => p.ApplicationRole)
+                                    .FirstOrDefault());
         }
 
         public Task<IEnumerable<ApplicationLogin>> GetApplicationLoginsAsync()
         {
             using var context = new MedeccContext();
 
-            return Task.FromResult((IEnumerable<ApplicationLogin>)context.ApplicationLogins.Include(l => l.LoginRoles).ToArray());
+            return Task.FromResult((IEnumerable<ApplicationLogin>)context.ApplicationLogins
+                .Include(l => l.LoginRoles)
+                .ToArray());
         }
 
         public async Task<ApplicationLogin> UpdateApplicationLoginAsync(ApplicationLogin applicationLogin)

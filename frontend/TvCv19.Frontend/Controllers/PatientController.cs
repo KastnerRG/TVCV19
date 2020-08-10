@@ -31,6 +31,7 @@ namespace TvCv19.Frontend.Controllers
         }
 
         [HttpPost()]
+        [Authorize(Roles = "patient")]
         public async Task<IActionResult> AdmitPatient([FromBody]Patient patientModel)
         {
             patientModel.Id = await _patientRepository.AdmitPatient(patientModel);
@@ -51,6 +52,7 @@ namespace TvCv19.Frontend.Controllers
         }
 
         [HttpPut]
+        [Authorize(Roles = "physician")]
         public async Task<IActionResult> UpdatePatient(Patient patientModel)
         {
             patientModel = await _patientRepository.UpdatePatient(patientModel);
@@ -58,6 +60,7 @@ namespace TvCv19.Frontend.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Roles = "physician, patient")]
         public async Task<IActionResult> GetPatient(string id)
         {
             var patient = await _patientRepository.GetPatient(id);
@@ -65,9 +68,11 @@ namespace TvCv19.Frontend.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "patient")]
         public async Task<IActionResult> GetPatients() => Ok(await _patientRepository.GetPatients());
 
         [HttpGet("physician/{id}")]
+        [Authorize(Roles = "physician")]
         public async Task<IActionResult> GetPatientByPhysician(string id)
         {
             var patients = await _patientRepository.GetPatientsByPhysician(id);
@@ -75,6 +80,7 @@ namespace TvCv19.Frontend.Controllers
         }
 
         [HttpPost("discharge/{id}")]
+        [Authorize(Roles = "physician")]
         public async Task<IActionResult> DischargePatient(string id)
         {
             var _id = await _patientRepository.DischargePatient(id);
@@ -85,6 +91,7 @@ namespace TvCv19.Frontend.Controllers
         }
 
         [HttpGet("{id}/messages")]
+        [Authorize(Roles = "physician")]
         public async Task<IActionResult> GetPatientMessages(string id)
         {
             var msgs = await _messageRepository.GetMessagesByGroup(id);
@@ -93,6 +100,7 @@ namespace TvCv19.Frontend.Controllers
         }
 
         [HttpGet("delete/all")]
+        [Authorize(Roles = "administrator")]
         public async Task<IActionResult> DeleteAllPatients() {
             var patients = await _patientRepository.GetPatients();
             foreach (var patient in patients)

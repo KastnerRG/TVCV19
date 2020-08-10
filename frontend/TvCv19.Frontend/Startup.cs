@@ -174,6 +174,8 @@ namespace TvCv19.Frontend
 
             var administrator = await userManager.FindByNameAsync("administrator");
             await userManager.AddToRoleAsync(administrator, "Administrator");
+            await userManager.AddToRoleAsync(administrator, "Physician");
+            await userManager.AddToRoleAsync(administrator, "Patient");
         }
 
         private Task EnsureDefaultRolesAsync(RoleManager<ApplicationRole> roleManager)

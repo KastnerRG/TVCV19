@@ -6,7 +6,7 @@ using TvCv19.Frontend.Domain;
 
 namespace TvCv19.Frontend.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "physician")]
     [ApiController]
     [Route("api/notification")]
     public class NotificationController : Controller

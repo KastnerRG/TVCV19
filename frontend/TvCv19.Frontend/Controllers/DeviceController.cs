@@ -53,7 +53,7 @@ namespace TvCv19.Frontend.Controllers
             return Ok(token);
         }
 
-        [Authorize]
+        [Authorize(Roles = "physician")]
         [Route("api/device/patient/{token}")]
         [HttpPut]
         public async Task<IActionResult> EndRegisterPatientDeviceAsync(string token, [FromBody]EndRegisterPatientDeviceModel model)

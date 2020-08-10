@@ -7,7 +7,7 @@ using TvCv19.Frontend.Domain.Repositories;
 
 namespace TvCv19.Frontend.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "physician")]
     [Route("api/media")]
     public class MediaController : Controller {
         private readonly IMediaRepository _repository;

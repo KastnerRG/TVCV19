@@ -11,7 +11,7 @@ using TvCv19.Frontend.Domain.Repositories;
 
 namespace TvCv19.Frontend.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "administrator")]
     [Route("api/application-login")]
     [ApiController]
     public class ApplicationLoginController : ControllerBase

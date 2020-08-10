@@ -30,8 +30,13 @@ namespace TvCv19.Frontend.Domain.Models
             {
                 new Claim(JwtRegisteredClaimNames.Sub, UserName),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(ClaimTypes.NameIdentifier, Id)
+                new Claim(ClaimTypes.NameIdentifier, Id),
             };
+
+            foreach (var loginRole in LoginRoles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, loginRole.ApplicationRole.Name.ToLower()));
+            }
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtKey"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
