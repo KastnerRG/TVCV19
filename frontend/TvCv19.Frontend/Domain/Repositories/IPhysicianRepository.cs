@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
+using TvCv19.Frontend.Domain.Models;
 
 namespace TvCv19.Frontend.Domain.Repositories
 {
@@ -13,6 +13,7 @@ namespace TvCv19.Frontend.Domain.Repositories
         Task<IEnumerable<Physician>> GetPhysiciansAsync();
         Task<IEnumerable<Physician>> GetPhysicianTeam(int id);
         Task<Physician> GetPhysicianAsync(int id);
+        Task<Physician> GetPhysicianAsync(ApplicationLogin applicationLogin);
         Task<Physician> UpdatePhysicianAsync(Physician physician);
         Task<CarerHierarchyTree> GetHeirarchyTree(int id);
     }

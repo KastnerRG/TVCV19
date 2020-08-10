@@ -24,8 +24,8 @@ export interface DownloadedImage {
   styleUrls: ['./chat.component.scss'],
 })
 export class ChatComponent implements OnInit, AfterViewChecked {
-  private patientId: string;
-  private physicianId: string;
+  private patientId: number;
+  private physicianId: number;
   public messageToSend: string = '';
   public chatMessages: MessageModel[];
   public isRecording: boolean;

@@ -1,10 +1,8 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Dapper;
-using Microsoft.Extensions.Configuration;
-using MySql.Data.MySqlClient;
+using TvCv19.Frontend.Domain.Models;
 
 namespace TvCv19.Frontend.Domain.Repositories
 {
@@ -98,6 +96,15 @@ namespace TvCv19.Frontend.Domain.Repositories
             })));
             tree.Children = children;
             return tree;
+        }
+
+        public Task<Physician> GetPhysicianAsync(ApplicationLogin applicationLogin)
+        {
+            using var context = new MedeccContext();
+
+            return Task.FromResult((from c in context.Caregivers.Include(c => c.ApplicationLogin)
+                                    where c.ApplicationLogin.Id == applicationLogin.Id
+                                    select c).FirstOrDefault());
         }
     }
 }

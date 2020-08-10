@@ -1,9 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using TvCv19.Frontend.Domain;
+using TvCv19.Frontend.Domain.Models;
 using TvCv19.Frontend.Domain.Repositories;
 
 namespace TvCv19.Frontend.Controllers
@@ -14,11 +18,13 @@ namespace TvCv19.Frontend.Controllers
     public class PhysicianController : Controller
     {
         private readonly ILogger<PhysicianController> _logger;
+        private readonly UserManager<ApplicationLogin> _userManager;
         private readonly IPhysicianRepository _physicianRepository;
 
-        public PhysicianController(IPhysicianRepository physicianRepository, ILogger<PhysicianController> logger)
+        public PhysicianController(IPhysicianRepository physicianRepository, UserManager<ApplicationLogin> userManager, ILogger<PhysicianController> logger)
         {
             _logger = logger;
+            _userManager = userManager;
             _physicianRepository = physicianRepository;
         }
 
@@ -44,6 +50,12 @@ namespace TvCv19.Frontend.Controllers
         [HttpGet("{id}")]
         [Authorize(Roles = "physician")]
         public async Task<IActionResult> GetPhysicianAsync(int id) => Ok(await _physicianRepository.GetPhysicianAsync(id));
+
+        [HttpGet("current")]
+        [Authorize(Roles = "physician")]
+        public async Task<IActionResult> GetCurrentPhysicianAsync() => 
+            Ok(await _physicianRepository.GetPhysicianAsync(
+                await _userManager.GetUserAsync(User)));
 
         [HttpPut("{id}")]
         [Authorize(Roles = "administrator")]

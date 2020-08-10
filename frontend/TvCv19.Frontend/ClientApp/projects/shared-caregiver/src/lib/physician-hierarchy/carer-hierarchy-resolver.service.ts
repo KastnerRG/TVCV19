@@ -22,7 +22,7 @@ export class CarerHierarchyResolverService {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Observable<CarerNode> | Observable<never> {
-    const id = route.parent.params['id'];
+    const id = parseInt(route.parent.params['id']);
 
     return this.physicianService.getHierarchy(id).pipe((hierachy) => {
       if (hierachy) {

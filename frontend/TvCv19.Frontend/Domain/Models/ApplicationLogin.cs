@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -17,6 +18,7 @@ namespace TvCv19.Frontend.Domain.Models
         public int Id { get; set; }
         [Required]
         public bool? Enabled { get; set; } = true;
+        [JsonIgnore]
         public IList<ApplicationLoginRole> LoginRoles { get; set; }
         public string NormalizedUserName { get; set; }
         [Required]
@@ -27,7 +29,7 @@ namespace TvCv19.Frontend.Domain.Models
         {
             var claims = new List<Claim>
             {
-                new Claim(JwtRegisteredClaimNames.Sub, UserName),
+                new Claim(ClaimTypes.Name, UserName),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(ClaimTypes.NameIdentifier, Id.ToString()),
             };

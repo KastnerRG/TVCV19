@@ -33,7 +33,7 @@ export class ToolbarService {
 
 export interface ToolBarData {
   title?: string;
-  notificationReceiverId?: string;
+  notificationReceiverId?: number;
   escalation?: Escalation
 }
 

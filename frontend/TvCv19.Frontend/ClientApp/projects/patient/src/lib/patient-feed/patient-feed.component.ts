@@ -9,7 +9,7 @@ import { PatientService } from 'projects/shared/src/public-api';
   styleUrls: ['./patient-feed.component.scss']
 })
 export class PatientFeedComponent implements OnInit {
-  room: string;
+  room: number;
   token: string;
   constructor(route: ActivatedRoute, private toolbarService: ToolbarService, private patientService: PatientService) {
     route.params.subscribe(async (p) => {

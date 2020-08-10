@@ -31,7 +31,7 @@ export class ChatService {
     });
   }
 
-  async subscribeAsync(patientId: string): Promise<void> {
+  async subscribeAsync(patientId: number): Promise<void> {
     if (typeof patientId === 'undefined' || !patientId) {
       return;
     }
@@ -41,8 +41,8 @@ export class ChatService {
   }
 
   async sendMessageAsync(
-    patientId: string,
-    physicianId: string,
+    patientId: number,
+    physicianId: number,
     message: string,
     stats?: StatsData,
     isCareInstruction?: boolean,

@@ -114,9 +114,6 @@ namespace TvCv19.Frontend
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public async void Configure(IApplicationBuilder app, IWebHostEnvironment env, RoleManager<ApplicationRole> roleManager, UserManager<ApplicationLogin> userManager)
         {
-            using var context = new MedeccContext();
-            await context.Database.EnsureCreatedAsync();
-
             await EnsureDefaultRolesAsync(roleManager);
             await EnsureDefaultUserAsync(userManager);
 

@@ -16,7 +16,7 @@ export class PhysicianHierarchyComponent implements OnInit {
   scanPatientQr: boolean
   scanPhysicianQr: boolean
   isSupervisor: boolean
-  private id: string
+  private id: number
   constructor(private route: ActivatedRoute, private patientService: PatientService, private physicianService: PhysicianService, private toolbarService: ToolbarService) { }
 
   ngOnInit(): void {
@@ -33,7 +33,7 @@ export class PhysicianHierarchyComponent implements OnInit {
       });
   }
 
-  addPatient(id: string): void {
+  addPatient(id: number): void {
     this.scanPatientQr = false
     this.patientService.getPatient(id).subscribe(
         patient => {
@@ -42,7 +42,7 @@ export class PhysicianHierarchyComponent implements OnInit {
         } 
       )
   }
-  addPhysician(physicianId: string): void {
+  addPhysician(physicianId: number): void {
     this.scanPhysicianQr = false
     this.physicianService.getPhysician(physicianId).subscribe(
       p => {

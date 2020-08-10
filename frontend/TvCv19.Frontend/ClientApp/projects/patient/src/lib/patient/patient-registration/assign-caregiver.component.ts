@@ -9,7 +9,7 @@ import { ToolbarService } from 'src/app/toolbar.service';
 
 export interface Caregiver {
   name: string;
-  id: string;
+  id?: number;
 }
 
 @Component({

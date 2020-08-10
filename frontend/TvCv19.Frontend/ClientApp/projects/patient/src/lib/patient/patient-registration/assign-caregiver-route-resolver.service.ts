@@ -27,7 +27,7 @@ export class AssignCareGiverRouteResolverService {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Observable<AssignCareGiverModel> | Observable<never> {
-    let id = route.paramMap.get('id');
+    let id = parseInt(route.paramMap.get('id'));
 
     return this.patientService.getPatient(id).pipe(
       mergeMap((patient) => {

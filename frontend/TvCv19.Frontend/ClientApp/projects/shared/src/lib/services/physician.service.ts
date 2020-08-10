@@ -31,8 +31,18 @@ export class PhysicianService {
       })
       .pipe(catchError(this.handleError));
   }
-  ß
-  getHierarchy(id: string): Observable<CarerNode> {
+
+  getCurrentPhysician(): Observable<PhysicianModel> {
+    return this.http
+      .get<PhysicianModel>('/api/physician/current', {
+        headers: new HttpHeaders({
+          Accept: 'application/json',
+        }),
+      })
+      .pipe(catchError(this.handleError));
+  }
+  
+  getHierarchy(id: number): Observable<CarerNode> {
     return this.http
       .get<CarerNode>(`/api/physician/hierarchy/${id}`, {
         headers: new HttpHeaders({
@@ -42,13 +52,13 @@ export class PhysicianService {
       .pipe(catchError(this.handleError));
   }
 
-  deletePhysician(id: string): Observable<any> {
+  deletePhysician(id: number): Observable<any> {
     return this.http
       .delete(`api/physician/${id}`)
       .pipe(catchError(this.handleError));
   }
 
-  getPhysician(id: string): Observable<PhysicianModel> {
+  getPhysician(id: number): Observable<PhysicianModel> {
     return this.http
       .get<PhysicianModel>(`api/physician/${id}`)
       .pipe(catchError(this.handleError));

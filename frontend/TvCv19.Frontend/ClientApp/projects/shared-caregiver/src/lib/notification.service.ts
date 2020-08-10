@@ -14,7 +14,7 @@ export class NotificationService {
   unsubscribe() {
     this.chatserviceSubscription.forEach((s) => s.unsubscribe());
   }
-  async subscribeAsync(recieverId: string): Promise<void> {
+  async subscribeAsync(recieverId: number): Promise<void> {
     // todo remove and get from service 
     // get all unread notifications every second
     setInterval(() => {
@@ -26,13 +26,13 @@ export class NotificationService {
     }, 1000);
   }
 
-  private get(recieverId: string): Observable<Array<Notification>> {
+  private get(recieverId: number): Observable<Array<Notification>> {
     return this.http
       .get<Array<Notification>>(`/api/notification/${recieverId}`)
       .pipe(catchError(this.handleError));
   }
 
-  delete(id: string): Observable<any> {
+  delete(id: number): Observable<any> {
     return this.http
       .delete<string>(`/api/notification/${id}`)
       .pipe(catchError(this.handleError));
@@ -55,9 +55,9 @@ export class NotificationService {
 }
 
 export interface Notification {
-  id?: string;
-  recieverId?: string;
-  patientId?: string;
+  id?: number;
+  recieverId?: number;
+  patientId?: number;
   link?: string;
   message?: string;
   date?: Date;

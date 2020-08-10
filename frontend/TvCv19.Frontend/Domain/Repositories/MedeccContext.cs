@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,6 +44,8 @@ namespace TvCv19.Frontend.Domain.Repositories
 
             modelBuilder.Entity<Patient>().Property(p => p.CaregiverId).IsRequired();
 
+            modelBuilder.Entity<Physician>().Property(p => p.SupervisorId).IsRequired(false);
+
             modelBuilder.Entity<ApplicationLoginRole>().HasKey(lr => new { lr.ApplicationLoginId, lr.ApplicationRoleId });
             modelBuilder.Entity<ApplicationLoginRole>()
                 .HasOne(lr => lr.ApplicationLogin)
@@ -52,6 +55,14 @@ namespace TvCv19.Frontend.Domain.Repositories
                 .HasOne(lr => lr.ApplicationRole)
                 .WithMany(r => r.LoginRoles)
                 .HasForeignKey(lr => lr.ApplicationRoleId);
+
+            // Necessary to work around a bug with MySql Entity Framework.
+            using var connection = new MySqlConnection(_connectionString);
+            connection.Open();
+
+            using var command = connection.CreateCommand();
+            command.CommandText = "ALTER TABLE Caregivers MODIFY `SupervisorId` int NULL;";
+            command.ExecuteNonQuery();
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) =>

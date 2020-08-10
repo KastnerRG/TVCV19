@@ -1,9 +1,10 @@
-export class PhysicianModel {
-    id: string;
+export interface PhysicianModel {
+    id?: number;
     name: string;
     location: string;
-    supervisorId: string;
+    supervisorId: number;
     hierarchy: HierarchyLevel;
+    applicationLoginId: number;
 }
 
 export enum HierarchyLevel {

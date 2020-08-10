@@ -14,8 +14,8 @@ import {
   styleUrls: ['./physician-checklist.component.scss'],
 })
 export class PhysicianChecklistComponent implements OnInit {
-  patientId: string;
-  physicianId: string;
+  patientId: number;
+  physicianId: number;
   patientName: string;
   physicianName: string;
   uncheckedWarnText: boolean;

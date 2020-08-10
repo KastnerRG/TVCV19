@@ -6,10 +6,10 @@ export interface MessageModel {
     message: string;
     stats: StatsData;
     date: Date;
-    id: string;
-    patientId: string;
-    physicianId: string;
-    receiverId: string;
+    id: number;
+    patientId: number;
+    physicianId: number;
+    receiverId: number;
     isCareInstruction: boolean;
     isAudio: boolean;
     isEscalation: boolean;

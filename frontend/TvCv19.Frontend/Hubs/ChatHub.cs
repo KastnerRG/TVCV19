@@ -35,7 +35,7 @@ namespace TvCv19.Frontend.Hubs
         {
             var date = DateTime.Now;
             var physician = await _physicianRepository.GetPhysicianAsync(physicianId);
-            var recieverId = physician.Hierarchy == Hierarchy.FirstLine ? physician.SupervisorId : (await _patientRepository.GetPatient(patientId)).CaregiverId;
+            var recieverId = physician.Hierarchy == Hierarchy.FirstLine ? physician.SupervisorId.Value : (await _patientRepository.GetPatient(patientId)).CaregiverId;
             Message dbMessage = new Message(patientId, message, physician, date, isCareInstruction, isAudio, isImage, stats, recieverId, isEscalation);
             var id = await _messageRepository.AddMessage(dbMessage);
             await AddNotifications(patientId, physician, recieverId, isEscalation);
@@ -47,12 +47,12 @@ namespace TvCv19.Frontend.Hubs
             var recieverIds = new List<int> { recieverId };
             if (physician.Hierarchy == Hierarchy.SecondLine)
             {
-                recieverIds.Add(physician.SupervisorId);
+                recieverIds.Add(physician.SupervisorId.Value);
             }
             if (physician.Hierarchy == Hierarchy.Commander)
             {
                 var patientCarerId = (await _patientRepository.GetPatient(patientId)).CaregiverId;
-                var carerSupervisorId = (await _physicianRepository.GetPhysicianAsync(patientCarerId)).SupervisorId;
+                var carerSupervisorId = (await _physicianRepository.GetPhysicianAsync(patientCarerId)).SupervisorId.Value;
                 recieverIds.Add(patientCarerId);
                 recieverIds.Add(carerSupervisorId);
             }

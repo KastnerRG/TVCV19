@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TvCv19.Frontend.Domain.Repositories;
 
 namespace TvCv19.Frontend.Migrations
 {
     [DbContext(typeof(MedeccContext))]
-    partial class MedeccContextModelSnapshot : ModelSnapshot
+    [Migration("20200810095517_PhysicianLogin")]
+    partial class PhysicianLogin
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -214,7 +216,7 @@ namespace TvCv19.Frontend.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int>("ApplicationLoginId")
+                    b.Property<int?>("ApplicationLoginId")
                         .HasColumnType("int");
 
                     b.Property<int>("Hierarchy")
@@ -228,7 +230,7 @@ namespace TvCv19.Frontend.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int?>("SupervisorId")
+                    b.Property<int>("SupervisorId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -287,9 +289,7 @@ namespace TvCv19.Frontend.Migrations
                 {
                     b.HasOne("TvCv19.Frontend.Domain.Models.ApplicationLogin", "ApplicationLogin")
                         .WithMany()
-                        .HasForeignKey("ApplicationLoginId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ApplicationLoginId");
                 });
 #pragma warning restore 612, 618
         }

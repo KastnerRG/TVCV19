@@ -6,7 +6,7 @@
 <form
   fxLayout="column"
   [formGroup]="caregiverRegistrationForm"
-  (ngSubmit)="onSubmit(caregiverRegistrationForm.value)"
+  (ngSubmit)="onSubmit()"
 >
   <mat-form-field fxFlexAlign="center" appearance="fill">
     <mat-label>Physician Name</mat-label>
@@ -30,7 +30,7 @@
     />
     <mat-icon matSuffix>mode_edit</mat-icon>
   </mat-form-field>
-  <mat-form-field fxFlexAlign="center">
+  <mat-form-field fxFlexAlign="center"  appearance="fill">
     <mat-label>Care Type</mat-label>
     <select matNativeControl required formControlName="hierarchy">
       <option value="firstLine">Bedside Care</option>
@@ -44,6 +44,7 @@
       physicians &&
       caregiverRegistrationForm.get('hierarchy').value === 'firstLine'
     "
+    appearance="fill"
   >
     <mat-label>Supervisor</mat-label>
     <select matNativeControl formControlName="supervisorId">
@@ -58,6 +59,7 @@
       commanders &&
       caregiverRegistrationForm.get('hierarchy').value === 'secondLine'
     "
+    appearance="fill"
   >
     <mat-label>Supervisor</mat-label>
     <select matNativeControl formControlName="supervisorId">
@@ -66,6 +68,32 @@
       }}</option>
     </select>
   </mat-form-field>
+
+  <mat-form-field fxFlexAlign="center" appearance="fill">
+    <mat-label>User Name</mat-label>
+    <input
+      id="userName"
+      formControlName="userName"
+      required
+      matInput
+      placeholder="User Name"
+    />
+    <mat-icon matSuffix>mode_edit</mat-icon>
+  </mat-form-field>
+
+  <mat-form-field fxFlexAlign="center" appearance="fill">
+    <mat-label>Password</mat-label>
+    <input
+      id="password"
+      formControlName="password"
+      required
+      matInput
+      placeholder="Password"
+      type="password"
+    />
+    <mat-icon matSuffix>mode_edit</mat-icon>
+  </mat-form-field>
+
   <div mat-dialog-actions align="end">
     <button
       color="primary"

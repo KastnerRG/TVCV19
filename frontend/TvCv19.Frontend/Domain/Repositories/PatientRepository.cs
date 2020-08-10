@@ -64,7 +64,7 @@ namespace TvCv19.Frontend.Domain
                                   select c.Id).ToHashSet();
 
             var secondLevelTeam = from c in context.Caregivers
-                                  where firstLevelTeam.Contains(c.SupervisorId)
+                                  where firstLevelTeam.Contains(c.SupervisorId.Value)
                                   select c.Id;
 
             var caregivers = firstLevelTeam.Concat(secondLevelTeam).ToHashSet();

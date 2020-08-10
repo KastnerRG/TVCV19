@@ -1,8 +1,8 @@
 export class PatientModel {
-    id: string;
+    id: number;
     name: string;
     location: string;
-    caregiverId: string;
+    caregiverId: number;
     addmissionStatus: AdmissionStatus;
     escalationLevel: number;
     token: string;
