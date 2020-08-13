@@ -17,6 +17,7 @@ using TvCv19.Frontend.Hubs;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace TvCv19.Frontend
 {
@@ -114,6 +115,9 @@ namespace TvCv19.Frontend
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public async void Configure(IApplicationBuilder app, IWebHostEnvironment env, RoleManager<ApplicationRole> roleManager, UserManager<ApplicationLogin> userManager)
         {
+            using var context = new MedeccContext();
+            await context.Database.MigrateAsync();
+
             await EnsureDefaultRolesAsync(roleManager);
             await EnsureDefaultUserAsync(userManager);
 
