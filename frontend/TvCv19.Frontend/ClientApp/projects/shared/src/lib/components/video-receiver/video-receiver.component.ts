@@ -24,10 +24,10 @@ export class VideoReceiverComponent implements AfterViewInit {
     var url = this.token ? `https://tvcv19.daily.co/${this.room}?t=${this.token}` : `https://tvcv19.daily.co/${this.room}`;
     const callFrame = DailyIframe.wrap(this.iframeView.nativeElement, {
       url,
-      customLayout: true,
+     // customLayout: true,
 
      // cssText: '.bPUIgr { display: none;} .kESwUz { display: none;} .feIhtO { display: none;} .liJcDz { display: none;}'
-      cssText: `.daily-video-div { visibility: visible; width: 100%; height: 100%; }`
+    //  cssText: `.daily-video-div { visibility: visible; width: 100%; height: 100%; }`
     });
     await callFrame.join();
     // Since we are the viewer, automatically disable the video.
