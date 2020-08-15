@@ -11,12 +11,14 @@ import { ToolbarService } from 'src/app/toolbar.service';
 })
 export class PatientRegistrationComponent implements OnInit {
   patientRegistrationForm;
+  hide = true;
   patients: Array<PatientRegistrationModel> = []
   constructor(private formBuilder: FormBuilder, private service: PatientService, private authService: AuthorizationService, private toolbarService: ToolbarService, private router: Router) {
     this.patientRegistrationForm = this.formBuilder.group({
       name: '',
       location: '',
-      caregiverId: '',
+      username: '',
+      password: ''
     });
   }
 

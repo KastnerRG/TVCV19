@@ -10,14 +10,16 @@
 
   <mat-form-field fxFlexAlign="center" appearance="fill">
     <mat-label>Username</mat-label>
-    <input id="name" formControlName="username" required matInput placeholder="Username" >
+    <input id="name" formControlName="username" required matInput placeholder="Username">
     <mat-icon matSuffix>mode_edit</mat-icon>
   </mat-form-field>
 
   <mat-form-field fxFlexAlign="center" appearance="fill">
-    <input matInput placeholder="Password" [type]="hide ? 'password' : 'text'" formControlName="password" required>
-    <mat-icon matSuffix (click)="hide = !hide">{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
-    <mat-hint *ngIf="!passwordInput.value">Enter your password</mat-hint>
+    <mat-label>Enter your password</mat-label>
+    <input matInput [type]="hide ? 'password' : 'text'">
+    <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+      <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+    </button>
   </mat-form-field>
 
 
