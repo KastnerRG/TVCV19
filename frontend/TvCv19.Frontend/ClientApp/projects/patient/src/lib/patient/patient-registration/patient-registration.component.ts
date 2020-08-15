@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
-import { PatientModel, PatientService, AuthorizationService } from 'projects/shared/src/public-api';
+import { PatientRegistrationModel, PatientService, AuthorizationService } from 'projects/shared/src/public-api';
 import { ToolbarService } from 'src/app/toolbar.service';
 
 @Component({
@@ -11,7 +11,7 @@ import { ToolbarService } from 'src/app/toolbar.service';
 })
 export class PatientRegistrationComponent implements OnInit {
   patientRegistrationForm;
-  patients: Array<PatientModel> = []
+  patients: Array<PatientRegistrationModel> = []
   constructor(private formBuilder: FormBuilder, private service: PatientService, private authService: AuthorizationService, private toolbarService: ToolbarService, private router: Router) {
     this.patientRegistrationForm = this.formBuilder.group({
       name: '',
@@ -24,12 +24,12 @@ export class PatientRegistrationComponent implements OnInit {
     this.toolbarService.setToolbarData({})
   }
 
-  onSubmit(patient: PatientModel) {
-    patient.applicationLoginId = this.authService.getId();
+  onSubmit(patientRegistration: PatientRegistrationModel) {
+    patientRegistration.applicationLoginId = this.authService.getId();
 
-    this.service.admitPatient(patient).subscribe(
+    this.service.admitPatient(patientRegistration).subscribe(
       (p) => {
-        patient.id = p.id;
+        patientRegistration.id = p.id;
         this.router.navigateByUrl(
           `/patient/registration/assign-caregiver/${p.id}`
         );

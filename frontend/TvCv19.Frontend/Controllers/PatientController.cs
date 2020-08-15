@@ -1,4 +1,4 @@
-using System;
+using System.Security.Claims;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -9,7 +9,9 @@ using TvCv19.DailyCo.Client.Models;
 using TvCv19.Frontend.Domain;
 using TvCv19.Frontend.Domain.Models;
 using TvCv19.Frontend.Domain.Repositories;
+using Microsoft.AspNetCore.Http;
 
+using Microsoft.AspNetCore.Identity;
 namespace TvCv19.Frontend.Controllers
 {
     [Authorize]
@@ -18,27 +20,39 @@ namespace TvCv19.Frontend.Controllers
     public class PatientController : Controller
     {
         private ILogger<PatientController> _logger;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly UserManager<ApplicationLogin> _userManager;
         private IPatientRepository _patientRepository;
         private readonly IMessageRepository _messageRepository;
         private readonly RoomClient _roomClient;
 
-        public PatientController(IPatientRepository patientRepository, IMessageRepository messageRepository, RoomClient roomClient, ILogger<PatientController> logger)
+        public PatientController(IHttpContextAccessor httpContextAccessor, UserManager<ApplicationLogin> userManager, IPatientRepository patientRepository, IMessageRepository messageRepository, RoomClient roomClient, ILogger<PatientController> logger)
         {
             _logger = logger;
             _patientRepository = patientRepository;
+            _httpContextAccessor = httpContextAccessor;
+            _userManager = userManager;
             _messageRepository = messageRepository;
             _roomClient = roomClient;
         }
 
         [HttpPost()]
         [Authorize(Roles = "patient")]
-        public async Task<IActionResult> AdmitPatient([FromBody]Patient patientModel)
+        public async Task<IActionResult> AdmitPatient([FromBody] PatientRegistration patientRegistration)
         {
+            var username = _httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var applicationLogin = await _userManager.FindByNameAsync(username);            
+           
+            applicationLogin.UserName = patientRegistration.Username;
+            applicationLogin.PasswordHash = patientRegistration.Password;
+            await _userManager.UpdateAsync(applicationLogin);
+
+            var patientModel = new Patient { Name = patientRegistration.Name, Location = patientRegistration.Location };
             patientModel.Id = await _patientRepository.AdmitPatient(patientModel);
 
             var token = await _roomClient.CreateRoomAsync(new RoomRequest
             {
-                Name = $"{patientModel.Id}",
+                Name = $"{ patientModel.Id}",
                 Properties = new RoomProperties() { OwnerOnlyBroadcast = true }
             });
             if(string.IsNullOrWhiteSpace(token))

@@ -7,6 +7,7 @@ export * from './lib/shared.component';
 export * from './lib/shared.module';
 
 export * from './lib/models/patient.model';
+export * from './lib/models/patientregistration.model';
 export * from './lib/models/physician.model';
 export * from './lib/models/message.model';
 export * from './lib/models/caregiver-route-data.model';

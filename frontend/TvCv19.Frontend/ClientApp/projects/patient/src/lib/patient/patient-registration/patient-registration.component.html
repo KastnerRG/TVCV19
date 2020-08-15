@@ -7,17 +7,31 @@
     </mat-toolbar-row>
 </mat-toolbar>
 <form fxLayout="column" [formGroup]="patientRegistrationForm" (ngSubmit)="onSubmit(patientRegistrationForm.value)">
-    <mat-form-field fxFlexAlign="center" appearance="fill">
-        <mat-label>Patient Name</mat-label>
-        <input id="name" formControlName="name" required matInput placeholder="Patient Name" >
-        <mat-icon matSuffix>mode_edit</mat-icon>
-    </mat-form-field>
-    <mat-form-field fxFlexAlign="center" appearance="fill">
-        <mat-label>Location</mat-label>
-        <input id="location" formControlName="location" matInput placeholder="Patient Location" required>
-        <mat-icon matSuffix>mode_edit</mat-icon>
-    </mat-form-field>    
-    <div mat-dialog-actions align="end">
-        <button color="primary" mat-raised-button [disabled]="!patientRegistrationForm.valid" type="submit">Next</button>
-    </div>
+
+  <mat-form-field fxFlexAlign="center" appearance="fill">
+    <mat-label>Username</mat-label>
+    <input id="name" formControlName="username" required matInput placeholder="Username" >
+    <mat-icon matSuffix>mode_edit</mat-icon>
+  </mat-form-field>
+
+  <mat-form-field fxFlexAlign="center" appearance="fill">
+    <input matInput placeholder="Password" [type]="hide ? 'password' : 'text'" formControlName="password" required>
+    <mat-icon matSuffix (click)="hide = !hide">{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+    <mat-hint *ngIf="!passwordInput.value">Enter your password</mat-hint>
+  </mat-form-field>
+
+
+  <mat-form-field fxFlexAlign="center" appearance="fill">
+    <mat-label>Patient Name</mat-label>
+    <input id="name" formControlName="name" required matInput placeholder="Patient Name">
+    <mat-icon matSuffix>mode_edit</mat-icon>
+  </mat-form-field>
+  <mat-form-field fxFlexAlign="center" appearance="fill">
+    <mat-label>Location</mat-label>
+    <input id="location" formControlName="location" matInput placeholder="Patient Location" required>
+    <mat-icon matSuffix>mode_edit</mat-icon>
+  </mat-form-field>
+  <div mat-dialog-actions align="end">
+    <button color="primary" mat-raised-button [disabled]="!patientRegistrationForm.valid" type="submit">Next</button>
+  </div>
 </form>
