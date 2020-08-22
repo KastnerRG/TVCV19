@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,17 +6,15 @@ using TvCv19.Frontend.Domain.Models;
 
 namespace TvCv19.Frontend.Domain.Repositories
 {
-    public class ApplicationLoginRepository : IApplicationLoginRepository
+    public class ApplicationLoginRepository : BaseRepository, IApplicationLoginRepository
     {
-        public async Task AddApplicationLoginAsync(ApplicationLogin applicationLogin)
+        public Task AddApplicationLoginAsync(ApplicationLogin applicationLogin)
         {
             var id = Guid.NewGuid().ToString().Replace("-", string.Empty);
-            applicationLogin.Id = id;
-
-            using var context = new MedeccContext();
-            await context.AddAsync(applicationLogin);
-
-            await context.SaveChangesAsync();
+            var sql = @$"INSERT INTO `medecc`.`application-login`
+                        (id, user_name, normalized_user_name, password_hash)
+                        VALUES ('{id}', @UserName, @NormalizedUserName, @PasswordHash)";
+            return ExecuteAsync<ApplicationLogin>(sql, applicationLogin);
         }
 
         public async Task DisableApplicationLoginAsync(string normalizedUserName)
@@ -30,37 +27,32 @@ namespace TvCv19.Frontend.Domain.Repositories
 
         public Task<ApplicationLogin> FindByIdAsync(string id)
         {
-            using var context = new MedeccContext();
+            var sql = "SELECT id, user_name as userName, normalized_user_name as normalizedUserName, password_hash as passwordHash, enabled FROM `medecc`.`application-login` WHERE id = @id";
 
-            return Task.FromResult((from a in context.ApplicationLogins
-                                    where a.Id == id
-                                    select a).FirstOrDefault());
+            return GetFirstOrDefaultAsync<ApplicationLogin>(sql, new { id });
         }
 
         public Task<ApplicationLogin> FindByNormalizedUserNameAsync(string normalizedUserName)
         {
-            using var context = new MedeccContext();
+            var sql = "SELECT id, user_name as userName, normalized_user_name as normalizedUserName, password_hash as passwordHash, enabled FROM `medecc`.`application-login` WHERE normalized_user_name = @normalized_user_name";
 
-            return Task.FromResult((from a in context.ApplicationLogins
-                                    where a.NormalizedUserName == normalizedUserName
-                                    select a).FirstOrDefault());
+            return GetFirstOrDefaultAsync<ApplicationLogin>(sql, new { normalized_user_name = normalizedUserName });
         }
 
         public Task<IEnumerable<ApplicationLogin>> GetApplicationLoginsAsync()
         {
-            using var context = new MedeccContext();
+            var sql = "SELECT id, user_name as userName, normalized_user_name as normalizedUserName, password_hash as passwordHash, enabled FROM `medecc`.`application-login`";
 
-            return Task.FromResult((IEnumerable<ApplicationLogin>)context.ApplicationLogins.ToArray());
+            return GetAsync<ApplicationLogin>(sql, null);
         }
 
         public async Task<ApplicationLogin> UpdateApplicationLoginAsync(ApplicationLogin applicationLogin)
         {
-            using var context = new MedeccContext();
-
-            var @return = context.Update(applicationLogin);
-            await context.SaveChangesAsync();
-
-            return @return.Entity;
+            var sql = @$"UPDATE `medecc.application-login`
+                         SET user_name = @UserName, normalized_user_name = @NormalizedUserName, password_hash = @PasswordHash, enabled = @Enabled
+                         WHERE  id = @Id";
+            await ExecuteAsync<ApplicationLogin>(sql, applicationLogin);
+            return applicationLogin;
         }
     }
 }

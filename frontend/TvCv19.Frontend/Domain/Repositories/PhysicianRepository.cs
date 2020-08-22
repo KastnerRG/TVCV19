@@ -3,69 +3,62 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
-using Microsoft.Extensions.Configuration;
 using MySql.Data.MySqlClient;
 
 namespace TvCv19.Frontend.Domain.Repositories
 {
 
 
-    public class PhyscianRepository : IPhysicianRepository
+    public class PhyscianRepository : BaseRepository, IPhysicianRepository
     {
+
         public async Task<Physician> AddPhysicianAsync(Physician physician)
         {
-            using var context = new MedeccContext();
+            var id = Guid.NewGuid().ToString().Replace("-", string.Empty);
+            var sql = @$"INSERT INTO medecc.caregiver
+                        (id, name, location, hierarchy, supervisor_id)
+                         VALUES ('{id}', @Name, @Location, @Hierarchy, @SupervisorId)";
 
-            physician.Id = Guid.NewGuid().ToString().Replace("-", string.Empty);
+            await ExecuteAsync<Physician>(sql, physician);
 
-            await context.AddAsync(physician);
-            await context.SaveChangesAsync();
-
+            physician.Id = id.ToString();
             return physician;
         }
 
         public async Task DeletePhysicianAsync(string id)
         {
-            using var context = new MedeccContext();
-
-            context.Remove(await GetPhysicianAsync(id));
-            await context.SaveChangesAsync();
+            var sql = "DELETE FROM medecc.caregiver WHERE id = @id";
+            var param = new { id };
+            await ExecuteAsync<Physician>(sql, param);
+        }
+        public async Task<IEnumerable<Physician>> GetPhysicianTeam(string id)
+        {
+            var sql = "SELECT * FROM medecc.caregiver WHERE supervisor_id = @id";
+            var param = new { id };
+            return await GetAsync<Physician>(sql, param);
         }
 
-        public Task<IEnumerable<Physician>> GetPhysicianTeam(string id)
+        public async Task<IEnumerable<Physician>> GetPhysiciansAsync()
         {
-            using var context = new MedeccContext();
-
-            var caregiverTeam = from c in context.Caregivers
-                                where c.SupervisorId == id
-                                select c;
-
-            return Task.FromResult((IEnumerable<Physician>)caregiverTeam.ToArray());
+            var sql = "SELECT id, name, location, hierarchy, supervisor_id as supervisorId FROM medecc.caregiver";
+            return await GetAsync<Physician>(sql, new { });
         }
 
-        public Task<IEnumerable<Physician>> GetPhysiciansAsync()
+        public async Task<Physician> GetPhysicianAsync(string id)
         {
-            using var context = new MedeccContext();
-
-            return Task.FromResult((IEnumerable<Physician>)context.Caregivers.ToArray());
-        }
-
-        public Task<Physician> GetPhysicianAsync(string id)
-        {
-            using var context = new MedeccContext();
-
-            return Task.FromResult((from c in context.Caregivers
-                                    where c.Id == id
-                                    select c).FirstOrDefault());
+            var param = new { id };
+            var sql = "SELECT id, name, location, hierarchy, supervisor_id as supervisorId FROM medecc.caregiver WHERE id = @id";
+            return await GetFirstOrDefaultAsync<Physician>(sql, param);
         }
 
         public async Task<Physician> UpdatePhysicianAsync(Physician physician)
         {
-            using var context = new MedeccContext();
 
-            context.Update(physician);
-            await context.SaveChangesAsync();
+            var sql = @$"UPDATE medecc.caregiver
+                         SET name = @Name, location = @Location, hierarchy = @Hierarchy, supervisor_id = @SupervisorId
+                         WHERE id = @Id";
 
+            await ExecuteAsync<Physician>(sql, physician);
             return physician;
         }
 

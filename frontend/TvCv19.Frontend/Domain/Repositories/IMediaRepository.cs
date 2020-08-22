@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -18,11 +17,8 @@ namespace TvCv19.Frontend.Domain.Repositories
     public class Media : IDbEntity
     {
         public string Id { get; set; }
-        [Required]
         public string FileName { get; set; }
-        [Required]
         public byte[] File { get; set; }
-        [Required]
         public string MimeType { get; set; }
     }
 

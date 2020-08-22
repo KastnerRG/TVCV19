@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Dapper;
-using Microsoft.EntityFrameworkCore;
 using MySql.Data.MySqlClient;
 using TvCv19.Frontend.Domain.Models;
-using TvCv19.Frontend.Domain.Repositories;
 
 namespace TvCv19.Frontend.Domain
 {

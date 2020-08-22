@@ -14,13 +14,9 @@ namespace TvCv19.Frontend.Domain.Models
     public class ApplicationLogin : IDbEntity
     {
         public string Id { get; set; }
-        [Required]
-        public bool? Enabled { get; set; } = true;
-        [Required]
+        public bool? Enabled { get; set; }
         public string NormalizedUserName { get; set; }
-        [Required]
         public string UserName { get; set; }
-        [Required]
         public string PasswordHash { get; set; }
 
         public string GenerateJwtToken(IConfiguration configuration)

@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 using TvCv19.Frontend.Domain.Models;
@@ -42,14 +40,11 @@ namespace TvCv19.Frontend.Domain
     public class Notification : IDbEntity
     {
         public string Id { get; set; }
-        [Required]
         public string RecieverId { get; set; }
-        [Required]
         public string PatientId { get; set; }
         public string Link { get; set; }
-        [NotMapped]
         public string Message { get; set; }
-        public DateTime? Date { get; set; }
+        public DateTime Date { get; set; }
         public bool IsEscalation { get; set; }
     }
 }
