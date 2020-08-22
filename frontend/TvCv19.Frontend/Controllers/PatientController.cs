@@ -31,7 +31,7 @@ namespace TvCv19.Frontend.Controllers
         }
 
         [HttpPost()]
-        public async Task<IActionResult> AdmitPatient([FromBody]Patient patientModel)
+        public async Task<IActionResult> AdmitPatient(Patient patientModel)
         {
             patientModel.Id = await _patientRepository.AdmitPatient(patientModel);
 

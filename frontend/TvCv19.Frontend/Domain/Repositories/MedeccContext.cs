@@ -10,7 +10,7 @@ namespace TvCv19.Frontend.Domain.Repositories
 {
     public class MedeccContext : DbContext
     {
-        private const string _connectionString = "Server=localhost;Database=medecc;Uid=root;Pwd=Password1;";
+        private string _connectionString = "Server=localhost;Database=medecc;Uid=root;Pwd=Password1;";
 
         public DbSet<ApplicationLogin> ApplicationLogins { get; set; }
 
@@ -24,15 +24,10 @@ namespace TvCv19.Frontend.Domain.Repositories
 
         public DbSet<Patient> Patients { get; set; }
 
-        public DbSet<Stats> Stats { get; set; }
-
-        // Note that for migrations to work, this class must have a parameterless constructor.
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Media>().Property(p => p.File).HasColumnType("longblob");
-
-            modelBuilder.Entity<Patient>().Property(p => p.CaregiverId).IsRequired();
+            modelBuilder.Entity<Media>().Property(p => p.File)
+                .HasColumnType("longblob");
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) =>

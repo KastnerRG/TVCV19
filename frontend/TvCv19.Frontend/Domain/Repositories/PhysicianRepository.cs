@@ -16,7 +16,7 @@ namespace TvCv19.Frontend.Domain.Repositories
         {
             using var context = new MedeccContext();
 
-            physician.Id = Guid.NewGuid().ToString("N");;
+            physician.Id = Guid.NewGuid().ToString().Replace("-", string.Empty);
 
             await context.AddAsync(physician);
             await context.SaveChangesAsync();

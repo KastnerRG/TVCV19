@@ -11,7 +11,7 @@ namespace TvCv19.Frontend.Domain.Repositories
     {
         public async Task AddApplicationLoginAsync(ApplicationLogin applicationLogin)
         {
-            var id = Guid.NewGuid().ToString("N");;
+            var id = Guid.NewGuid().ToString().Replace("-", string.Empty);
             applicationLogin.Id = id;
 
             using var context = new MedeccContext();

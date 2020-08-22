@@ -89,12 +89,12 @@ namespace TvCv19.Frontend.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(nullable: false),
-                    PR = table.Column<string>(nullable: false),
-                    TV = table.Column<string>(nullable: false),
-                    PP = table.Column<string>(nullable: false),
-                    IE = table.Column<string>(nullable: false),
-                    MP = table.Column<string>(nullable: false),
-                    O2 = table.Column<string>(nullable: false)
+                    PR = table.Column<string>(nullable: true),
+                    TV = table.Column<string>(nullable: true),
+                    PP = table.Column<string>(nullable: true),
+                    IE = table.Column<string>(nullable: true),
+                    MP = table.Column<string>(nullable: true),
+                    O2 = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {

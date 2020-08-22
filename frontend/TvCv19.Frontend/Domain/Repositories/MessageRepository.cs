@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Dapper;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using TvCv19.Frontend.Domain.Models;
 
@@ -13,11 +12,11 @@ namespace TvCv19.Frontend.Domain.Repositories
     {
         public async Task<string> AddMessage(Message message)
         {
-            message.Id = Guid.NewGuid().ToString("N");;
+            message.Id = Guid.NewGuid().ToString().Replace("-", string.Empty);
 
             if (message.Stats != null)
             {
-                message.Stats.Id = Guid.NewGuid().ToString("N");;
+                message.Stats.Id = Guid.NewGuid().ToString().Replace("-", string.Empty);
             }
 
             using var context = new MedeccContext();
@@ -36,7 +35,7 @@ namespace TvCv19.Frontend.Domain.Repositories
                            where m.GroupId == groupId
                            select m;
 
-            return Task.FromResult((IEnumerable<Message>)messages.Include(m => m.Stats).ToArray());
+            return Task.FromResult((IEnumerable<Message>)messages.ToArray());
         }
     }
 }

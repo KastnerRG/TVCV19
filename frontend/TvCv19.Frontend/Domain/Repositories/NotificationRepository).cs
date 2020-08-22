@@ -15,7 +15,7 @@ namespace TvCv19.Frontend.Domain
         {
             using var context = new MedeccContext();
 
-            notifiaction.Id = Guid.NewGuid().ToString("N");;
+            notifiaction.Id = Guid.NewGuid().ToString().Replace("-", string.Empty);
 
             await context.AddAsync(notifiaction);
             await context.SaveChangesAsync();

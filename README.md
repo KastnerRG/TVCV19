@@ -28,9 +28,9 @@ If you want to contribute to the project, please fill out this [online form](htt
 We use mySQL for our backend database.  The development instance uses a predetermined password.
 
 To setup the database follow these steps:
-1. Execute `ALTER USER 'root'@'localhost' IDENTIFIED BY 'Password1'` in mySQL
-1. Execute `dotnet tool install --global dotnet-ef` to install the tools for Entity Framework.
-1. Execute `dotnet ef database update` to create the database.
+1. Execute `ALTER USER 'root'@'localhost' IDENTIFIED BY 'Password1'`
+1. Execute `CREATE DATABASE medecc`
+1. Execute all scripts in `./db`
 
 ### Before running the C# Code
 1. Navigate to `./frontend/TvCv19.Frontend/ClientApp`
@@ -40,6 +40,3 @@ To setup the database follow these steps:
 ### Run the C# Code
 1. Launch `./frontend/TvCv19.Frontend.sln`
 1. Run the app
-
-## Add New Migrations
-After updating the models or the `MedeccContext`, it is necessary to create a new DB migration.  To do so, execute `dotnet ef migrations add <migration name>`.
