@@ -11,8 +11,28 @@ mat-toolbar {
 form {
   margin-top: 50px;
 
-  mat-form-field {
-    width: 95vw;
+  .longBar {
+    width:95vw;
+    background-color: white;
+    //padding-right: 5vw;
+  }
+
+  .ft {
+    width: 60px;
+    padding-left: 2.5vw;
+    background-color: white;
+  }
+
+  .inches {
+    width: 80px;
+    padding-left: 10px;
+    background-color: white;
+  }
+
+  .datePicker {
+    width: 150px;
+    padding-left: 2.5vw;
+    padding-top: 20px;
     background-color: white;
   }
 

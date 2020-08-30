@@ -28,8 +28,8 @@ export class AssignCareGiverComponent implements OnInit {
   ngOnInit(): void {
     this.toolbarService.setToolbarData({menu:[]})
     this.route.data.subscribe((data: { model: AssignCareGiverModel }) => {
-      this.patient = data.model.patient;
-      this.options = data.model.caregivers;
+      this.patient = data.model.patient
+      this.options = data.model.caregivers
     });
 
     this.filteredOptions = this.caregiverControl.valueChanges.pipe(
@@ -52,7 +52,9 @@ export class AssignCareGiverComponent implements OnInit {
   }
 
   onSubmit(caregiver: Caregiver) {
-    this.patient.caregiverId = caregiver.id
+    this.patient.caregiverId = caregiver.id;
+    console.log("in assign-caregiver DOB: " + this.patient.dateOfBirth);
+    console.log("in assign-caregiver HEIGHT: " + this.patient.height);
     this.patientService.updatePatient(this.patient).subscribe(p => {
       this.router.navigateByUrl(`/patient/registration/camera-setup/${p.id}`)
     })

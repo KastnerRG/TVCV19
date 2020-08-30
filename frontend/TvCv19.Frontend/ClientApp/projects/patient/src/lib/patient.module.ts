@@ -18,13 +18,31 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { PatientRegistrationRootComponent } from './patient-registration-root/patient-registration-root.component';
 import { AssignCareGiverRouteResolverService } from './patient/patient-registration/assign-caregiver-route-resolver.service';
-import { MatOptionModule } from '@angular/material/core';
+import { MatOptionModule, MAT_NATIVE_DATE_FORMATS } from '@angular/material/core';
 import { CommonModule } from '@angular/common';
 import { PatientFeedComponent } from './patient-feed/patient-feed.component';
 import { FlexModule } from '@angular/flex-layout';
-
-
-
+import {MatSelectModule} from '@angular/material/select';
+import {MatGridListModule} from '@angular/material/grid-list';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatNativeDateModule} from '@angular/material/core';
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from "@angular/material/core";
+import {MomentModule} from "ngx-moment";
+import {MomentDateAdapter} from '@angular/material-moment-adapter';
+/**
+export const MY_FORMAT = {
+  parse: {
+      dateInput: ['MM-DD-YYYY'],
+  },
+  display: {
+      dateInput: 'L',
+      monthYearLabel: 'MMM YYYY',
+      dateA11yLabel: 'LL',
+      monthYearA11yLabel: 'MMM YYYY',
+      
+  }
+};
+*/
 @NgModule({
   declarations: [
     PatientComponent,
@@ -60,8 +78,17 @@ import { FlexModule } from '@angular/flex-layout';
     MatOptionModule,
     QRCodeModule,
     FlexModule,
-    SharedModule
+    SharedModule,
+    MatSelectModule,
+    MatGridListModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MomentModule
   ],
-  exports: []
+  exports: [],
+  providers: []
+    //{provide: DateAdapter, useClass: MomentDateAdapter},
+    //{provide: MAT_DATE_FORMATS, useValue: MY_FORMAT}],
+    //{provide: MAT_DATE_LOCALE, useValue: 'iso-ISO'}],
 })
 export class PatientModule { }

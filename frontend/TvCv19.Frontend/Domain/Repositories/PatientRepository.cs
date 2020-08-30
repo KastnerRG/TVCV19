@@ -12,8 +12,8 @@ namespace TvCv19.Frontend.Domain
         {
             var id = Guid.NewGuid().ToString().Replace("-", string.Empty);
             var sql = @$"INSERT INTO medecc.patient
-                        (id, name, caregiver_id, location)
-                        VALUES ('{id}', @Name, @CaregiverId, @Location)";
+                        (id, name, caregiver_id, location, gender, height, date_of_birth)
+                        VALUES ('{id}', @Name, @CaregiverId, @Location, @Gender, @Height, DATE_FORMAT(STR_TO_DATE(@DateOfBirth, '%Y-%m-%dT%H:%i:%s.000Z'), '%Y-%m-%d'))";
             await ExecuteAsync<Patient>(sql, patient);
             return id.ToString();
         }
@@ -33,7 +33,7 @@ namespace TvCv19.Frontend.Domain
         {
             var param = new { id, AdmissionStatus = AdmissionStatus.Admitted };
             var sql = $@"SELECT id, name, caregiver_id as caregiverId, location, admission_status as admissionStatus,
-                         escalation_level as escalationLevel, token
+                         escalation_level as escalationLevel, token, gender, height, date_of_birth as dateOfBirth
                          FROM medecc.patient
                          WHERE id = @id AND admission_status = @AdmissionStatus";
             return await GetFirstOrDefaultAsync<Patient>(sql, param);
@@ -43,7 +43,7 @@ namespace TvCv19.Frontend.Domain
         {
             var param = new { AdmissionStatus = AdmissionStatus.Admitted };
             var sql = $@"SELECT id, name, caregiver_id as caregiverId, location, admission_status as admissionStatus,
-                         escalation_level as escalationLevel, token
+                         escalation_level as escalationLevel, token, gender, height, date_of_birth as dateOfBirth
                          FROM medecc.patient
                          WHERE admission_status = @AdmissionStatus";
 
@@ -64,7 +64,7 @@ namespace TvCv19.Frontend.Domain
 					      )
                          
                           SELECT patient.id, patient.name, patient.caregiver_id as caregiverId, patient.location, patient.admission_status as admissionStatus,
-                                            escalation_level as escalationLevel, token
+                                            escalation_level as escalationLevel, token, gender, height, date_of_birth as dateOfBirth
                                             FROM medecc.patient as patient
 					                        WHERE patient.caregiver_id in (
                                                                             SELECT * FROM firstLevelTeam
@@ -80,7 +80,7 @@ namespace TvCv19.Frontend.Domain
         {
             var sql = @"UPDATE medecc.patient
                          SET name = @Name, caregiver_id = @CaregiverId, location = @Location, admission_status = @AdmissionStatus,
-                         escalation_level = @EscalationLevel, token = @Token
+                         escalation_level = @EscalationLevel, token = @Token, gender = @Gender, height = @Height
                          WHERE  id = @Id";
             await ExecuteAsync<Patient>(sql, patient);
             return patient;

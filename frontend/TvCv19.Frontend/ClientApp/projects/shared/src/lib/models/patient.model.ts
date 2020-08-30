@@ -1,3 +1,5 @@
+import { Moment } from 'moment';
+
 export class PatientModel {
     id: string;
     name: string;
@@ -6,8 +8,15 @@ export class PatientModel {
     addmissionStatus: AdmissionStatus;
     escalationLevel: number;
     token: string;
+    gender: Gender;
+    height: string;
+    dateOfBirth: string;
 }
 
 export enum AdmissionStatus {
     Admitted,Discharged
+}
+
+export enum Gender {
+    Male,Female
 }

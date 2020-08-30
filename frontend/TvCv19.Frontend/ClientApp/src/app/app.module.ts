@@ -15,6 +15,23 @@ import { MatInputModule } from '@angular/material/input';
 import { EscalatePatientDialog } from './escalate-patient/escalate-patient.dialog';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE} from "@angular/material/core";
+import {MomentModule} from "ngx-moment";
+import {MomentDateAdapter} from '@angular/material-moment-adapter';
+
+export const ISO_FORMAT = {
+  parse: {
+      dateInput: 'YYYY-MM-DD',
+  },
+  display: {
+      dateInput: 'L',
+      monthYearLabel: 'YYYY',
+      dateA11yLabel: 'LL',
+      monthYearA11yLabel: 'YYYY',
+  },
+};
 
 @NgModule({
   declarations: [
@@ -35,9 +52,13 @@ import { FormsModule } from '@angular/forms';
     MatInputModule,
     FormsModule,
     MatDialogModule,
-    MatIconModule
+    MatIconModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MomentModule
   ],
-  providers: [],
+  providers: [{provide: DateAdapter, useClass: MomentDateAdapter},
+  {provide: MAT_DATE_FORMATS, useValue: ISO_FORMAT}],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
