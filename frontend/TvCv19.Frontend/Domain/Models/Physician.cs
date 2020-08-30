@@ -11,5 +11,10 @@ namespace TvCv19.Frontend.Domain
         public Hierarchy Hierarchy { get; set; }
         public string SupervisorId { get; set; }
     }
+
+    public class PhysicianRegistration: Physician {
+        public string Username { get; set; }
+        public string Password { get; set; }
+    }
     public enum Hierarchy { FirstLine = 1, SecondLine = 2, Commander = 3 }
 }

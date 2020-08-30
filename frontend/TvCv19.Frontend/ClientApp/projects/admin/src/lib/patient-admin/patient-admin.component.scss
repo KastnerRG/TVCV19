@@ -1,0 +1,24 @@
+mat-toolbar {
+    mat-toolbar-row {
+      height: 33px;
+      font-size: 30px;
+      &:first-of-type {
+        margin-top: 60px;
+      }
+    }
+  }
+  
+  form {
+    margin-top: 50px;
+  
+    mat-form-field {
+      width: 95vw;
+      background-color: white;
+    }
+  
+    button {
+      margin: 200px 10px 0 0;
+      width: 90px;
+    }
+  }
+  

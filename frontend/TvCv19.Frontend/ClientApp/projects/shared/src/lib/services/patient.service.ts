@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { HttpHeaders } from '@angular/common/http';
-import { PatientModel } from '../models/patient.model';
+import { PatientModel, PatientRegistration } from '../models/patient.model';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { MessageModel } from '../models/message.model';
@@ -18,7 +18,7 @@ export class PatientService {
       .pipe(catchError(this.handleError));
   }
 
-  admitPatient(body: PatientModel): Observable<PatientModel> {
+  admitPatient(body: PatientRegistration): Observable<PatientModel> {
     return this.http
       .post<PatientModel>('/api/patient', body, {
         headers: new HttpHeaders({

@@ -4,7 +4,8 @@ import { HttpHeaders } from '@angular/common/http';
 import { PhysicianModel } from '../models/physician.model';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { CarerNode } from 'projects/shared-caregiver/src/lib/physician-hierarchy/hierarchy.component';
+import { CarerNode } from 'projects/caregiver/src/lib/physician-hierarchy/hierarchy.component';
+import { PhysicianRegistration } from 'projects/admin/src/lib/physician-admin/physician-registration-model';
 
 @Injectable({
   providedIn: 'root',
@@ -12,7 +13,7 @@ import { CarerNode } from 'projects/shared-caregiver/src/lib/physician-hierarchy
 export class PhysicianService {
   constructor(private http: HttpClient) {}
 
-  addPhysician(body: PhysicianModel): Observable<PhysicianModel> {
+  addPhysician(body: PhysicianRegistration): Observable<PhysicianModel> {
     return this.http
       .post<PhysicianModel>('/api/physician', body, {
         headers: new HttpHeaders({

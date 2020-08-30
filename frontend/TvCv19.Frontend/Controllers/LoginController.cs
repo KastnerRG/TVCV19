@@ -1,56 +1,42 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Reflection.Metadata.Ecma335;
-using System.Security.Claims;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using TvCv19.Frontend.Domain.Identity;
+using Microsoft.Extensions.Options;
 using TvCv19.Frontend.Domain.Models;
-using TvCv19.Frontend.Domain.Repositories;
+using TvCv19.Frontend.Domain.Services;
 
 namespace TvCv19.Frontend.Controllers
 {
     [ApiController]
     public class LoginController : ControllerBase
     {
-        private readonly IConfiguration configuration;
-        private readonly SignInManager<ApplicationLogin> signInManager;
-        private readonly UserManager<ApplicationLogin> userManager;
+        private readonly SignInManager<User> _signInManager;
+        private readonly UserManager<User> _userManager;
+        private readonly IJwtGenerator _jwtGenerator;
 
-        public LoginController(IConfiguration configuration, SignInManager<ApplicationLogin> signInManager, UserManager<ApplicationLogin> userManager)
+        private readonly JwtConfig _jwtConfig;
+
+        public LoginController(SignInManager<User> signInManager, UserManager<User> userManager, IJwtGenerator jwtGenerator, IOptions<JwtConfig> options)
         {
-            this.configuration = configuration;
-            this.signInManager = signInManager;
-            this.userManager = userManager;
+            _signInManager = signInManager;
+            _userManager = userManager;
+            _jwtGenerator = jwtGenerator;
+            _jwtConfig = options.Value;
         }
-
-        [Route("api/login")]
-        [HttpGet]
-        public bool CheckLoggedIn() =>
-            User.Identity.IsAuthenticated;
 
         [Route("api/login")]
         [HttpPost]
         public async Task<IActionResult> LoginAsync(LoginModel loginModel)
         {
-            var applicationLogin = await userManager.FindByNameAsync(loginModel.UserName);
-            var result = await signInManager.CheckPasswordSignInAsync(applicationLogin, loginModel.Password, true);
+            var user = await _userManager.FindByNameAsync(loginModel.UserName);
+            var result = await _signInManager.CheckPasswordSignInAsync(user, loginModel.Password, true);
             
             if (result.Succeeded)
             {
-                Request.ContentType = "text/plain";
-
-                // Return a Jwt Token.
-                return Ok(applicationLogin.GenerateJwtToken(configuration));
+                var claims = await _userManager.GetClaimsAsync(user);
+                var expires = DateTime.Now.AddDays(Convert.ToDouble(_jwtConfig.JwtExpireDays));
+                return Ok(new { Token = _jwtGenerator.GenerateToken(claims, expires), Expires =  expires});
             }
 
             return Unauthorized();

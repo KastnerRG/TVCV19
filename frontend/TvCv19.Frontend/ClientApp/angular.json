@@ -166,46 +166,6 @@
         }
       }
     },
-    "physician": {
-      "projectType": "library",
-      "root": "projects/physician",
-      "sourceRoot": "projects/physician/src",
-      "prefix": "lib",
-      "architect": {
-        "build": {
-          "builder": "@angular-devkit/build-ng-packagr:build",
-          "options": {
-            "tsConfig": "projects/physician/tsconfig.lib.json",
-            "project": "projects/physician/ng-package.json"
-          },
-          "configurations": {
-            "production": {
-              "tsConfig": "projects/physician/tsconfig.lib.prod.json"
-            }
-          }
-        },
-        "test": {
-          "builder": "@angular-devkit/build-angular:karma",
-          "options": {
-            "main": "projects/physician/src/test.ts",
-            "tsConfig": "projects/physician/tsconfig.spec.json",
-            "karmaConfig": "projects/physician/karma.conf.js"
-          }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": [
-              "projects/physician/tsconfig.lib.json",
-              "projects/physician/tsconfig.spec.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
-          }
-        }
-      }
-    },
     "shared": {
       "projectType": "library",
       "root": "projects/shared",
@@ -286,78 +246,38 @@
         }
       }
     },
-    "bedside": {
+    "caregiver": {
       "projectType": "library",
-      "root": "projects/bedside",
-      "sourceRoot": "projects/bedside/src",
+      "root": "projects/caregiver",
+      "sourceRoot": "projects/caregiver/src",
       "prefix": "lib",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-ng-packagr:build",
           "options": {
-            "tsConfig": "projects/bedside/tsconfig.lib.json",
-            "project": "projects/bedside/ng-package.json"
+            "tsConfig": "projects/caregiver/tsconfig.lib.json",
+            "project": "projects/caregiver/ng-package.json"
           },
           "configurations": {
             "production": {
-              "tsConfig": "projects/bedside/tsconfig.lib.prod.json"
+              "tsConfig": "projects/caregiver/tsconfig.lib.prod.json"
             }
           }
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "main": "projects/bedside/src/test.ts",
-            "tsConfig": "projects/bedside/tsconfig.spec.json",
-            "karmaConfig": "projects/bedside/karma.conf.js"
+            "main": "projects/caregiver/src/test.ts",
+            "tsConfig": "projects/caregiver/tsconfig.spec.json",
+            "karmaConfig": "projects/caregiver/karma.conf.js"
           }
         },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
             "tsConfig": [
-              "projects/bedside/tsconfig.lib.json",
-              "projects/bedside/tsconfig.spec.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
-          }
-        }
-      }
-    },
-    "shared-caregiver": {
-      "projectType": "library",
-      "root": "projects/shared-caregiver",
-      "sourceRoot": "projects/shared-caregiver/src",
-      "prefix": "lib",
-      "architect": {
-        "build": {
-          "builder": "@angular-devkit/build-ng-packagr:build",
-          "options": {
-            "tsConfig": "projects/shared-caregiver/tsconfig.lib.json",
-            "project": "projects/shared-caregiver/ng-package.json"
-          },
-          "configurations": {
-            "production": {
-              "tsConfig": "projects/shared-caregiver/tsconfig.lib.prod.json"
-            }
-          }
-        },
-        "test": {
-          "builder": "@angular-devkit/build-angular:karma",
-          "options": {
-            "main": "projects/shared-caregiver/src/test.ts",
-            "tsConfig": "projects/shared-caregiver/tsconfig.spec.json",
-            "karmaConfig": "projects/shared-caregiver/karma.conf.js"
-          }
-        },
-        "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
-          "options": {
-            "tsConfig": [
-              "projects/shared-caregiver/tsconfig.lib.json",
-              "projects/shared-caregiver/tsconfig.spec.json"
+              "projects/caregiver/tsconfig.lib.json",
+              "projects/caregiver/tsconfig.spec.json"
             ],
             "exclude": [
               "**/node_modules/**"

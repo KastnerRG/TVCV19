@@ -4,7 +4,9 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
 using TvCv19.Frontend.Domain;
+using TvCv19.Frontend.Domain.Models;
 using TvCv19.Frontend.Domain.Repositories;
+using TvCv19.Frontend.Domain.Services;
 
 namespace TvCv19.Frontend.Controllers
 {
@@ -15,15 +17,22 @@ namespace TvCv19.Frontend.Controllers
     {
         private readonly ILogger<PhysicianController> _logger;
         private readonly IPhysicianRepository _physicianRepository;
+        private readonly IRegistrationService _registrationService;
 
-        public PhysicianController(IPhysicianRepository physicianRepository, ILogger<PhysicianController> logger)
+        public PhysicianController(IPhysicianRepository physicianRepository, IRegistrationService registrationService, ILogger<PhysicianController> logger)
         {
             _logger = logger;
             _physicianRepository = physicianRepository;
+            _registrationService = registrationService;
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddPhysicianAsync(Physician physician) => Ok(await _physicianRepository.AddPhysicianAsync(physician));
+        public async Task<IActionResult> AddPhysicianAsync(PhysicianRegistration physician) 
+        {
+             var id = await _registrationService.Register(physician.Username, physician.Password, UserType.Caregiver);
+             physician.Id = id;
+             return Ok(await _physicianRepository.AddPhysicianAsync(physician));
+        } 
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePhysicianAsync(string id)

@@ -44,9 +44,9 @@
         "dist/bedside/bedside",
         "dist/bedside"
       ],
-      "shared-caregiver": [
-        "dist/shared-caregiver/shared-caregiver",
-        "dist/shared-caregiver"
+      "caregiver": [
+        "dist/caregiver/caregiver",
+        "dist/caregiver"
       ]
     }
   },

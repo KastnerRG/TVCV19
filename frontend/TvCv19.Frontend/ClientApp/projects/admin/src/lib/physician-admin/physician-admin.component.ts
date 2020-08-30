@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
 import { PhysicianModel, PhysicianService, HierarchyLevel } from 'projects/shared/src/public-api';
+import { PhysicianRegistration } from './physician-registration-model';
 
 @Component({
   selector: 'lib-phyiscian-admin',
@@ -24,12 +25,14 @@ export class PhysicianAdminComponent implements OnInit {
       location: '',
       hierarchy: '',
       supervisorId: '',
+      username: '',
+      password: ''
     });
   }
 
   ngOnInit(): void {}
 
-  onSubmit(physician: PhysicianModel) {
+  onSubmit(physician: PhysicianRegistration) {
     this.service.addPhysician(physician).subscribe(p => {
       this.router.navigateByUrl(`/`)
     },

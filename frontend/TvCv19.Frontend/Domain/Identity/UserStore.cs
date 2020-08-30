@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using TvCv19.Frontend.Domain.Models;
@@ -9,29 +10,29 @@ using TvCv19.Frontend.Domain.Repositories;
 
 namespace TvCv19.Frontend.Domain.Identity
 {
-    public class UserStore : IUserStore<ApplicationLogin>, IUserPasswordStore<ApplicationLogin>
+    public class UserStore : IUserStore<User>, IUserPasswordStore<User>, IUserClaimStore<User>
     {
-        private readonly IApplicationLoginRepository _repository;
+        private readonly IUserRepository _repository;
 
-        public UserStore(IApplicationLoginRepository repository)
+        public UserStore(IUserRepository repository)
         {
             _repository = repository;
         }
 
-        public async Task<IdentityResult> CreateAsync(ApplicationLogin user, CancellationToken cancellationToken)
+        public async Task<IdentityResult> CreateAsync(User user, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            await _repository.AddApplicationLoginAsync(user);
+            await _repository.AddUserAsync(user);
 
             return IdentityResult.Success;
         }
 
-        public async Task<IdentityResult> DeleteAsync(ApplicationLogin user, CancellationToken cancellationToken)
+        public async Task<IdentityResult> DeleteAsync(User user, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            await _repository.DisableApplicationLoginAsync(user.NormalizedUserName);
+            await _repository.DisableUserAsync(user.NormalizedUserName);
 
             return IdentityResult.Success;
         }
@@ -40,7 +41,7 @@ namespace TvCv19.Frontend.Domain.Identity
         {
         }
 
-        public async Task<ApplicationLogin> FindByIdAsync(string userId, CancellationToken cancellationToken)
+        public async Task<User> FindByIdAsync(string userId, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -55,7 +56,7 @@ namespace TvCv19.Frontend.Domain.Identity
             }
         }
 
-        public async Task<ApplicationLogin> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken)
+        public async Task<User> FindByNameAsync(string normalizedUserName, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -70,42 +71,35 @@ namespace TvCv19.Frontend.Domain.Identity
             }    
         }
 
-        public Task<string> GetNormalizedUserNameAsync(ApplicationLogin user, CancellationToken cancellationToken)
+        public Task<string> GetNormalizedUserNameAsync(User user, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
             return Task.FromResult(user.NormalizedUserName);
         }
 
-        public Task<string> GetPasswordHashAsync(ApplicationLogin user, CancellationToken cancellationToken)
+        public Task<string> GetPasswordHashAsync(User user, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
             return Task.FromResult(user.PasswordHash);
         }
 
-        public Task<string> GetUserIdAsync(ApplicationLogin user, CancellationToken cancellationToken)
+        public Task<string> GetUserIdAsync(User user, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
             return Task.FromResult(user.Id);
         }
 
-        public Task<string> GetUserNameAsync(ApplicationLogin user, CancellationToken cancellationToken)
+        public Task<string> GetUserNameAsync(User user, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
             return Task.FromResult(user.UserName);
         }
 
-        public Task<bool> HasPasswordAsync(ApplicationLogin user, CancellationToken cancellationToken)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-
-            return Task.FromResult(!string.IsNullOrEmpty(user.PasswordHash));
-        }
-
-        public Task SetNormalizedUserNameAsync(ApplicationLogin user, string normalizedName, CancellationToken cancellationToken)
+        public Task SetNormalizedUserNameAsync(User user, string normalizedName, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -114,7 +108,7 @@ namespace TvCv19.Frontend.Domain.Identity
             return Task.FromResult(0);
         }
 
-        public Task SetPasswordHashAsync(ApplicationLogin user, string passwordHash, CancellationToken cancellationToken)
+        public Task SetPasswordHashAsync(User user, string passwordHash, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -123,7 +117,7 @@ namespace TvCv19.Frontend.Domain.Identity
             return Task.FromResult(0);
         }
 
-        public Task SetUserNameAsync(ApplicationLogin user, string userName, CancellationToken cancellationToken)
+        public Task SetUserNameAsync(User user, string userName, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -132,7 +126,7 @@ namespace TvCv19.Frontend.Domain.Identity
             return Task.FromResult(0);
         }
 
-        public async Task<IdentityResult> UpdateAsync(ApplicationLogin user, CancellationToken cancellationToken)
+        public async Task<IdentityResult> UpdateAsync(User user, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -140,5 +134,39 @@ namespace TvCv19.Frontend.Domain.Identity
 
             return IdentityResult.Success;
         }
+
+        public Task<bool> HasPasswordAsync(User user, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            return Task.FromResult(!string.IsNullOrEmpty(user.PasswordHash));
+        }
+
+        public async Task<IList<Claim>> GetClaimsAsync(User user, CancellationToken cancellationToken)
+        {
+            return await _repository.GetClaimsAsync(user.Id);
+        }
+
+        public async Task AddClaimsAsync(User user, IEnumerable<Claim> claims, CancellationToken cancellationToken)
+        {
+            await _repository.AddClaims(user, claims);
+        }
+
+        public Task<IList<User>> GetUsersForClaimAsync(Claim claim, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task RemoveClaimsAsync(User user, IEnumerable<Claim> claims, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task ReplaceClaimAsync(User user, Claim claim, Claim newClaim, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+      
     }
 }

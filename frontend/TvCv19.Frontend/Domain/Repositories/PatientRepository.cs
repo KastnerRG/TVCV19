@@ -10,12 +10,11 @@ namespace TvCv19.Frontend.Domain
     {
         public async Task<string> AdmitPatient(Patient patient)
         {
-            var id = Guid.NewGuid().ToString().Replace("-", string.Empty);
             var sql = @$"INSERT INTO medecc.patient
                         (id, name, caregiver_id, location)
-                        VALUES ('{id}', @Name, @CaregiverId, @Location)";
+                        VALUES (@Id, @Name, @CaregiverId, @Location)";
             await ExecuteAsync<Patient>(sql, patient);
-            return id.ToString();
+            return patient.Id;
         }
 
         public async Task<string> DischargePatient(string id)

@@ -3,7 +3,7 @@ import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import {
   Notification,
   NotificationService,
-} from 'projects/shared-caregiver/src/lib/notification.service';
+} from 'projects/caregiver/src/lib/notification.service';
 import { HierarchyLevel, PatientModel, PhysicianModel } from 'projects/shared/src/public-api';
 
 @Injectable({

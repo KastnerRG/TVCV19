@@ -1,4 +1,4 @@
-import { StatsData } from 'projects/shared-caregiver/src/lib/patient-stats/patient-stats.dialog';
+import { StatsData } from 'projects/caregiver/src/lib/patient-stats/patient-stats.dialog';
 
 export interface MessageModel {
     isImage: boolean;

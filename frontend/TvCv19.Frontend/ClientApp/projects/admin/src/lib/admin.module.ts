@@ -14,11 +14,11 @@ import { MatTableModule } from '@angular/material/table';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { FlexModule } from '@angular/flex-layout';
 import { CommonModule } from '@angular/common';
-import { AddPatientDeviceComponent } from './add-patient-device/add-patient-device.component';
 import { MatListModule } from '@angular/material/list';
-import { UserManagementComponent } from './user-management/user-management.component';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatOptionModule } from '@angular/material/core';
 import { MatDialogModule } from '@angular/material/dialog';
-import { EditUserComponent } from './edit-user/edit-user.component';
+import { PatientAdminComponent } from './patient-admin/patient-admin.component';
 
 
 @NgModule({
@@ -26,16 +26,13 @@ import { EditUserComponent } from './edit-user/edit-user.component';
     AdminComponent,
     PhysicianAdminComponent,
     RootComponent,
-    AddPatientDeviceComponent,
-    UserManagementComponent,
-    EditUserComponent
+    PatientAdminComponent
   ],
   imports: [
     RouterModule.forChild([
       { path: '', component: RootComponent },
       { path: 'physician', component: PhysicianAdminComponent },
-      { path: 'add-patient-device', component: AddPatientDeviceComponent },
-      { path: 'user-management', component: UserManagementComponent }
+      { path: 'patient', component: PatientAdminComponent }
     ]),
     ReactiveFormsModule,
     MatFormFieldModule,
@@ -45,6 +42,8 @@ import { EditUserComponent } from './edit-user/edit-user.component';
     MatIconModule,
     MatListModule,
     MatTableModule,
+    MatAutocompleteModule,
+    MatOptionModule,
     MatDialogModule,
     MatSlideToggleModule,
     FlexModule,

@@ -16,6 +16,10 @@ using TvCv19.Frontend.Domain.Repositories;
 using TvCv19.Frontend.Hubs;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
+using TvCv19.Frontend.Controllers;
+using TvCv19.Frontend.Domain.Services;
 
 namespace TvCv19.Frontend
 {
@@ -37,14 +41,40 @@ namespace TvCv19.Frontend
             services.AddScoped<IMessageRepository, MessageRepository>();
             services.AddScoped<IMediaRepository, MediaRepository>();
             services.AddScoped<INotificationRepository, NotificationRepository>();
-            services.AddScoped<IApplicationLoginRepository, ApplicationLoginRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IRegistrationService, RegistrationService>();
+            services.AddScoped<IJwtGenerator, JwtGenerator>();
             services.AddControllersWithViews().AddNewtonsoftJson();
             services.AddSignalR();
             services.AddHttpClient<RoomClient>(c => c.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", DAILY_TOKEN));
-            services.AddTransient<IUserStore<ApplicationLogin>, UserStore>();
-            services.AddTransient<IRoleStore<ApplicationRole>, RoleStore>();
+            services.Configure<JwtConfig>(Configuration.GetSection("JwtConfig"));
+         
 
-            services.AddIdentity<ApplicationLogin, ApplicationRole>()
+            // identity backend stores
+            services.AddTransient<IUserStore<User>, UserStore>();
+            services.AddTransient<IRoleStore<Role>, RoleStore>();
+           
+
+            services.AddIdentity<User, Role>(options =>
+            {
+                // Password settings.
+                options.Password.RequireDigit = false;
+                options.Password.RequireLowercase = true;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequiredLength = 6;
+                options.Password.RequiredUniqueChars = 1;
+
+                // Lockout settings.
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+                options.Lockout.MaxFailedAccessAttempts = 5;
+                options.Lockout.AllowedForNewUsers = true;
+
+                // User settings.
+                options.User.AllowedUserNameCharacters =
+                "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+                options.User.RequireUniqueEmail = false;
+            })
                 .AddDefaultTokenProviders();
 
             services
@@ -63,44 +93,14 @@ namespace TvCv19.Frontend
                     cfg.SaveToken = true;
                     cfg.TokenValidationParameters = new TokenValidationParameters
                     {
-                        ValidIssuer = Configuration["JwtIssuer"],
-                        ValidAudience = Configuration["JwtIssuer"],
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JwtKey"])),
+
+                        ValidIssuer = Configuration["JwtConfig:JwtIssuer"],
+                        ValidAudience = Configuration["JwtConfig:JwtIssuer"],
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JwtConfig:JwtKey"])),
                         ClockSkew = TimeSpan.Zero // remove delay of token when expire
                     };
                 });
 
-            services.Configure<IdentityOptions>(options =>
-            {
-                // Password settings.
-                options.Password.RequireDigit = true;
-                options.Password.RequireLowercase = true;
-                options.Password.RequireNonAlphanumeric = true;
-                options.Password.RequireUppercase = true;
-                options.Password.RequiredLength = 6;
-                options.Password.RequiredUniqueChars = 1;
-
-                // Lockout settings.
-                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
-                options.Lockout.MaxFailedAccessAttempts = 5;
-                options.Lockout.AllowedForNewUsers = true;
-
-                // User settings.
-                options.User.AllowedUserNameCharacters =
-                "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
-                options.User.RequireUniqueEmail = false;
-            });
-
-            //services.ConfigureApplicationCookie(options =>
-            //{
-            //    // Cookie settings
-            //    options.Cookie.HttpOnly = true;
-            //    options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
-
-            //    options.LoginPath = "/Identity/Account/Login";
-            //    options.AccessDeniedPath = "/Identity/Account/AccessDenied";
-            //    options.SlidingExpiration = true;
-            //});
 
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
@@ -110,7 +110,7 @@ namespace TvCv19.Frontend
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, UserManager<ApplicationLogin> userManager)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, UserManager<User> userManager)
         {
             EnsureDefaultUser(userManager).Wait();
 
@@ -141,7 +141,6 @@ namespace TvCv19.Frontend
                     pattern: "{controller}/{action=Index}/{id?}");
 
                 endpoints.MapHub<ChatHub>("/hubs/chat");
-                endpoints.MapHub<DeviceAuthorizationHub>("/hubs/device-authorization");
             });
 
             app.UseSpa(spa =>
@@ -159,15 +158,30 @@ namespace TvCv19.Frontend
             });
         }
 
-        private async Task EnsureDefaultUser(UserManager<ApplicationLogin> userManager)
+        private async Task EnsureDefaultUser(UserManager<User> userManager)
         {
             if (await userManager.FindByNameAsync("administrator") == null)
             {
-                await userManager.CreateAsync(new ApplicationLogin
+                var id = Guid.NewGuid().ToString("N");
+                await userManager.CreateAsync(new User
                 {
+                    Id = id,
                     UserName = "administrator"
-                }, "Password1!"); // This is the simpliest password that meets the requirements.
+                }, "Password1!"); ;
+                var user = await userManager.FindByNameAsync("administrator");
+                await userManager.AddClaimsAsync(user,new [] { new Claim(ClaimTypes.Role, "Administrator"),
+                                                               new Claim(JwtRegisteredClaimNames.Sub, id),
+                                                               new Claim("name", "Admin"),
+                                                               });
             }
         }
+    }
+
+    public class JwtConfig
+    {
+        public string AllowedHosts { get; set; }
+        public string JwtKey { get; set; }
+        public string JwtIssuer { get; set; }
+        public string JwtExpireDays { get; set; }
     }
 }

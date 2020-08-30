@@ -28,6 +28,7 @@
     "@swimlane/ngx-charts": "^13.0.2",
     "@zxing/ngx-scanner": "^3.0.0",
     "angularx-qrcode": "~2.3.4",
+    "jwt-decode": "^2.2.0",
     "moment": "^2.24.0",
     "recordrtc": "^5.5.9",
     "rxjs": "~6.5.4",

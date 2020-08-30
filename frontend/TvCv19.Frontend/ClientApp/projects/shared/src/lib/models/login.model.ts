@@ -4,9 +4,7 @@ export interface LoginModel {
     rememberMe: boolean;
 }
 
-export interface LoginResult {
-    isLockedOut: boolean;
-    isNotAllowed: boolean;
-    requiresTwoFactor: boolean;
-    succeeded: boolean;
+export interface AuthResult {
+    token: string;
+    expires: string;
 }

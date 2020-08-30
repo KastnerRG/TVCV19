@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using TvCv19.DailyCo.Client;
@@ -9,6 +10,7 @@ using TvCv19.DailyCo.Client.Models;
 using TvCv19.Frontend.Domain;
 using TvCv19.Frontend.Domain.Models;
 using TvCv19.Frontend.Domain.Repositories;
+using TvCv19.Frontend.Domain.Services;
 
 namespace TvCv19.Frontend.Controllers
 {
@@ -18,36 +20,50 @@ namespace TvCv19.Frontend.Controllers
     public class PatientController : Controller
     {
         private ILogger<PatientController> _logger;
+        private readonly IRegistrationService _registrationService;
         private IPatientRepository _patientRepository;
         private readonly IMessageRepository _messageRepository;
         private readonly RoomClient _roomClient;
 
-        public PatientController(IPatientRepository patientRepository, IMessageRepository messageRepository, RoomClient roomClient, ILogger<PatientController> logger)
+        public PatientController(IPatientRepository patientRepository, IMessageRepository messageRepository, RoomClient roomClient, ILogger<PatientController> logger, IRegistrationService registrationService)
         {
             _logger = logger;
+            _registrationService = registrationService;
             _patientRepository = patientRepository;
             _messageRepository = messageRepository;
             _roomClient = roomClient;
         }
 
         [HttpPost()]
-        public async Task<IActionResult> AdmitPatient(Patient patientModel)
+        public async Task<IActionResult> AdmitPatient(PatientRegistration patientRegistration)
         {
-            patientModel.Id = await _patientRepository.AdmitPatient(patientModel);
+            
+            var id = await _registrationService.Register(patientRegistration.Username, patientRegistration.Password, UserType.Patient);
+            if(string.IsNullOrEmpty(id)) {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Unable to register user: ${patientRegistration.Username}");
+            }
+            var patient = new Patient
+            {
+                Id = id,
+                CaregiverId = patientRegistration.CaregiverId,
+                Name = patientRegistration.Name,
+                Location = patientRegistration.Location
+            };
+            await _patientRepository.AdmitPatient(patient);
 
             var token = await _roomClient.CreateRoomAsync(new RoomRequest
             {
-                Name = $"{patientModel.Id}",
+                Name = $"{patient.Id}",
                 Properties = new RoomProperties() { OwnerOnlyBroadcast = true }
             });
             if(string.IsNullOrWhiteSpace(token))
             {
-                _logger.LogWarning($"Unable to create room for patient: {patientModel.Name} id: {patientModel.Id}");
+                _logger.LogWarning($"Unable to create room for patient: {patient.Name} id: {patient.Id}");
             }
-            patientModel.Token = token;
-            patientModel.AdmissionStatus = AdmissionStatus.Admitted;
-            await _patientRepository.UpdatePatient(patientModel);
-            return Ok(patientModel);
+            patient.Token = token;
+            patient.AdmissionStatus = AdmissionStatus.Admitted;
+            await _patientRepository.UpdatePatient(patient);
+            return Ok(patient);
         }
 
         [HttpPut]

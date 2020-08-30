@@ -1,0 +1,33 @@
+<mat-toolbar color="secondary">
+    <mat-toolbar-row>
+        <span>Patient</span>
+    </mat-toolbar-row>
+    <mat-toolbar-row>
+        <span>Information</span>
+    </mat-toolbar-row>
+</mat-toolbar>
+<form fxLayout="column" [formGroup]="patientRegistrationForm" (ngSubmit)="onSubmit(patientRegistrationForm.value)">
+    <mat-form-field fxFlexAlign="center" appearance="fill">
+        <mat-label>Patient Name</mat-label>
+        <input id="name" formControlName="name" required matInput placeholder="Patient Name" >
+        <mat-icon matSuffix>mode_edit</mat-icon>
+    </mat-form-field>
+    <mat-form-field fxFlexAlign="center" appearance="fill">
+        <mat-label>Location</mat-label>
+        <input id="location" formControlName="location" matInput placeholder="Patient Location" required>
+        <mat-icon matSuffix>mode_edit</mat-icon>
+    </mat-form-field> 
+    <mat-form-field fxFlexAlign="center" appearance="fill">
+        <mat-label>Username</mat-label>
+        <input id="username" formControlName="username" matInput placeholder="Patient Username" required>
+        <mat-icon matSuffix>mode_edit</mat-icon>
+    </mat-form-field>    
+    <mat-form-field fxFlexAlign="center" appearance="fill">
+        <mat-label>Password</mat-label>
+        <input id="password" formControlName="password" matInput placeholder="Patient Password" required>
+        <mat-icon matSuffix>mode_edit</mat-icon>
+    </mat-form-field>    
+    <div mat-dialog-actions align="end">
+        <button color="primary" mat-raised-button [disabled]="!patientRegistrationForm.valid" type="submit">Next</button>
+    </div>
+</form>

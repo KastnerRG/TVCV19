@@ -1,7 +1,5 @@
 import { NgModule } from '@angular/core';
-// import { PatientComponent } from './patient/patient.component';
 import { RouterModule } from '@angular/router';
-import { PatientRegistrationComponent } from './patient/patient-registration/patient-registration.component';
 import { AssignCareGiverComponent } from './patient/patient-registration/assign-caregiver.component';
 import { CameraSetupComponent } from './patient/patient-registration/camera-setup.component';
 import { SharedModule } from 'projects/shared/src/public-api';
@@ -16,37 +14,30 @@ import { RootComponent } from './root/root.component';
 import { PatientComponent } from './patient.component';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
-import { PatientRegistrationRootComponent } from './patient-registration-root/patient-registration-root.component';
 import { AssignCareGiverRouteResolverService } from './patient/patient-registration/assign-caregiver-route-resolver.service';
 import { MatOptionModule } from '@angular/material/core';
 import { CommonModule } from '@angular/common';
 import { PatientFeedComponent } from './patient-feed/patient-feed.component';
 import { FlexModule } from '@angular/flex-layout';
-import { PatientAuthorizationComponent } from './patient-authorization/patient-authorization.component';
+import { PatientFeedModelRouteResolverService } from './patient-feed/patient-feed-model-route-resolver';
 
 @NgModule({
   declarations: [
     PatientComponent,
-    PatientRegistrationComponent,
     AssignCareGiverComponent,
     CameraSetupComponent,
     RootComponent,
-    PatientRegistrationRootComponent,
     PatientFeedComponent,
-    PatientAuthorizationComponent,
   ],
   imports: [
     RouterModule.forChild([
       { path: '', component: RootComponent },
-      { path: 'authorization', component: PatientAuthorizationComponent },
-      { path: 'live/:id', component: PatientFeedComponent},
-      { path: 'registration', component: PatientRegistrationRootComponent, children: [
-        { path: '', component: PatientRegistrationComponent },
-        { path: 'assign-caregiver/:id', component: AssignCareGiverComponent, resolve: {
-          model: AssignCareGiverRouteResolverService }
+      { path: 'live/:id', component: PatientFeedComponent, resolve: { model: PatientFeedModelRouteResolverService} },
+      { path: 'assign-caregiver/:id', component: AssignCareGiverComponent, resolve: {
+          model: AssignCareGiverRouteResolverService,
         },
-        { path: 'camera-setup/:id', component: CameraSetupComponent }
-      ]}
+      },
+      { path: 'camera-setup/:id', component: CameraSetupComponent },
     ]),
     ReactiveFormsModule,
     FormsModule,

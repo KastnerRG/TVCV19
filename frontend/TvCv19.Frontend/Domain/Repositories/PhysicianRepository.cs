@@ -11,17 +11,13 @@ namespace TvCv19.Frontend.Domain.Repositories
 
     public class PhyscianRepository : BaseRepository, IPhysicianRepository
     {
-
         public async Task<Physician> AddPhysicianAsync(Physician physician)
         {
-            var id = Guid.NewGuid().ToString().Replace("-", string.Empty);
             var sql = @$"INSERT INTO medecc.caregiver
                         (id, name, location, hierarchy, supervisor_id)
-                         VALUES ('{id}', @Name, @Location, @Hierarchy, @SupervisorId)";
+                         VALUES (@Id, @Name, @Location, @Hierarchy, @SupervisorId)";
 
             await ExecuteAsync<Physician>(sql, physician);
-
-            physician.Id = id.ToString();
             return physician;
         }
 

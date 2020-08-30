@@ -1,4 +1,4 @@
-<form [formGroup]='loginFormGroup' (ngSubmit)="login()">
+<form [formGroup]='loginFormGroup' (ngSubmit)="login(loginFormGroup.value)">
     <div>
         <mat-form-field>
             <mat-label>User Name</mat-label>
@@ -14,7 +14,6 @@
     </div>
 
     <div>
-        <a routerLink="/patient/authorization" mat-button>PATIENT</a>
         <button type="submit" mat-button>LOGIN</button>
     </div>
 </form>

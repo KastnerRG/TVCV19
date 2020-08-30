@@ -4,7 +4,7 @@ import { Location } from '@angular/common';
 import {
   Notification,
   NotificationService,
-} from 'projects/shared-caregiver/src/lib/notification.service';
+} from 'projects/caregiver/src/lib/notification.service';
 import { Router } from '@angular/router';
 import {
   EscalatePatientDialog,
@@ -12,7 +12,7 @@ import {
 } from '../escalate-patient/escalate-patient.dialog';
 import { MatDialog } from '@angular/material/dialog';
 import { PatientService, HierarchyLevel, AuthorizationService } from 'projects/shared/src/public-api';
-import { ChatService } from 'projects/shared-caregiver/src/lib/chat.service';
+import { ChatService } from 'projects/caregiver/src/lib/chat.service';
 
 @Component({
   selector: 'app-toolbar',

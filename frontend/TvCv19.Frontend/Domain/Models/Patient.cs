@@ -1,6 +1,4 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-using TvCv19.Frontend.Domain.Models;
+﻿using TvCv19.Frontend.Domain.Models;
 
 namespace TvCv19.Frontend.Domain
 {
@@ -8,13 +6,21 @@ namespace TvCv19.Frontend.Domain
     {
         public string Id { get; set; }
         public string Name { get; set; }
-        [Required]
         public string CaregiverId { get; set; }
         public string Location { get; set; }
         public int EscalationLevel { get; set; }
         public AdmissionStatus AdmissionStatus { get; set; }
         public string Token { get; set; }
     }
- 
+
+    public class PatientRegistration 
+    {
+        public string Name { get; set; }
+        public string CaregiverId { get; set; }
+        public string Location { get; set; }
+        public string Password { get; set; }
+        public string Username { get; set; }
+    }
+
     public enum AdmissionStatus{ Admitted = 1, Discharged = 2 }
 }

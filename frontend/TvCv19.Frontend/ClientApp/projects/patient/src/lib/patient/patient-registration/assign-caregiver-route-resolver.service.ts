@@ -31,7 +31,7 @@ export class AssignCareGiverRouteResolverService {
 
     return this.patientService.getPatient(id).pipe(
       mergeMap((patient) => {
-        if (patient) {
+        if (patient && !patient.caregiverId) {
           return this.physicianService.getPhysicians().pipe(
             mergeMap((physicians) => {
               const caregivers = physicians.filter(
@@ -41,7 +41,7 @@ export class AssignCareGiverRouteResolverService {
             })
           );
         } else {
-          this.router.navigate(['/patient']);
+          this.router.navigate(['/patient', 'live', patient.id]);
           return EMPTY;
         }
       })

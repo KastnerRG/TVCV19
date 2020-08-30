@@ -54,7 +54,7 @@ export class AssignCareGiverComponent implements OnInit {
   onSubmit(caregiver: Caregiver) {
     this.patient.caregiverId = caregiver.id
     this.patientService.updatePatient(this.patient).subscribe(p => {
-      this.router.navigateByUrl(`/patient/registration/camera-setup/${p.id}`)
+      this.router.navigateByUrl(`/patient/camera-setup/${p.id}`)
     })
   }
 }
