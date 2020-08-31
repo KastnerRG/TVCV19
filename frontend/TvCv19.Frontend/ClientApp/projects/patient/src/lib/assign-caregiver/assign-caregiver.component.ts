@@ -15,7 +15,7 @@ export class AssignCareGiverComponent implements OnInit {
   constructor(private route: ActivatedRoute, private router: Router, private toolbarService: ToolbarService, private chatService: ChatService) { 
     this.toolbarService.setToolbarData({});
     this.chatService.assignCaregiverSubject.subscribe(id => {
-       this.router.navigate(['patient', 'live', this.patient.id])
+       this.router.navigate(['patient', 'camera-setup', this.patient.id])
     });
     this.route.data.subscribe((data: { model: PatientModel }) => {
       this.patient = data.model;

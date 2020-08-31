@@ -1,15 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ToolbarService, ToolBarData } from '../toolbar.service';
 import { Location } from '@angular/common';
-import {
-  Notification,
-  NotificationService,
-} from 'projects/caregiver/src/lib/notification.service';
+import { Notification, NotificationService } from 'projects/caregiver/src/lib/notification.service';
 import { Router } from '@angular/router';
-import {
-  EscalatePatientDialog,
-  EscalationData,
-} from '../escalate-patient/escalate-patient.dialog';
+import { EscalatePatientDialog, EscalationData } from '../escalate-patient/escalate-patient.dialog';
 import { MatDialog } from '@angular/material/dialog';
 import { PatientService, HierarchyLevel, AuthorizationService } from 'projects/shared/src/public-api';
 import { ChatService } from 'projects/caregiver/src/lib/chat.service';
@@ -133,7 +127,6 @@ export class AppToolbarComponent implements OnInit {
 
   logout() {
     this.authorizationService.logout();
-
     location.href = '/';
   }
 }

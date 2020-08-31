@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { AssignCareGiverComponent } from './patient/patient-registration/assign-caregiver.component';
-import { CameraSetupComponent } from './patient/patient-registration/camera-setup.component';
+import { AssignCareGiverComponent } from './assign-caregiver/assign-caregiver.component';
+import { CameraSetupComponent } from './camera-setup/camera-setup.component';
 import { SharedModule } from 'projects/shared/src/public-api';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatListModule } from '@angular/material/list';
@@ -14,7 +14,7 @@ import { RootComponent } from './root/root.component';
 import { PatientComponent } from './patient.component';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
-import { AssignCareGiverRouteResolverService } from './patient/patient-registration/assign-caregiver-route-resolver.service';
+import { AssignCareGiverRouteResolverService } from './services/assign-caregiver-route-resolver.service';
 import { MatOptionModule } from '@angular/material/core';
 import { CommonModule } from '@angular/common';
 import { PatientFeedComponent } from './patient-feed/patient-feed.component';
