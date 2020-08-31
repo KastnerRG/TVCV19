@@ -20,7 +20,9 @@ import { EscalatePatientDialog } from './escalate-patient/escalate-patient.dialo
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { TokenInterceptor } from 'projects/shared/src/public-api';
-import {MatSidenavModule} from '@angular/material/sidenav';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { ServiceWorkerModule } from '@angular/service-worker';
+import { environment } from '../environments/environment';
 
 @NgModule({
   declarations: [
@@ -46,7 +48,8 @@ import {MatSidenavModule} from '@angular/material/sidenav';
     MatCheckboxModule,
     FormsModule,
     MatDialogModule,
-    MatSidenavModule
+    MatSidenavModule,
+    ServiceWorkerModule.register('notification-worker.js', { enabled: environment.production })
   ],
   providers: [
     {

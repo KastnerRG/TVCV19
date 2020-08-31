@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using TvCv19.Frontend.Domain;
+using TvCv19.Frontend.Domain.Services;
 
 namespace TvCv19.Frontend.Controllers
 {
@@ -12,11 +13,13 @@ namespace TvCv19.Frontend.Controllers
     public class NotificationController : Controller
     {
         private ILogger<NotificationController> _logger;
+        private readonly INotificationService _notificationService;
         private INotificationRepository _notificationRepository;
 
-        public NotificationController(INotificationRepository notificationRepository, ILogger<NotificationController> logger)
+        public NotificationController(INotificationRepository notificationRepository, ILogger<NotificationController> logger, INotificationService notificationService)
         {
             _logger = logger;
+            _notificationService = notificationService;
             _notificationRepository = notificationRepository;
         }
 
@@ -39,6 +42,20 @@ namespace TvCv19.Frontend.Controllers
         {
             var notifications = await _notificationRepository.GetNotifications(recieverId);
             return Ok(notifications);
+        }
+
+         [HttpPost("{recieverId}/push")]
+        public async Task<IActionResult> AddPush(string recieverId, [FromBody]Subscription subscription)
+        {
+            await _notificationRepository.AddPushSubscription(recieverId, subscription);
+            return Ok();
+        }
+
+        [HttpGet("{recieverId}/push")]
+        public async Task<IActionResult> Push(string recieverId)
+        {
+            await _notificationService.SendNotification(recieverId, new PushNotification { Title = "Test", Body = "Not bad"});
+            return Ok("Should of sent");
         }
     }
 }

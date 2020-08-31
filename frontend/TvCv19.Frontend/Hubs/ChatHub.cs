@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using TvCv19.Frontend.Domain;
 using TvCv19.Frontend.Domain.Models;
 using TvCv19.Frontend.Domain.Repositories;
+using TvCv19.Frontend.Domain.Services;
 
 namespace TvCv19.Frontend.Hubs
 {
@@ -17,13 +18,15 @@ namespace TvCv19.Frontend.Hubs
         private readonly IPatientRepository _patientRepository;
         private readonly IMessageRepository _messageRepository;
         private readonly INotificationRepository _notificationRepository;
+        private readonly INotificationService _notificationService;
 
-        public ChatHub(IPhysicianRepository physicianRepository, IPatientRepository patientRepository, IMessageRepository messageRepository, INotificationRepository notificationRepository)
+        public ChatHub(IPhysicianRepository physicianRepository, IPatientRepository patientRepository, IMessageRepository messageRepository, INotificationRepository notificationRepository, INotificationService notificationService)
         {
             _physicianRepository = physicianRepository;
             _patientRepository = patientRepository;
             _messageRepository = messageRepository;
             _notificationRepository = notificationRepository;
+            _notificationService = notificationService;
         }
         public Task SubscribeAsync(string patientId) =>
             Groups.AddToGroupAsync(Context.ConnectionId, patientId);
@@ -46,22 +49,51 @@ namespace TvCv19.Frontend.Hubs
             await _patientRepository.UpdatePatient(patient);
             await Clients.Group(patient.Id).SendAsync("AssignCaregiver", patient.Id);
         }
-
         private async Task AddNotifications(string patientId, Physician physician, string recieverId, bool isEscalation)
         {
-            var recieverIds = new List<string> { recieverId };
-            if (physician.Hierarchy == Hierarchy.SecondLine)
+            var title = isEscalation ? "MedEcc Alert" : "Medecc Message";
+            var body = isEscalation ? $"{physician.Name} has Escalated a patient" : $"New Message from {physician.Name}";
+
+            if (!isEscalation && physician.Hierarchy != Hierarchy.Commander)
             {
-                recieverIds.Add(physician.SupervisorId);
+                var notification = new Notification
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    IsEscalation = isEscalation,
+                    Date = DateTime.Now,
+                    Link = $"/caregiver/{recieverId}/patient/{patientId}/chat",
+                    RecieverId = recieverId,
+                    PatientId = patientId
+                };
+                await _notificationRepository.AddNotification(notification);
+                await _notificationService.SendNotification(recieverId, new PushNotification
+                {
+                    Title = title,
+                    Body = body,
+                    Data = new NotificationData
+                    {
+                        Url = notification.Link,
+                        Id = notification.Id
+                    }
+                });
             }
-            if (physician.Hierarchy == Hierarchy.Commander)
+            else
             {
-                var patientCarerId = (await _patientRepository.GetPatient(patientId)).CaregiverId;
-                var carerSupervisorId = (await _physicianRepository.GetPhysicianAsync(patientCarerId)).SupervisorId;
-                recieverIds.Add(patientCarerId);
-                recieverIds.Add(carerSupervisorId);
-            }
-            var notifications = await recieverIds.SelectManyAsync(id => _notificationRepository.GetNotifications(id));
+                var recieverIds = new List<string> { recieverId };
+                if (physician.Hierarchy == Hierarchy.SecondLine)
+                {
+                    recieverIds.Add(physician.SupervisorId);
+                }
+                if (physician.Hierarchy == Hierarchy.Commander)
+                {
+                    var patientCarerId = (await _patientRepository.GetPatient(patientId)).CaregiverId;
+                    var carerSupervisorId = (await _physicianRepository.GetPhysicianAsync(patientCarerId)).SupervisorId;
+                    recieverIds.Add(patientCarerId);
+                    recieverIds.Add(carerSupervisorId);
+                }
+
+
+                var notifications = await recieverIds.SelectManyAsync(id => _notificationRepository.GetNotifications(id));
 
             if (notifications.Any())
             {
@@ -100,6 +132,8 @@ namespace TvCv19.Frontend.Hubs
                     });
                 }
             }
+ 
+            }
         }
     }
 
@@ -107,6 +141,7 @@ namespace TvCv19.Frontend.Hubs
     {
         public static MessageModel ToMessageModel(this Message m, string id, string physicianId)
         {
+
             return new MessageModel(m, id, physicianId);
         }
 

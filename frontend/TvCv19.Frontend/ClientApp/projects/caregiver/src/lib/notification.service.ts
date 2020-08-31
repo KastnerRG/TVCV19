@@ -1,29 +1,70 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Injectable, OnDestroy } from '@angular/core';
+import {
+  HttpClient,
+  HttpErrorResponse,
+  HttpHeaders,
+} from '@angular/common/http';
 import { Subject, throwError, Observable, Subscription } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { ChatService } from './chat.service';
+import {
+  PhysicianService,
+  PatientService,
+} from 'projects/shared/src/public-api';
+import { SwPush } from '@angular/service-worker';
 
 @Injectable({
   providedIn: 'root',
 })
 export class NotificationService {
   notifications = new Subject<Notification>();
-  private chatserviceSubscription: Array<Subscription> = [];
-  constructor(private http: HttpClient) {}
-
-  unsubscribe() {
-    this.chatserviceSubscription.forEach((s) => s.unsubscribe());
+  recieverId: string;
+  constructor(
+    private http: HttpClient,
+    private swPush: SwPush
+  ) { 
+     this.swPush.notificationClicks.subscribe(n => {
+      console.log(n.notification) 
+      this.delete(n.notification.data.id);
+     })
   }
-  async subscribeAsync(recieverId: string): Promise<void> {
-    // todo remove and get from service 
-    // get all unread notifications every second
-    setInterval(() => {
-      this.get(recieverId).subscribe((notifications) => {
+  async addNotification(notification: Notification): Promise<void> {
+    notification = await this.http
+      .post<Notification>('/api/notification', notification)
+      .pipe(catchError(this.handleError))
+      .toPromise();
+    this.notifications.next(notification);
+  }
+
+  async subscribeAsync(recieverId: string, hasPush: boolean = false): Promise<void> {
+    // get all unread notifications
+    this.recieverId = recieverId;
+    if(!hasPush) {
+      setInterval(() => {
+        this.get(recieverId).toPromise().then(notifications => {
+          for (const notification of notifications) {
+            this.notifications.next(notification);
+          }
+        });
+      }, 5000)
+    } else {
+      this.get(recieverId).toPromise().then(notifications => {
         for (const notification of notifications) {
           this.notifications.next(notification);
         }
       });
-    }, 1000);
+    }
+  }
+
+  addPushSubcriber(sub: PushSubscription, recieverId): Observable<any> {
+    console.log(sub.toJSON());
+    return this.http
+      .post(`/api/notification/${recieverId}/push`, sub.toJSON(), {
+        headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+        }),
+      })
+      .pipe(catchError(this.handleError));
   }
 
   private get(recieverId: string): Observable<Array<Notification>> {

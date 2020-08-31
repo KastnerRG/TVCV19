@@ -4,11 +4,9 @@ using System.Threading.Tasks;
 
 namespace TvCv19.Frontend.Domain
 {
-
-
     public class NotificationRepository : BaseRepository, INotificationRepository
     {
-
+        private static Dictionary<string, List<Subscription>> _subscriptions = new Dictionary<string, List<Subscription>>();
         public async Task<Notification> AddNotification(Notification notifiaction)
         {
             notifiaction.Id = Guid.NewGuid().ToString().Replace("-", string.Empty);
@@ -36,6 +34,16 @@ namespace TvCv19.Frontend.Domain
                          WHERE reciever_id = @id";
             var param = new { id };
             return await GetAsync<Notification>(sql, param);
+        }
+
+        public Task AddPushSubscription(string id, Subscription sub) {
+            return _subscriptions.ContainsKey(id) ? Task.Run(() => _subscriptions[id].Add(sub)) : Task.Run(() => _subscriptions.Add(id, new List<Subscription>() {sub}));
+        }
+
+        public Task<List<Subscription>> GetSubscriptions(string id)
+        {
+            _subscriptions.TryGetValue(id, out var value);
+            return Task.FromResult(value);
         }
     }
 }

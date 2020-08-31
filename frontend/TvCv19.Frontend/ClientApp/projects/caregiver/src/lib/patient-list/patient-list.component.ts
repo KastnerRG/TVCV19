@@ -8,6 +8,7 @@ import {
 import { ToolbarService } from 'src/app/toolbar.service';
 import { NotificationService, Notification } from '../notification.service';
 import { Subscription } from 'rxjs';
+import { SwPush } from '@angular/service-worker';
 
 @Component({
   selector: 'lib-patient-list',
@@ -25,7 +26,8 @@ export class PatientListComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private toolbarService: ToolbarService,
-    private notificationService: NotificationService
+    private notificationService: NotificationService,
+    private swPush: SwPush
   ) {
     this.notificationService.notifications.subscribe((notification) => {
       if (notification && notification.recieverId === this.physician.id) {
@@ -54,7 +56,7 @@ export class PatientListComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.deleteNotificationSubscription.unsubscribe();
-    this.notificationService.unsubscribe();
+   // this.notificationService.unsubscribe();
   }
 
   ngOnInit(): void {
@@ -63,10 +65,24 @@ export class PatientListComponent implements OnInit, OnDestroy {
         this.patients = data.model.patients || [];
         this.physician = data.model.physician;
         this.setToolbar();
-        this.patients.map((patient) => {
-          patient.link = `/caregiver/${this.physician.id}/patient/${patient.id}`;
+        this.patients.map(patient => {
+          patient.link = `/caregiver/${this.physician.id}/patient/${patient.id}`
+        })
+        
+        this.swPush.requestSubscription({
+          serverPublicKey: 'BFzDE_amkbsU-zXrDw6lZC6xGrHGXQVEWhTrGOTTU2s_d9MzQG4bPTXNR6PfNGu2fcLIw8qQHLwXUplANAMGKaA' 
+        }).then(async sub => {
+          this.notificationService.addPushSubcriber(sub, this.physician.id).subscribe();
+          await this.notificationService.subscribeAsync(this.physician.id, true)
+        })
+        .catch(async err => {
+          await this.notificationService.subscribeAsync(this.physician.id);
         });
-        await this.notificationService.subscribeAsync(this.physician.id);
+        
+       // this.swPush.notificationClicks.subscribe(s => {
+         // console.log(s.notification.title)
+          
+       // })
       }
     );
   }

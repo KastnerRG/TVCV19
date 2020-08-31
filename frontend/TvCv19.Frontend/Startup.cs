@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -13,13 +14,12 @@ using TvCv19.Frontend.Domain;
 using TvCv19.Frontend.Domain.Identity;
 using TvCv19.Frontend.Domain.Models;
 using TvCv19.Frontend.Domain.Repositories;
+using TvCv19.Frontend.Domain.Services;
 using TvCv19.Frontend.Hubs;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
-using TvCv19.Frontend.Controllers;
-using TvCv19.Frontend.Domain.Services;
 
 namespace TvCv19.Frontend
 {
@@ -43,6 +43,7 @@ namespace TvCv19.Frontend
             services.AddScoped<INotificationRepository, NotificationRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IRegistrationService, RegistrationService>();
+            services.AddScoped<INotificationService, NotificationService>();
             services.AddScoped<IJwtGenerator, JwtGenerator>();
             services.AddControllersWithViews().AddNewtonsoftJson();
             services.AddSignalR();
@@ -133,6 +134,9 @@ namespace TvCv19.Frontend
         {
             EnsureDefaultUser(userManager).Wait();
 
+            var provider = new FileExtensionContentTypeProvider();
+            provider.Mappings[".webmanifest"] = "application/manifest+json";
+            
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -142,10 +146,18 @@ namespace TvCv19.Frontend
                 app.UseExceptionHandler("/Error");
             }
 
-            app.UseStaticFiles();
+            app.UseStaticFiles(
+                new StaticFileOptions() {
+                    ContentTypeProvider = provider
+                }
+            );
             if (!env.IsDevelopment())
             {
-                app.UseSpaStaticFiles();
+                app.UseSpaStaticFiles(
+                    new StaticFileOptions() {
+                    ContentTypeProvider = provider
+                }
+                );
             }
 
             app.UseRouting();
