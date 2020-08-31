@@ -11,7 +11,6 @@ export class UserService {
   getUser() : User {
     let token = this.authorizationService.getToken();
     let decoded = jwt_decode(token);
-    console.log(decoded);
     return { name: decoded["name"], role: decoded["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"], id: decoded.sub}
   }
 

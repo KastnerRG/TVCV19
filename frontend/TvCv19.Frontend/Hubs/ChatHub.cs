@@ -10,7 +10,7 @@ using TvCv19.Frontend.Domain.Repositories;
 
 namespace TvCv19.Frontend.Hubs
 {
-    //[Authorize]
+    [Authorize]
     public class ChatHub : Hub
     {
         private readonly IPhysicianRepository _physicianRepository;
@@ -40,6 +40,11 @@ namespace TvCv19.Frontend.Hubs
             var id = await _messageRepository.AddMessage(dbMessage);
             await AddNotifications(patientId, physician, recieverId, isEscalation);
             await Clients.Group(patientId).SendAsync("ReceiveMessage", dbMessage.ToMessageModel(id, physicianId));
+        }
+
+        public async Task AssignCaregiver(Patient patient) {
+            await _patientRepository.UpdatePatient(patient);
+            await Clients.Group(patient.Id).SendAsync("AssignCaregiver", patient.Id);
         }
 
         private async Task AddNotifications(string patientId, Physician physician, string recieverId, bool isEscalation)

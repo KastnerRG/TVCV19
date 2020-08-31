@@ -6,7 +6,7 @@ import {
   HubConnectionState,
 } from '@microsoft/signalr';
 import { Subject, Observable } from 'rxjs';
-import { MessageModel } from 'projects/shared/src/public-api';
+import { MessageModel, PatientModel, AuthorizationService } from 'projects/shared/src/public-api';
 import { StatsData } from './patient-stats/patient-stats.dialog';
 
 @Injectable({
@@ -15,19 +15,24 @@ import { StatsData } from './patient-stats/patient-stats.dialog';
 export class ChatService {
   private connection: HubConnection;
   private messagesSubject: Subject<MessageModel> = new Subject();
+  assignCaregiverSubject: Subject<string> = new Subject();
 
   messages: Observable<MessageModel>;
 
-  constructor() {
+  constructor(private authorizationService: AuthorizationService) {
     this.messages = this.messagesSubject.asObservable();
 
     this.connection = new HubConnectionBuilder()
-      .withUrl('/hubs/chat')
+      .withUrl('/hubs/chat', { accessTokenFactory: () => this.authorizationService.getToken() })
       .configureLogging(LogLevel.Information)
       .build();
 
     this.connection.on('ReceiveMessage', (message: MessageModel) => {
       this.messagesSubject.next(message);
+    });
+
+    this.connection.on('AssignCaregiver', (id: string) => {
+      this.assignCaregiverSubject.next(id);
     });
   }
 
@@ -62,6 +67,11 @@ export class ChatService {
       isImage,
       isEscalation
     );
+  }
+
+  async assignCareGiver(patient: PatientModel) : Promise<string> {
+    await this.connection.invoke('AssignCaregiver', patient)
+    return patient.id;
   }
 
   private async connectAsync(): Promise<void> {

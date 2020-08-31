@@ -31,7 +31,7 @@ export class LoginComponent implements OnInit {
           case Role.Admin:
             return location.href = '/admin'
           case Role.Caregiver:
-            return location.href = `/caregiver/${user.id}`
+            return location.href = `/caregiver/${user.id}/patients`
           case Role.Patient:
             return location.href = `/patient/assign-caregiver/${user.id}`
           default:
