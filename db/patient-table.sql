@@ -8,7 +8,9 @@ CREATE DATABASE medecc;
   `admission_status` enum('Admitted','Discharged') NOT NULL,
   `age` int DEFAULT NULL,
   `escalation_level` int DEFAULT NULL,
-  `date_of_birth` date DEFAULT NULL,
+  `date_of_birth` date NOT NULL,
   `token` varchar(500) DEFAULT NULL,
+  `gender` enum('Male','Female') NOT NULL,
+  `height` varchar(145) NOT NULL,
   PRIMARY KEY (`id`)
 )

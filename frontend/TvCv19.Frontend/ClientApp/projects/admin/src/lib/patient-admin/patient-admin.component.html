@@ -7,24 +7,55 @@
     </mat-toolbar-row>
 </mat-toolbar>
 <form fxLayout="column" [formGroup]="patientRegistrationForm" (ngSubmit)="onSubmit(patientRegistrationForm.value)">
-    <mat-form-field fxFlexAlign="center" appearance="fill">
+    <mat-form-field class="longBar" fxFlexAlign="center" appearance="fill">
         <mat-label>Patient Name</mat-label>
         <input id="name" formControlName="name" required matInput placeholder="Patient Name" >
         <mat-icon matSuffix>mode_edit</mat-icon>
     </mat-form-field>
-    <mat-form-field fxFlexAlign="center" appearance="fill">
+    <mat-form-field class="longBar" fxFlexAlign="center" appearance="fill">
         <mat-label>Location</mat-label>
         <input id="location" formControlName="location" matInput placeholder="Patient Location" required>
         <mat-icon matSuffix>mode_edit</mat-icon>
     </mat-form-field> 
-    <mat-form-field fxFlexAlign="center" appearance="fill">
+    <mat-form-field class="longBar" fxFlexAlign="center" appearance="fill">
+        <mat-label>Birth Gender</mat-label>
+        <mat-select appearance="fill" id="gender" formControlName="gender" required>
+          <mat-option [disabled]=true value="option">PLEASE SELECT</mat-option>
+          <mat-option value="Male">Male</mat-option>
+          <mat-option value="Female">Female</mat-option>
+        </mat-select>
+    </mat-form-field>
+    <mat-grid-list cols="2">
+    <mat-form-field class="ft" appearance="fill">
+        <mat-label>ft</mat-label>
+        <mat-select [(ngModel)]="ft" [ngModelOptions]="{standalone: true}" appearance="fill" id="ft" required> 
+          <mat-option [disabled]=true value="option">PLEASE SELECT</mat-option>
+          <mat-option *ngFor="let ft of height_in_ft" value="{{ft}}">{{ft}}</mat-option>
+        </mat-select>
+        <mat-hint>Height</mat-hint>
+    </mat-form-field>
+    <mat-form-field class="inches" appearance="fill">
+        <mat-label>in</mat-label>
+        <mat-select [(ngModel)]="inches" [ngModelOptions]="{standalone: true}" appearance="fill" id="inches" required> 
+          <mat-option [disabled]=true value="option">PLEASE SELECT</mat-option>
+          <mat-option *ngFor="let inches of height_in_inches" value="{{inches}}">{{inches}}</mat-option>
+        </mat-select>
+    </mat-form-field>
+    </mat-grid-list>
+    <mat-form-field class="datePicker" appearance="fill">
+        <mat-label>Date of Birth</mat-label>
+        <input placeholder="MM/DD/YYYY" formControlName="dateOfBirth" required matInput [matDatepicker]="picker">
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+    <mat-form-field class="longBar" fxFlexAlign="center" appearance="fill">
         <mat-label>Username</mat-label>
         <input id="username" formControlName="username" matInput placeholder="Patient Username" required>
         <mat-icon matSuffix>mode_edit</mat-icon>
     </mat-form-field>    
-    <mat-form-field fxFlexAlign="center" appearance="fill">
+    <mat-form-field class="longBar" fxFlexAlign="center" appearance="fill">
         <mat-label>Password</mat-label>
-        <input id="password" formControlName="password" matInput placeholder="Patient Password" required>
+        <input type="password" id="password" formControlName="password" matInput placeholder="Patient Password" required>
         <mat-icon matSuffix>mode_edit</mat-icon>
     </mat-form-field>    
     <div mat-dialog-actions align="end">

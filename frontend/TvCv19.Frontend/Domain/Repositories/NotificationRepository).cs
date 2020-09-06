@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace TvCv19.Frontend.Domain
 {
     public class NotificationRepository : BaseRepository, INotificationRepository
     {
-        private static Dictionary<string, List<Subscription>> _subscriptions = new Dictionary<string, List<Subscription>>();
         public async Task<Notification> AddNotification(Notification notifiaction)
         {
             notifiaction.Id = Guid.NewGuid().ToString().Replace("-", string.Empty);
@@ -36,14 +36,27 @@ namespace TvCv19.Frontend.Domain
             return await GetAsync<Notification>(sql, param);
         }
 
-        public Task AddPushSubscription(string id, Subscription sub) {
-            return _subscriptions.ContainsKey(id) ? Task.Run(() => _subscriptions[id].Add(sub)) : Task.Run(() => _subscriptions.Add(id, new List<Subscription>() {sub}));
+        public async Task AddPushSubscription(Subscription sub) {
+            
+            var sql = $@"INSERT INTO medecc.chromepush
+                         (id, endpoint, auth, p256dh)
+                         VALUES (@Id, @Endpoint, @auth, @p256dh)";
+            await ExecuteAsync<SubscriptionDb>(sql, new {sub.Id, sub.Endpoint, sub.Keys.auth, sub.Keys.p256dh});
         }
 
-        public Task<List<Subscription>> GetSubscriptions(string id)
+        public async Task<IEnumerable<Subscription>> GetSubscriptions(string id)
         {
-            _subscriptions.TryGetValue(id, out var value);
-            return Task.FromResult(value);
+            var sql = @"SELECT * FROM medecc.chromepush
+                        WHERE id = @id";
+            var result = await GetAsync<SubscriptionDb>(sql, new {id});
+            return result.Select(r => new Subscription(){
+                Id = r.Id,
+                Endpoint = r.Endpoint,
+                Keys = new SubscriptionKeys(){
+                    auth = r.auth,
+                    p256dh = r.p256dh
+                }
+            });
         }
     }
 }

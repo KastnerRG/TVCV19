@@ -12,8 +12,8 @@ namespace TvCv19.Frontend.Domain
         Task<IEnumerable<Notification>> GetNotifications(string recieverId);
         Task<string> DeleteNotification(string id);
         Task<Notification> AddNotification(Notification notification);
-        Task AddPushSubscription(string id, Subscription sub);
-        Task<List<Subscription>> GetSubscriptions(string id);
+        Task AddPushSubscription(Subscription sub);
+        Task<IEnumerable<Subscription>> GetSubscriptions(string id);
     }
 
     public class PocNotificationRepository : INotificationRepository
@@ -21,14 +21,14 @@ namespace TvCv19.Frontend.Domain
         private static List<Notification> _notifications = new List<Notification>();
         private static Dictionary<string, List<Subscription>> _subscriptions = new Dictionary<string, List<Subscription>>();
 
-        public Task AddPushSubscription(string id, Subscription sub) {
-            return _subscriptions.ContainsKey(id) ? Task.Run(() => _subscriptions[id].Add(sub)) : Task.Run(() => _subscriptions.Add(id, new List<Subscription>() {sub}));
+        public Task AddPushSubscription(Subscription sub) {
+            return _subscriptions.ContainsKey(sub.Id) ? Task.Run(() => _subscriptions[sub.Id].Add(sub)) : Task.Run(() => _subscriptions.Add(sub.Id, new List<Subscription>() {sub}));
         }
 
-        public Task<List<Subscription>> GetSubscriptions(string id)
+        public Task<IEnumerable<Subscription>> GetSubscriptions(string id)
         {
             _subscriptions.TryGetValue(id, out var value);
-            return Task.FromResult(value);
+            return Task.FromResult((IEnumerable<Subscription>)value);
         }
         
         public Task<Notification> AddNotification(Notification notifiaction)
@@ -62,6 +62,7 @@ namespace TvCv19.Frontend.Domain
     }
 
     public class Subscription {
+        public string Id { get; set; }
        public string Endpoint { get; set; }
        public SubscriptionKeys Keys { get; set; }
     }
@@ -70,4 +71,14 @@ namespace TvCv19.Frontend.Domain
         public string auth { get; set; }
         public string p256dh { get; set; }
     }
+
+
+    public class SubscriptionDb : IDbEntity {
+       public string Id { get; set; }
+       public string Endpoint { get; set; }
+        public string auth { get; set; }
+        public string p256dh { get; set; }
+    }
+
+  
 }

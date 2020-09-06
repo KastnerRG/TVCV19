@@ -6,6 +6,7 @@ import { ToolbarService } from 'src/app/toolbar.service';
 import { Observable } from 'rxjs';
 import { Caregiver } from 'projects/caregiver/src/public-api';
 
+
 @Component({
   selector: 'lib-patient-admin',
   templateUrl: './patient-admin.component.html',
@@ -17,20 +18,29 @@ export class PatientAdminComponent implements OnInit {
   options: Caregiver[];
   filteredOptions: Observable<Caregiver[]>;
   caregiverControl = new FormControl();
+  height_in_ft = [];
+  height_in_inches = [];
+  ft;
+  inches;
   constructor(private formBuilder: FormBuilder, private service: PatientService, private toolbarService: ToolbarService, private router: Router) {
     this.patientRegistrationForm = this.formBuilder.group({
       name: '',
       location: '',
+      gender: '',
+      dateOfBirth: '',
       username: '',
-      password: ''
+      password: '',
     });
   }
 
   ngOnInit(): void {
     this.toolbarService.setToolbarData({})
+    this.height_in_ft = Array(9).fill(0).map((x,i)=>i+1);
+    this.height_in_inches = Array(12).fill(0).map((x,i)=>i);
   }
 
   onSubmit(patient: PatientRegistration) {
+    patient.height = this.ft + this.inches;
     this.service.admitPatient(patient).subscribe(
       (p) => {
         this.router.navigateByUrl(`/admin`);

@@ -47,7 +47,10 @@ namespace TvCv19.Frontend.Controllers
                 Id = id,
                 CaregiverId = patientRegistration.CaregiverId,
                 Name = patientRegistration.Name,
-                Location = patientRegistration.Location
+                Location = patientRegistration.Location,
+                Gender = patientRegistration.Gender,
+                Height = patientRegistration.Height,
+                DateOfBirth = patientRegistration.DateOfBirth
             };
             await _patientRepository.AdmitPatient(patient);
 

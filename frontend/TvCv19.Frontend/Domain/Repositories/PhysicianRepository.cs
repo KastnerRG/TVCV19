@@ -47,7 +47,7 @@ namespace TvCv19.Frontend.Domain.Repositories
             var sql = @"SELECT caregiver.id, name, location, hierarchy, supervisor_id as supervisorId, user_name as username 
                         FROM medecc.caregiver as caregiver 
                         LEFT JOIN medecc.users as users ON users.id = caregiver.id
-                        WHERE id = @id";
+                        WHERE caregiver.id = @id";
             return await GetFirstOrDefaultAsync<Physician>(sql, param);
         }
 

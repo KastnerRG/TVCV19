@@ -47,7 +47,8 @@ namespace TvCv19.Frontend.Controllers
          [HttpPost("{recieverId}/push")]
         public async Task<IActionResult> AddPush(string recieverId, [FromBody]Subscription subscription)
         {
-            await _notificationRepository.AddPushSubscription(recieverId, subscription);
+            subscription.Id = recieverId;
+            await _notificationRepository.AddPushSubscription(subscription);
             return Ok();
         }
 

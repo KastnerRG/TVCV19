@@ -20,7 +20,30 @@ import { MatOptionModule } from '@angular/material/core';
 import { MatDialogModule } from '@angular/material/dialog';
 import { PatientAdminComponent } from './patient-admin/patient-admin.component';
 import { AdminTableComponent } from './admin-table/admin-table.component';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import {
+  DateAdapter,
+  MAT_DATE_FORMATS,
+  MAT_DATE_LOCALE,
+} from '@angular/material/core';
+import { MomentModule } from 'ngx-moment';
+import { MomentDateAdapter } from '@angular/material-moment-adapter';
+import { MatSelectModule } from '@angular/material/select';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { FormsModule } from '@angular/forms';
 
+export const ISO_FORMAT = {
+  parse: {
+    dateInput: 'YYYY-MM-DD',
+  },
+  display: {
+    dateInput: 'L',
+    monthYearLabel: 'YYYY',
+    dateA11yLabel: 'LL',
+    monthYearA11yLabel: 'YYYY',
+  },
+};
 
 @NgModule({
   declarations: [
@@ -28,13 +51,17 @@ import { AdminTableComponent } from './admin-table/admin-table.component';
     PhysicianAdminComponent,
     RootComponent,
     PatientAdminComponent,
-    AdminTableComponent
+    AdminTableComponent,
+  ],
+  providers: [
+    { provide: DateAdapter, useClass: MomentDateAdapter },
+    { provide: MAT_DATE_FORMATS, useValue: ISO_FORMAT },
   ],
   imports: [
     RouterModule.forChild([
       { path: '', component: RootComponent },
       { path: 'physician', component: PhysicianAdminComponent },
-      { path: 'patient', component: PatientAdminComponent }
+      { path: 'patient', component: PatientAdminComponent },
     ]),
     ReactiveFormsModule,
     MatFormFieldModule,
@@ -49,12 +76,16 @@ import { AdminTableComponent } from './admin-table/admin-table.component';
     MatDialogModule,
     MatSlideToggleModule,
     FlexModule,
+    MatIconModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatSelectModule,
+    MatGridListModule,
+    MomentModule,
+    FormsModule,
     CommonModule,
-    SharedModule
+    SharedModule,
   ],
-  exports: [
-    AdminComponent,
-    RouterModule
-  ]
+  exports: [AdminComponent, RouterModule],
 })
-export class AdminModule { }
+export class AdminModule {}
