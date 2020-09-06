@@ -19,6 +19,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatOptionModule } from '@angular/material/core';
 import { MatDialogModule } from '@angular/material/dialog';
 import { PatientAdminComponent } from './patient-admin/patient-admin.component';
+import { AdminTableComponent } from './admin-table/admin-table.component';
 
 
 @NgModule({
@@ -26,7 +27,8 @@ import { PatientAdminComponent } from './patient-admin/patient-admin.component';
     AdminComponent,
     PhysicianAdminComponent,
     RootComponent,
-    PatientAdminComponent
+    PatientAdminComponent,
+    AdminTableComponent
   ],
   imports: [
     RouterModule.forChild([

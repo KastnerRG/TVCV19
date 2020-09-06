@@ -11,6 +11,7 @@ namespace TvCv19.Frontend.Domain
         public int EscalationLevel { get; set; }
         public AdmissionStatus AdmissionStatus { get; set; }
         public string Token { get; set; }
+        public string Username { get; set; }
     }
 
     public class PatientRegistration 

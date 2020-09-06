@@ -31,19 +31,23 @@ namespace TvCv19.Frontend.Domain
         public async Task<Patient> GetPatient(string id)
         {
             var param = new { id, AdmissionStatus = AdmissionStatus.Admitted };
-            var sql = $@"SELECT id, name, caregiver_id as caregiverId, location, admission_status as admissionStatus,
-                         escalation_level as escalationLevel, token
-                         FROM medecc.patient
-                         WHERE id = @id AND admission_status = @AdmissionStatus";
+            var sql = $@"SELECT patients.id, name, caregiver_id as caregiverId, location, admission_status as admissionStatus,
+                         escalation_level as escalationLevel, token, user_name as username 
+                         FROM medecc.patient as patients
+                         LEFT JOIN medecc.users as users
+                         ON users.id = patients.id
+                         WHERE patients.id = @id AND admission_status = @AdmissionStatus";
             return await GetFirstOrDefaultAsync<Patient>(sql, param);
         }
 
         public async Task<IEnumerable<Patient>> GetPatients()
         {
             var param = new { AdmissionStatus = AdmissionStatus.Admitted };
-            var sql = $@"SELECT id, name, caregiver_id as caregiverId, location, admission_status as admissionStatus,
-                         escalation_level as escalationLevel, token
-                         FROM medecc.patient
+            var sql = $@"SELECT patients.id, name, caregiver_id as caregiverId, location, admission_status as admissionStatus,
+                         escalation_level as escalationLevel, token, user_name as username 
+                         FROM medecc.patient as patients
+                         LEFT JOIN medecc.users as users
+                         ON users.id = patients.id
                          WHERE admission_status = @AdmissionStatus";
 
             return await GetAsync<Patient>(sql, param);

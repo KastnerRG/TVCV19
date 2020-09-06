@@ -90,7 +90,7 @@ namespace TvCv19.Frontend.Controllers
             return Ok(patients);
         }
 
-        [HttpPost("discharge/{id}")]
+        [HttpPut("discharge/{id}")]
         public async Task<IActionResult> DischargePatient(string id)
         {
             var _id = await _patientRepository.DischargePatient(id);

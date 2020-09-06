@@ -36,14 +36,18 @@ namespace TvCv19.Frontend.Domain.Repositories
 
         public async Task<IEnumerable<Physician>> GetPhysiciansAsync()
         {
-            var sql = "SELECT id, name, location, hierarchy, supervisor_id as supervisorId FROM medecc.caregiver";
+            var sql = @"SELECT caregiver.id, name, location, hierarchy, supervisor_id as supervisorId, user_name as username FROM medecc.caregiver as caregiver
+                        LEFT JOIN medecc.users as users ON users.id = caregiver.id";
             return await GetAsync<Physician>(sql, new { });
         }
 
         public async Task<Physician> GetPhysicianAsync(string id)
         {
             var param = new { id };
-            var sql = "SELECT id, name, location, hierarchy, supervisor_id as supervisorId FROM medecc.caregiver WHERE id = @id";
+            var sql = @"SELECT caregiver.id, name, location, hierarchy, supervisor_id as supervisorId, user_name as username 
+                        FROM medecc.caregiver as caregiver 
+                        LEFT JOIN medecc.users as users ON users.id = caregiver.id
+                        WHERE id = @id";
             return await GetFirstOrDefaultAsync<Physician>(sql, param);
         }
 
