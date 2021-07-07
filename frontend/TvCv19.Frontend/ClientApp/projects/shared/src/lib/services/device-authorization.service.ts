@@ -23,7 +23,7 @@ export class DeviceAuthorizationService {
     this.connection.on('LoginPatientDevice', token => {
       authorizationService.setToken(token);
 
-      location.href = '/';
+      location.href = '/patient/registration';
     });
   }
 

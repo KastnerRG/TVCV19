@@ -11,15 +11,8 @@ namespace TvCv19.Frontend.Domain.Repositories
 {
     public class MessageRepository : IMessageRepository
     {
-        public async Task<string> AddMessage(Message message)
+        public async Task<int> AddMessage(Message message)
         {
-            message.Id = Guid.NewGuid().ToString("N");;
-
-            if (message.Stats != null)
-            {
-                message.Stats.Id = Guid.NewGuid().ToString("N");;
-            }
-
             using var context = new MedeccContext();
 
             await context.AddAsync(message);
@@ -28,7 +21,7 @@ namespace TvCv19.Frontend.Domain.Repositories
             return message.Id;
         }
 
-        public Task<IEnumerable<Message>> GetMessagesByGroup(string groupId)
+        public Task<IEnumerable<Message>> GetMessagesByGroup(int groupId)
         {
             using var context = new MedeccContext();
 

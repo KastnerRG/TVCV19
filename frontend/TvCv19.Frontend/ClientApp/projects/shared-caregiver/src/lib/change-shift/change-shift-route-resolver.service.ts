@@ -18,8 +18,8 @@ export class ChangeShiftRouteResolverService {
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<ChangeShiftRouteDataModel> | Observable<never> {
     const isGrandChild: boolean = route.data['isGrandChild']  
-    const id = isGrandChild ? route.parent.parent.params["id"] : route.parent.params["id"];
-    const patientId = route.parent.params["id"];
+    const id = isGrandChild ? parseInt(route.parent.parent.params["id"]) : parseInt(route.parent.params["id"]);
+    const patientId = parseInt(route.parent.params["id"]);
        return this.physicianService.getPhysician(id).pipe(
          mergeMap(carer => {
            if(carer) {

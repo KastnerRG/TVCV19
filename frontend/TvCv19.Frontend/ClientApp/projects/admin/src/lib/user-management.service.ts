@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 export interface ApplicationLogin {
-  id?: string;
+  id?: number;
   enabled?: boolean;
   normalizedUserName?: string;
   userName: string;

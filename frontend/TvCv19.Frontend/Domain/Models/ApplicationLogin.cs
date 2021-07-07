@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -14,25 +15,29 @@ namespace TvCv19.Frontend.Domain.Models
 {
     public class ApplicationLogin : IDbEntity
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public string Id { get; set; }
+        public int Id { get; set; }
         [Required]
         public bool? Enabled { get; set; } = true;
-        [Required]
+        [JsonIgnore]
+        public IList<ApplicationLoginRole> LoginRoles { get; set; }
         public string NormalizedUserName { get; set; }
         [Required]
         public string UserName { get; set; }
-        [Required]
         public string PasswordHash { get; set; }
 
         public string GenerateJwtToken(IConfiguration configuration)
         {
             var claims = new List<Claim>
             {
-                new Claim(JwtRegisteredClaimNames.Sub, UserName),
+                new Claim(ClaimTypes.Name, UserName),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(ClaimTypes.NameIdentifier, Id)
+                new Claim(ClaimTypes.NameIdentifier, Id.ToString()),
             };
+
+            foreach (var loginRole in LoginRoles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, loginRole.ApplicationRole.Name.ToLower()));
+            }
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtKey"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);

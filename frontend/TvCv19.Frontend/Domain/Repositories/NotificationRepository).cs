@@ -15,25 +15,23 @@ namespace TvCv19.Frontend.Domain
         {
             using var context = new MedeccContext();
 
-            notifiaction.Id = Guid.NewGuid().ToString("N");;
-
             await context.AddAsync(notifiaction);
             await context.SaveChangesAsync();
 
             return notifiaction;
         }
 
-        public async Task<string> DeleteNotification(string id)
+        public async Task<int> DeleteNotification(int id)
         {
             using var context = new MedeccContext();
 
-            context.Remove(await GetNotifications(id));
+            context.RemoveRange(await GetNotifications(id));
             await context.SaveChangesAsync();
 
             return id;
         }
 
-        public Task<IEnumerable<Notification>> GetNotifications(string id)
+        public Task<IEnumerable<Notification>> GetNotifications(int id)
         {
             using var context = new MedeccContext();
 

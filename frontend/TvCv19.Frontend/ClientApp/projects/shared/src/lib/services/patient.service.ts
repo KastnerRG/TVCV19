@@ -12,7 +12,7 @@ import { MessageModel } from '../models/message.model';
 export class PatientService {
   constructor(private http: HttpClient) {}
 
-  getPatientsByPhysicianId(id: string): Observable<Array<PatientModel>> {
+  getPatientsByPhysicianId(id: number): Observable<Array<PatientModel>> {
     return this.http
       .get<Array<PatientModel>>(`/api/patient/physician/${id}`)
       .pipe(catchError(this.handleError));
@@ -36,7 +36,7 @@ export class PatientService {
       })
       .pipe(catchError(this.handleError));
   }
-  getPatient(id: string): Observable<PatientModel> {
+  getPatient(id: number): Observable<PatientModel> {
     return this.http
       .get<PatientModel>(`/api/patient/${id}`)
       .pipe(catchError(this.handleError));
@@ -48,7 +48,7 @@ export class PatientService {
       .pipe(catchError(this.handleError));
   }
 
-  getMessages(id: string): Observable<Array<MessageModel>> {
+  getMessages(id: number): Observable<Array<MessageModel>> {
     return this.http
       .get<Array<MessageModel>>(`/api/patient/${id}/messages`)
       .pipe(catchError(this.handleError));

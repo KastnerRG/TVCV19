@@ -11,7 +11,7 @@ using TvCv19.Frontend.Domain.Repositories;
 
 namespace TvCv19.Frontend.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "administrator")]
     [Route("api/application-login")]
     [ApiController]
     public class ApplicationLoginController : ControllerBase
@@ -43,7 +43,10 @@ namespace TvCv19.Frontend.Controllers
             
             if (result.Succeeded)
             {
-                return Ok(await userManager.FindByNameAsync(model.ApplicationLogin.UserName));
+                var createdUserName = await userManager.FindByNameAsync(model.ApplicationLogin.UserName);
+                await userManager.AddToRoleAsync(createdUserName, "Physician");
+
+                return Ok(createdUserName);
             }
 
             return BadRequest();
@@ -55,9 +58,9 @@ namespace TvCv19.Frontend.Controllers
                select appLogin.StripPassword());
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateApplicationLoginAsync(string id, [FromBody]ApplicationLogin applicationLogin)
+        public async Task<IActionResult> UpdateApplicationLoginAsync(int id, [FromBody]ApplicationLogin applicationLogin)
         {
-            var fromDatabase = await userManager.FindByIdAsync(id);
+            var fromDatabase = await userManager.FindByIdAsync(id.ToString());
 
             if (fromDatabase == null)
             {
@@ -73,7 +76,14 @@ namespace TvCv19.Frontend.Controllers
                 PasswordHash = fromDatabase.PasswordHash
             };
 
-            return Ok(await userManager.UpdateAsync(applicationLoginToUpdate));
+            var result = await userManager.UpdateAsync(applicationLoginToUpdate);
+
+            if (result.Errors.Any())
+            {
+                return BadRequest(result);
+            }
+
+            return Ok(result);
         }
 
         [HttpPut("{id}/password")]

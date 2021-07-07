@@ -35,7 +35,7 @@ import { MatInputModule } from '@angular/material/input';
     MatGridListModule,
     MatButtonModule,
     MatInputModule,
-    FlexLayoutModule
+    FlexLayoutModule,
   ],
   exports: [
     SharedComponent,

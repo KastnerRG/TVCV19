@@ -3,6 +3,6 @@ namespace TvCv19.Frontend.Domain.Models
 {
     public interface IDbEntity
     {
-        string Id { get; set; }
+        int Id { get; set; }
     }
 }

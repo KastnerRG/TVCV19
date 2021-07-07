@@ -6,42 +6,29 @@ import {
 } from '@angular/router';
 import { Observable, of, EMPTY } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
-import { AssignCareGiverModel } from './assign-caregiver-route-model';
-import {
-  PhysicianService,
-  HierarchyLevel,
-} from 'projects/shared/src/public-api';
 import { PatientService } from 'projects/shared/src/public-api';
+import { PatientFeedModel } from './patient-feed-model';
 
 @Injectable({
   providedIn: 'root',
 })
-export class AssignCareGiverRouteResolverService {
+export class PatientFeedModelRouteResolverService {
   constructor(
     private patientService: PatientService,
-    private physicianService: PhysicianService,
     private router: Router
   ) {}
 
   resolve(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
-  ): Observable<AssignCareGiverModel> | Observable<never> {
+  ): Observable<PatientFeedModel> | Observable<never> {
     let id = parseInt(route.paramMap.get('id'));
-
     return this.patientService.getPatient(id).pipe(
       mergeMap((patient) => {
         if (patient) {
-          return this.physicianService.getPhysicians().pipe(
-            mergeMap((physicians) => {
-              const caregivers = physicians.filter(
-                (p) => p.hierarchy === HierarchyLevel.FirstLine
-              );
-              return of({ patient, caregivers });
-            })
-          );
+          return of({id, token: patient.token})
         } else {
-          this.router.navigate(['/patient']);
+          this.router.navigate(['/']);
           return EMPTY;
         }
       })

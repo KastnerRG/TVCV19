@@ -26,7 +26,7 @@ export class CarerRouteResolverService {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Observable<CaregiverRouteDataModel> | Observable<never> {
-    const id = route.parent.params['id'];
+    const id = parseInt(route.parent.params['id']);
     const routeName = route.url.length > 0 ? route.url[0].path : '';
 
     return this.patientService.getPatientsByPhysicianId(id).pipe(

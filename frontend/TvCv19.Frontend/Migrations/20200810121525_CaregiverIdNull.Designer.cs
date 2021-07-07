@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TvCv19.Frontend.Domain.Repositories;
 
 namespace TvCv19.Frontend.Migrations
 {
     [DbContext(typeof(MedeccContext))]
-    partial class MedeccContextModelSnapshot : ModelSnapshot
+    [Migration("20200810121525_CaregiverIdNull")]
+    partial class CaregiverIdNull
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -83,7 +85,6 @@ namespace TvCv19.Frontend.Migrations
             modelBuilder.Entity("TvCv19.Frontend.Domain.Models.Message", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     b.Property<string>("Body")

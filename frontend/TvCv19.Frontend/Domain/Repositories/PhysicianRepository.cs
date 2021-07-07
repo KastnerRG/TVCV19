@@ -1,10 +1,8 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Dapper;
-using Microsoft.Extensions.Configuration;
-using MySql.Data.MySqlClient;
+using TvCv19.Frontend.Domain.Models;
 
 namespace TvCv19.Frontend.Domain.Repositories
 {
@@ -16,15 +14,13 @@ namespace TvCv19.Frontend.Domain.Repositories
         {
             using var context = new MedeccContext();
 
-            physician.Id = Guid.NewGuid().ToString("N");;
-
             await context.AddAsync(physician);
             await context.SaveChangesAsync();
 
             return physician;
         }
 
-        public async Task DeletePhysicianAsync(string id)
+        public async Task DeletePhysicianAsync(int id)
         {
             using var context = new MedeccContext();
 
@@ -32,7 +28,7 @@ namespace TvCv19.Frontend.Domain.Repositories
             await context.SaveChangesAsync();
         }
 
-        public Task<IEnumerable<Physician>> GetPhysicianTeam(string id)
+        public Task<IEnumerable<Physician>> GetPhysicianTeam(int id)
         {
             using var context = new MedeccContext();
 
@@ -50,7 +46,7 @@ namespace TvCv19.Frontend.Domain.Repositories
             return Task.FromResult((IEnumerable<Physician>)context.Caregivers.ToArray());
         }
 
-        public Task<Physician> GetPhysicianAsync(string id)
+        public Task<Physician> GetPhysicianAsync(int id)
         {
             using var context = new MedeccContext();
 
@@ -69,7 +65,7 @@ namespace TvCv19.Frontend.Domain.Repositories
             return physician;
         }
 
-        public async Task<CarerHierarchyTree> GetHeirarchyTree(string id)
+        public async Task<CarerHierarchyTree> GetHeirarchyTree(int id)
         {
             var directReports = await GetPhysicianTeam(id);
             if (!directReports.Any())
@@ -100,6 +96,15 @@ namespace TvCv19.Frontend.Domain.Repositories
             })));
             tree.Children = children;
             return tree;
+        }
+
+        public Task<Physician> GetPhysicianAsync(ApplicationLogin applicationLogin)
+        {
+            using var context = new MedeccContext();
+
+            return Task.FromResult((from c in context.Caregivers.Include(c => c.ApplicationLogin)
+                                    where c.ApplicationLogin.Id == applicationLogin.Id
+                                    select c).FirstOrDefault());
         }
     }
 }

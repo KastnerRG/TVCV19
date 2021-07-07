@@ -23,6 +23,7 @@ import { CommonModule } from '@angular/common';
 import { PatientFeedComponent } from './patient-feed/patient-feed.component';
 import { FlexModule } from '@angular/flex-layout';
 import { PatientAuthorizationComponent } from './patient-authorization/patient-authorization.component';
+import { PatientFeedModelRouteResolverService } from './patient-feed/patient-feed-model-route-resolver';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,9 @@ import { PatientAuthorizationComponent } from './patient-authorization/patient-a
     RouterModule.forChild([
       { path: '', component: RootComponent },
       { path: 'authorization', component: PatientAuthorizationComponent },
-      { path: 'live/:id', component: PatientFeedComponent},
+      { path: 'live/:id', component: PatientFeedComponent, resolve: {
+        model: PatientFeedModelRouteResolverService
+      }},
       { path: 'registration', component: PatientRegistrationRootComponent, children: [
         { path: '', component: PatientRegistrationComponent },
         { path: 'assign-caregiver/:id', component: AssignCareGiverComponent, resolve: {

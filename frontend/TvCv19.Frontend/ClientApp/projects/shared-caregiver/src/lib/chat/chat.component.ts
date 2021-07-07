@@ -24,8 +24,8 @@ export interface DownloadedImage {
   styleUrls: ['./chat.component.scss'],
 })
 export class ChatComponent implements OnInit, AfterViewChecked {
-  private patientId: string;
-  private physicianId: string;
+  private patientId: number;
+  private physicianId: number;
   public messageToSend: string = '';
   public chatMessages: MessageModel[];
   public isRecording: boolean;
@@ -53,13 +53,13 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     });
 
     route.parent.params.subscribe((p: any) => {
-      this.patientId = p['id'];
+      this.patientId = parseInt(p['id']);
 
       this.chatService.subscribeAsync(this.patientId);
     });
 
     route.parent.parent.params.subscribe((p) => {
-      this.physicianId = p['id'];
+      this.physicianId = parseInt(p['id']);
     });
 
     route.data.subscribe((data: { messages: MessageModel[] }) => {

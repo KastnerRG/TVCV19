@@ -7,20 +7,17 @@ namespace TvCv19.Frontend.Domain.Repositories
 {
     public class MediaRepository : IMediaRepository
     {
-        public async Task<string> AddMedia(Media media)
+        public async Task<int> AddMedia(Media media)
         {
             using var context = new MedeccContext();
 
-            var id = Guid.NewGuid().ToString("N");;
-
-            media.Id = id;
-            await context.AddAsync(media);
+            var @return = await context.AddAsync(media);
             await context.SaveChangesAsync();
 
-            return id;
+            return @return.Entity.Id;
         }
 
-        public Task<Media> GetMedia(string id)
+        public Task<Media> GetMedia(int id)
         {
             using var context = new MedeccContext();
 

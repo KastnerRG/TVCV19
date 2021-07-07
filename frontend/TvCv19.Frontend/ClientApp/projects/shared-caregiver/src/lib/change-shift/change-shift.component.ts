@@ -15,7 +15,7 @@ import { ToolbarService } from 'src/app/toolbar.service';
 
 export interface Caregiver {
   name: string;
-  id: string;
+  id?: number;
 }
 
 @Component({
@@ -78,7 +78,7 @@ export class ChangeShiftComponent implements OnInit {
       await Promise.all(updates);
     } else {
       let updates: Array<Promise<PhysicianModel>> = [];
-      let carerIds: Array<string> = [
+      let carerIds: Array<number> = [
         ...new Set(this.patients.map((patient) => patient.caregiverId)),
       ];
       let carers = await (
