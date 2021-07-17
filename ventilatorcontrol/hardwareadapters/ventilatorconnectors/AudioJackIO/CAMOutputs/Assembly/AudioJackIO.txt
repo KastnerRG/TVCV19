@@ -1,0 +1,14 @@
+Partlist exported from /home/king/workspace/tvcv19/TVCV19/ventilatorcontrol/hardwareadapters/ventilatorconnectors/AudioJackIO/AudioJackIO.sch at 6/18/21 1:03 AM
+
+Qty Value          Device          Package        Parts  Description                                    MF MPN     OC_FARNELL OC_NEWARK POPULARITY SPICEMODEL SPICEPREFIX SPICEPREFIXL
+1                  W237-103        W237-103       X1     WAGO SCREW CLAMP                                  237-103 unknown    18M7116   5                                             
+2   0.1uF          C-EU025-025X050 C025-025X050   C1, C5 CAPACITOR, European symbol                                                     65                    C                       
+2   100K           R-EU_0204/7     0204/7         R7, R9 RESISTOR, European symbol                                                      79                    R                       
+2   10K            R-EU_0204/7     0204/7         R3, R6 RESISTOR, European symbol                                                      79                    R                       
+1   10K            R-TRIMM64Y      RTRIM64Y       R5     Trimm resistor                                                                 0          X                      POT         
+1   1503_10        1503_10         1503_10        X2     Jack connectors according to JISC 6560, 3.5 mm            1308868    unknown   0                                             
+1   2K             R-EU_0204/7     0204/7         R2     RESISTOR, European symbol                                                      79                    R                       
+1   2k             R-EU_0204/7     0204/7         R1     RESISTOR, European symbol                                                      79                    R                       
+1   5K             R-EU_0204/7     0204/7         R4     RESISTOR, European symbol                                                      79                    R                       
+1   67pF           C-EU025-025X050 C025-025X050   C4     CAPACITOR, European symbol                                                     65                    C                       
+1   ARDUINO-BPLACE ARDUINO-BPLACE  ARDUINO-BPLACE U$1    Arduino Diecimila/Duemilanove                                                                                                
